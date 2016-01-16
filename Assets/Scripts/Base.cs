@@ -11,7 +11,7 @@ public class Base : MonoBehaviour
     {
         level = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         playerObject = GameObject.Find("Player");
-        player = GameObject.Find("LevelManager").GetComponent<Player>();
+		player = GameObject.Find("Player").GetComponent<Player>();
         BaseStart();
 	}
 
