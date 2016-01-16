@@ -8,4 +8,13 @@ public class Player : Character
         print("Player colliding!");
         GameObject.Destroy(other.gameObject);
     }
+
+    public override void OnPickup(Pickup other)
+    {
+        if (other.type == 1) {
+            health += other.intensity;
+        }
+
+        GameObject.Destroy(other.gameObject);
+    }
 }

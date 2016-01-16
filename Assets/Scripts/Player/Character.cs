@@ -4,6 +4,7 @@ using System.Collections;
 public class Character : Base
 {
     public int team;
+    public int health;
 
     public override void BaseStart() 
     {
@@ -23,12 +24,19 @@ public class Character : Base
         }
 
         print("Collide!!");
-        if (otherCharacter.team != team) {
+        if (otherCharacter.team == 10) {
+            OnPickup(other.GetComponent<Pickup>());
+        } else if (otherCharacter.team != team) {
             OnCollision(otherCharacter);
         }
     }
 
     public virtual void OnCollision(Character other)
+    {
+
+    }
+
+    public virtual void OnPickup(Pickup pickup)
     {
 
     }
