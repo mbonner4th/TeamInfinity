@@ -13,7 +13,9 @@ public class Character : Base
 
     public override void BaseUpdate(float dt)
     {
-	
+		if (health <= 0) {
+			onDeath ();
+		}
 	}
 
     public virtual void OnTriggerEnter2D(Collider2D other)
@@ -39,4 +41,9 @@ public class Character : Base
     {
 
     }
+
+	public virtual void onDeath()
+	{
+		GameObject.Destroy (gameObject);
+	}
 }
