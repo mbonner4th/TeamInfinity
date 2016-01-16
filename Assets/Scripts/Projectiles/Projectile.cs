@@ -33,8 +33,8 @@ public class Projectile : Base
 	
 	public virtual void OnCollision(Character other)
 	{
-		print("Player colliding!");
-		GameObject.Destroy(other.gameObject);
+		print("Someone's been shot!");
+		other.health -= 20;
 		GameObject.Destroy (gameObject);
 	}
 }
