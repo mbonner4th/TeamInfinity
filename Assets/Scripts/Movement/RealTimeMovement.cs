@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Movement : MonoBehaviour
+public class RealTimeMovement : MonoBehaviour
 {
     public KeyCode forward;
     public KeyCode backward;

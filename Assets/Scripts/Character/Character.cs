@@ -16,7 +16,7 @@ public class Character : Base
 	
 	}
 
-    public virtual void OnTriggerStay2D(Collider2D other)
+    public virtual void OnTriggerEnter2D(Collider2D other)
     {
         Character otherCharacter = other.GetComponent<Character>();
         if (otherCharacter == null) {

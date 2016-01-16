@@ -4,8 +4,10 @@ using System.Collections;
 public class SpawnTiles : MonoBehaviour
 {
     public GameObject[] tileType;
+
+    public int[,,] section;
     public Vector4[] edgeMatch;
-    public float tileSize;
+    public float tileSpacing;
 
     public Vector3 startPosition;
     public Vector2 bounds;
@@ -29,18 +31,14 @@ public class SpawnTiles : MonoBehaviour
         for (uint i = 0; i < specialTiles.Length; ++i) {
             tiles[(int) specialTiles[i].x, (int)specialTiles[i].y] =
                 (GameObject) GameObject.Instantiate(tileType[(int)specialTiles[i].z],
-                new Vector3(startPosition.x + specialTiles[i].x * tileSize, startPosition.y + specialTiles[i].y * tileSize, 0), Quaternion.identity);
+                new Vector3(startPosition.x + specialTiles[i].x * tileSpacing, startPosition.y + specialTiles[i].y * tileSpacing, 0), Quaternion.identity);
             specials[(int)specialTiles[i].x, (int)specialTiles[i].y] = true;
         }
 
         for (uint i = 0; i < bounds.x; ++i) {
             for (uint j = 0; j < bounds.y; ++j) {
-                print(i);
-                print(j);
-                print(specials[i, j]);
-                print(new Vector3(startPosition.x + i * tileSize, startPosition.y + j * tileSize, 0));
                 if (!specials[i, j]) {
-                    tiles[i, j] = (GameObject) GameObject.Instantiate(tileType[0], new Vector3(startPosition.x + i * tileSize, startPosition.y + j * tileSize, 0), Quaternion.identity);
+                    tiles[i, j] = (GameObject)GameObject.Instantiate(tileType[0], new Vector3(startPosition.x + i * tileSpacing, startPosition.y + j * tileSpacing, 0), Quaternion.identity);
                 }
             }
         }
