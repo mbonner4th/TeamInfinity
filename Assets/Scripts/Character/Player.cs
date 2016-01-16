@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Player : Character
@@ -6,8 +7,19 @@ public class Player : Character
     public int water;
     public int ammo;
 
+	public Slider waterBar;
+	public Slider healthBar;
+	public Text ammoDisp;
 	public GameObject projectile;
 	public Ray2D mousePos;
+
+	public override void BaseStart() 
+	{
+		base.BaseStart ();
+		healthBar = GameObject.Find("HealthSlider").GetComponent<Slider>();
+		waterBar = GameObject.Find("WaterSlider").GetComponent<Slider>();
+		ammoDisp = GameObject.Find("AmmoDisplay").GetComponent<Text>();
+	}
 
 	public override void OnCollision(Character other)
     {
@@ -20,7 +32,9 @@ public class Player : Character
 		base.BaseUpdate (dt);
 
 		// Fire a bullet in the direction of the mouse when you click!
-		if (Input.GetMouseButtonDown (0)) {
+		if (Input.GetMouseButtonDown (0) && ammo > 0) {
+			ammo--;
+			WriteText ("Pew! " + ammo + " ROCKS remaining!");
 			Vector3 pos = Input.mousePosition;
 			pos.z = transform.position.z - Camera.main.transform.position.z;
 			pos = Camera.main.ScreenToWorldPoint(pos);
@@ -30,6 +44,16 @@ public class Player : Character
 			Rigidbody2D bulletRb = go.GetComponent<Rigidbody2D>();
 			bulletRb.AddForce(go.transform.up * 1000.0f);
 		}
+
+		// Update all the relevant gauges and status displays with the current values
+		healthBar.value = health;
+		waterBar.value = water;
+		//ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + "x" + ammo;
+		string rocks = "";
+		for (int i=0; i<ammo; i++) {
+			rocks += "o";
+		}
+		ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + rocks;
 	}
 
     public override void OnPickup(Pickup other)

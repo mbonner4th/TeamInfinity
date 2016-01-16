@@ -5,6 +5,7 @@ public class Projectile : Base
 {
 	public int team;
 	public int countdown;
+	public int damage = 20;
 	
 	public override void BaseStart() 
 	{
@@ -33,8 +34,8 @@ public class Projectile : Base
 	
 	public virtual void OnCollision(Character other)
 	{
-		print("Player colliding!");
-		GameObject.Destroy(other.gameObject);
+		//print("Someone's been shot!");
+		other.health -= damage;
 		GameObject.Destroy (gameObject);
 	}
 }
