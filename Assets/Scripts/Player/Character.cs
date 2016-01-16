@@ -23,7 +23,6 @@ public class Character : Base
             return;
         }
 
-        print("Collide!!");
         if (otherCharacter.team == 10) {
             OnPickup(other.GetComponent<Pickup>());
         } else if (otherCharacter.team != team) {
