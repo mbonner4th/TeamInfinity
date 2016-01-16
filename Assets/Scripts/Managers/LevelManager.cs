@@ -5,6 +5,10 @@ public class LevelManager : MonoBehaviour
 {
     public int parts;
     public int guilt;
+
+    public int[,] tileIDs;
+    public Vector4[] tiles;
+
 	void Update()
     {
 	
