@@ -14,6 +14,13 @@ public class Projectile : Base
 	
 	public override void BaseUpdate(float dt)
 	{
+		base.BaseUpdate (dt);
+
+		if (level.gamePaused) {
+			// don't do anything if the game is paused
+			return;
+		}
+
 		if (countdown-- <= 0) {
 			GameObject.Destroy (gameObject);
 		}
