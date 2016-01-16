@@ -21,6 +21,7 @@ public class Player : Character
 
 		// Fire a bullet in the direction of the mouse when you click!
 		if (Input.GetMouseButtonDown (0)) {
+			WriteText ("Pew!");
 			Vector3 pos = Input.mousePosition;
 			pos.z = transform.position.z - Camera.main.transform.position.z;
 			pos = Camera.main.ScreenToWorldPoint(pos);
