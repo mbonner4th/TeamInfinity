@@ -3,17 +3,20 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : Base
 {
-    public int parts;
+    public int req_artifacts;
+    public int artifacts;
     public int guilt;
     public int leveltoload;
 
     public int[,] tileTypes;
+    public GameObject[,] tileObjects;
     public bool[] tiles;
     public GameObject[] spawnObject;
-
     public GameObject[] tileType;
+    public int[] depletedVersion;
+
     public int numSectionTypes;
     public int sectionSize;
     public int[,,] section;
@@ -29,8 +32,31 @@ public class LevelManager : MonoBehaviour
     public bool gamePaused = false;
     public GameObject GameMenu;
 
-    public GameObject[,] tileObjects;
+    
     public System.Collections.Generic.List<GameObject> enemies;
+
+    public void SetTileDepleted(Vector3 position)
+    {
+        Vector3 tilePos = position - startPosition;
+        tilePos /= tileSpacing;
+        int posX = Mathf.RoundToInt(tilePos.x);
+        int posY = Mathf.RoundToInt(tilePos.y);
+
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
+            return;
+        }
+
+        int cntTileType = tileTypes[posX, posY];
+        int depletedTile = 1;
+        if (depletedVersion[cntTileType] != null)
+        {
+            depletedTile = depletedVersion[cntTileType];            
+        }
+
+        tileObjects[posX, posY].GetComponent<SpriteRenderer>().sprite = tileType[depletedTile].GetComponent<SpriteRenderer>().sprite;
+        tileTypes[posX, posY] = depletedTile;
+    }
 
     public bool IsTileSolid(Vector3 position)
     {
@@ -58,6 +84,20 @@ public class LevelManager : MonoBehaviour
         return tileTypes[posX, posY] == 2;
     }
 
+    public bool IsTileCamp(Vector3 position)
+    {
+        Vector3 tilePos = position - startPosition;
+        tilePos /= tileSpacing;
+        int posX = Mathf.RoundToInt(tilePos.x);
+        int posY = Mathf.RoundToInt(tilePos.y);
+
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
+            return false;
+        }
+        return tileTypes[posX, posY] == 10;
+    }
+
     void Awake()
     {
         numSectionTypes = 35;
@@ -71,7 +111,7 @@ public class LevelManager : MonoBehaviour
         InvokeRepeating("tickEnimies", 1.0f, 1.0f);
     }
 
-	void Update()
+    public override void BaseUpdate(float dt)
     {
 		if (GameMenu != null && Input.GetKeyUp (menuKey)) 
 		{
@@ -95,6 +135,11 @@ public class LevelManager : MonoBehaviour
 			gamePaused = true;
 		}
 	}
+
+    public void EndLevel()
+    {
+        WriteText("Congratulations!");
+    }
 
 	public void ExitToMainMenu()
 	{
@@ -272,7 +317,7 @@ public class LevelManager : MonoBehaviour
 
     public virtual void OnPickPart(int intensity)
     {
-        parts += intensity;
+        artifacts += intensity;
     }
 
     public virtual void OnPickPerson(int intensity)
