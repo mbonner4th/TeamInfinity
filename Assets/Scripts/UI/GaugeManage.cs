@@ -15,8 +15,7 @@ public class GaugeManage : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		int val = (int)healthBar.value;
 		textBox.text = "";
-		textBox.text += val;
+		textBox.text += (int)(healthBar.value/healthBar.maxValue*100) + "%";
 	}
 }
