@@ -23,8 +23,8 @@ public class Player : Character
 
 	public override void OnCollision(Character other)
     {
-        print("Player colliding!");
-        GameObject.Destroy(other.gameObject);
+        //print("Player colliding!");
+        //GameObject.Destroy(other.gameObject);
     }
 
 	public override void BaseUpdate(float dt)
@@ -50,6 +50,16 @@ public class Player : Character
 			bulletRb.AddForce(go.transform.up * 1000.0f);
 		}
 
+        if (water == 0)
+        {
+            health -= 1;
+            WriteText("You're dehydrating!");
+        }
+        else
+        {
+            water -= 1;
+        }
+
 		// Update all the relevant gauges and status displays with the current values
 		healthBar.value = health;
 		waterBar.value = water;
@@ -71,11 +81,13 @@ public class Player : Character
         else if (other.type == 2)
         {
             health += other.intensity;
-            print("Picked up health!");
+			if(health > 100){health=100;}
+			print("Picked up health!");
         }
         else if (other.type == 3)
         {
             water += other.intensity;
+			if(water > 100){water=100;}
             print("Picked up water!");
         }
         else if (other.type == 4)

@@ -4,7 +4,7 @@ using System.Collections;
 public class Projectile : Base
 {
 	public int team;
-	public int countdown;
+	public int countdown = 50;
 	public int damage = 20;
 	
 	public override void BaseStart() 

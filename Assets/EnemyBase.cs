@@ -18,7 +18,10 @@ public class EnemyBase : Base {
         xAxis = new Vector3(1, 0, 0);
         yAxis = new Vector3(0, 1, 0);
 
-        prevPlayerPostion = playerObject.transform.position;
+        if (playerObject != null)
+        {
+            prevPlayerPostion = playerObject.transform.position;
+        }
     }
 
     public override void BaseUpdate(float dt)

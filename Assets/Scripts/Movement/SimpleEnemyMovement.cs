@@ -7,7 +7,10 @@ public class SimpleEnemyMovement : EnemyBase {
     public override void BaseStart()
     {
         base.BaseStart();
-        prevPlayerPostion = playerObject.transform.position;
+        if (playerObject != null)
+        {
+            prevPlayerPostion = playerObject.transform.position;
+        }
         xAxis = new Vector3(1, 0, 0);
         yAxis = new Vector3(0, 1, 0);
         speed = 1;
