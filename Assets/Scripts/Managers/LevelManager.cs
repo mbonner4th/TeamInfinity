@@ -8,6 +8,8 @@ public class LevelManager : Base
     public int req_artifacts;
     public int artifacts;
     public int guilt;
+    public float time = 30;
+    public float startingTime = 30;
     public int leveltoload;
 
     public int[,] tileTypes;
@@ -252,7 +254,16 @@ public class LevelManager : Base
 		{
 			UpdateMenu();
 		}
-        //tickEnimies();
+
+        if (time == 0)
+        {
+            // reduce vision
+        }
+        else
+        {
+            time -= 1 / 60;
+            print(time);
+        }
 	}
 
 	public void UpdateMenu()
