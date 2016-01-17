@@ -30,6 +30,15 @@ public class Base : MonoBehaviour
 	void Update()
     {
         float dt = Time.deltaTime;
+        playerObject = GameObject.Find("Player");
+        if (playerObject != null) {
+            player = GameObject.Find("Player").GetComponent<Player>();
+        }
+
+        GameObject camera = GameObject.Find("Main Camera");
+        if (camera != null) {
+            sound = camera.GetComponent<SoundManager>();
+        }
         BaseUpdate(dt);
 	}
 

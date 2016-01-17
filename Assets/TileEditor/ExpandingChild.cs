@@ -7,6 +7,6 @@ public class ExpandingChild : Clickable
 
     public override void OnClick()
     {
-        manager.ChildClicked(this);
+        //manager.ChildClicked(this);
     }
 }

@@ -6,6 +6,7 @@ public class Player : Character
 {
 	public int water;
     public int ammo;
+	public int money = 0;
 	public int maxHealth = 1000;
 	public int maxWater = 1000;
 
@@ -22,12 +23,6 @@ public class Player : Character
 		waterBar = GameObject.Find("WaterSlider").GetComponent<Slider>();
 		ammoDisp = GameObject.Find("AmmoDisplay").GetComponent<Text>();
 	}
-
-	public override void OnCollision(Character other)
-    {
-        //print("Player colliding!");
-        //GameObject.Destroy(other.gameObject);
-    }
 
 	public override void BaseUpdate(float dt)
 	{
@@ -112,4 +107,9 @@ public class Player : Character
 
         GameObject.Destroy(other.gameObject);
     }
+
+	public override void onDeath()
+	{
+		level.GameOver (this);
+	}
 }
