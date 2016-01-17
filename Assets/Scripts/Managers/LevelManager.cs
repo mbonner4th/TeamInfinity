@@ -12,6 +12,7 @@ public class LevelManager : Base
 
     public int[,] tileTypes;
     public GameObject[,] tileObjects;
+    public Character[,] tileCharacters;
     public GameObject[,] tilePickups;
     public bool[] tiles;
     public GameObject[] spawnObject;
@@ -36,6 +37,7 @@ public class LevelManager : Base
     public bool gamePaused = false;
     public GameObject PauseMenu;
 	public GameObject GameOverMenu;
+	public GameObject ShopMenu;
 
     
     public System.Collections.Generic.List<GameObject> enemies;
@@ -58,6 +60,60 @@ public class LevelManager : Base
             int newVersion = depletedVersion[cntTileType];
             SetTile(posX, posY, newVersion);
         }
+    }
+
+    public void TryToMoveCharacter(Vector3 distance, Character characterToMove)
+    {
+        Character other = GetCharacter(GetTileByPosition(characterToMove.transform.position + distance));
+        if (other != null)
+        {
+            // do damage to other
+        }
+        else if (!IsTileSolid(characterToMove.transform.position + distance))
+        {
+            SetCharacter(GetTileByPosition(characterToMove.transform.position), null);
+            characterToMove.transform.Translate(distance);
+            SetCharacter(GetTileByPosition(characterToMove.transform.position), characterToMove);
+        }
+    }
+
+    public Character GetCharacter(Vector2 tilePosition)
+    {
+        int posX = Mathf.RoundToInt(tilePosition.x);
+        int posY = Mathf.RoundToInt(tilePosition.y);
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
+            return null;
+        }
+
+        return tileCharacters[posX, posY];
+    }
+
+    public void SetCharacter(Vector2 tilePosition, Character characterToSet)
+    {
+        int posX = Mathf.RoundToInt(tilePosition.x);
+        int posY = Mathf.RoundToInt(tilePosition.y);
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
+            return;
+        }
+
+        tileCharacters[posX, posY] = characterToSet;
+    }
+
+
+    public Vector2 GetTileByPosition(Vector3 position)
+    {
+        Vector3 tilePos = position - startPosition;
+        tilePos /= tileSpacing;
+        int posX = Mathf.RoundToInt(tilePos.x);
+        int posY = Mathf.RoundToInt(tilePos.y);
+
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
+            return new Vector2(-1.0f, -1.0f);
+        }
+        return new Vector2(posX * 1.0f, posY * 1.0f);
     }
 
     public bool IsTileSolid(Vector3 position)
@@ -150,7 +206,7 @@ public class LevelManager : Base
 
 	public override void BaseUpdate(float dt)
     {
-		if (PauseMenu != null && Input.GetKeyUp (menuKey)) 
+		if (PauseMenu != null && Input.GetKeyUp (menuKey) && (!GameOverMenu.activeSelf) && (!ShopMenu.activeSelf))
 		{
 			UpdateMenu();
 		}
@@ -178,6 +234,10 @@ public class LevelManager : Base
         WriteText("Congratulations!");
         LoadLevel(Application.dataPath + "/Levels/Level" + 2 + ".txt");
         GenerateLevel();
+
+		/*ShopMenu.SetActive (true);
+		Time.timeScale = 0;
+		gamePaused = true;*/
 	}
 	
 	
@@ -455,15 +515,22 @@ public class LevelManager : Base
         guilt -= intensity;
     }
 
-    public void addToEnemies(GameObject enemy)
+    public bool addToEnemies(GameObject enemy)
     {
         //Debug.Log("added to enemies");
-        enemies.Add(enemy);
+        if(GetCharacter(GetTileByPosition(enemy.transform.position)) != null){
+            enemies.Add(enemy);
+            return true;
+        }
+        else{
+            return false;
+        }
+        
     }
 
     public void tickEnimies()
     {
-        Debug.Log("ticked");
+//Debug.Log("ticked");
         foreach (GameObject enemy in enemies)
         {
             if (enemy != null && enemy.GetComponent<EnemyBase>() != null)

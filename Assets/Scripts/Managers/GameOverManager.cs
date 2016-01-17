@@ -59,9 +59,11 @@ public class GameOverManager : MonoBehaviour {
 
 	public void GiveUp()
 	{
-		giveUp = true;
-		string dramaText = outText;
-		dramaText += "You didn't have enough... DETERMINATION.";
-		StartCoroutine(DramaticText (dramaText));
+		if (!giveUp) {
+			giveUp = true;
+			string dramaText = outText;
+			dramaText += "You didn't have enough... DETERMINATION.";
+			StartCoroutine (DramaticText (dramaText));
+		}
 	}
 }

@@ -8,7 +8,11 @@ public class Enemy : Character {
     public void Awake()
     {
         level = GameObject.Find("LevelManager").GetComponent<LevelManager>();
-        level.addToEnemies(this.gameObject);
+        if (!level.addToEnemies(this.gameObject))
+        {
+            GameObject.Destroy(this.gameObject);
+        }
+
         Debug.Log("i'm awake");
 
     }
