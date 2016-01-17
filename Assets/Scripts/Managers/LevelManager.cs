@@ -8,7 +8,7 @@ public class LevelManager : Base
     public int req_artifacts;
     public int artifacts;
     public int guilt;
-    public string leveltoload;
+    public int leveltoload;
 
     public int[,] tileTypes;
     public GameObject[,] tileObjects;
@@ -18,6 +18,7 @@ public class LevelManager : Base
     public GameObject[] tileType;
     public int[] depletedVersion;
 
+    public List<int>[] randomLevelLayout;
     public List<int>[] randomSectionLayout;
     public List<int>[] randomSectionLayoutFrequency;
 
@@ -109,9 +110,20 @@ public class LevelManager : Base
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(Application.dataPath + "/Levels/Section");
         LoadRandomSectionLayout(Application.dataPath + "/Levels/RandomSectionTypes.txt");
-        if (leveltoload != "") {
-            LoadLevel(Application.dataPath + "/Levels/Level" + leveltoload + ".txt");
-            GenerateLevel();
+        LoadRandomLevelLayout(Application.dataPath + "/Levels/RandomLevelTypes.txt");
+        if (leveltoload != 0) {
+            int loadingLevel = leveltoload;
+            if (loadingLevel < 0) {
+                List<int> levelPool = randomLevelLayout[-loadingLevel];
+                loadingLevel = levelPool[Random.Range(0, levelPool.Count)];
+                LoadLevel(Application.dataPath + "/Levels/Level" + loadingLevel + ".txt");
+                GenerateLevel(true);
+            } else {
+                LoadLevel(Application.dataPath + "/Levels/Level" + loadingLevel + ".txt");
+                GenerateLevel(false);
+            }
+            
+            
         }
         InvokeRepeating("tickEnimies", 1.0f, 1.0f);
     }
@@ -148,7 +160,7 @@ public class LevelManager : Base
     {
         WriteText("Congratulations!");
         LoadLevel(Application.dataPath + "/Levels/Level" + 2 + ".txt");
-        GenerateLevel();
+        GenerateLevel(true);
 	}
 	
 	
@@ -179,10 +191,13 @@ public class LevelManager : Base
 
     void LoadSection(string sectionFileName, int sectionNum)
     {
+        
         StreamReader input = new StreamReader(sectionFileName);
-        for (uint i = 0; i < sectionSize; ++i) {
-            for (uint j = 0; j < sectionSize; ++j) {
-                section[sectionNum, j, sectionSize - i - 1] = ReadNextNumber(input);
+        for (int i = 0; i < sectionSize; ++i) {
+            for (int j = 0; j < sectionSize; ++j) {
+                int posX = j;
+                int posY = sectionSize - i - 1;
+                section[sectionNum, posX, posY] = ReadNextNumber(input);
             }
         }
     }
@@ -196,8 +211,6 @@ public class LevelManager : Base
         int next = ReadNextNumber(input);
         for (int i = 1; i < numberRandomSectionTypes; ++i) {
             int sectionID = -next;
-            print(i);
-            print(sectionID);
             randomSectionLayout[sectionID] = new List<int>();
             randomSectionLayoutFrequency[sectionID] = new List<int>();
             next = ReadNextNumber(input);
@@ -205,6 +218,23 @@ public class LevelManager : Base
                 randomSectionLayout[sectionID].Add(next);
                 next = ReadNextNumber(input);
                 randomSectionLayoutFrequency[sectionID].Add(next);
+                next = ReadNextNumber(input);
+            }
+        }
+    }
+
+    void LoadRandomLevelLayout(string fileName)
+    {
+        StreamReader input = new StreamReader(fileName);
+        int numberRandomLevels = ReadNextNumber(input) + 1;
+        randomLevelLayout = new List<int>[numberRandomLevels];
+        int next = ReadNextNumber(input);
+        for (int i = 1; i < numberRandomLevels; ++i) {
+            int levelID = -next;
+            randomLevelLayout[levelID] = new List<int>();
+            next = ReadNextNumber(input);
+            while (next > 0) {
+                randomLevelLayout[levelID].Add(next);
                 next = ReadNextNumber(input);
             }
         }
@@ -337,24 +367,51 @@ public class LevelManager : Base
     }
 
     // ============================================= Level Generation =============================================//
-    void GenerateLevel()
+    void GenerateLevel(bool rotateRandomly)
     {
         for (int i = 0; i < levelWidth; ++i) {
             for (int j = 0; j < levelHeight; ++j) {
-                GenerateSection(i * sectionSize, j * sectionSize, level[i, j]);
+                GenerateSection(i * sectionSize, j * sectionSize, level[i, j], rotateRandomly);
             }
         }
     }
-    
-    void GenerateSection(int tilePositionX, int tilePositionY, int sectionNum)
+
+    // Some awesome dude on Stack Overflow wrote this cool rotate function.
+    static int[,] RotateMatrix(int[,] matrix, int n)
     {
+        int[,] ret = new int[n, n];
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                ret[i, j] = matrix[n - j - 1, i];
+            }
+        }
+
+        return ret;
+    }
+
+    void GenerateSection(int tilePositionX, int tilePositionY, int sectionNum, bool rotateRandomly)
+    {
+        int[,] sectionTiles = new int[sectionSize, sectionSize];
+        for (int i = 0; i < sectionSize; ++i) {
+            for (int j = 0; j < sectionSize; ++j) {
+                sectionTiles[i, j] = section[sectionNum, i, j];
+            }
+        }
+
+        if (rotateRandomly) {
+            int numRotations = Random.Range(0, 4);
+            print("rotating " + numRotations + " times");
+            for (int i = 0; i < numRotations; ++i) {
+                sectionTiles = RotateMatrix(sectionTiles, sectionSize);
+            }
+        }
+
         for (int i = 0; i < sectionSize; ++i) {
             for (int j = 0; j < sectionSize; ++j) {
                 int posX = tilePositionX + i;
                 int posY = tilePositionY + j;
-                print(posX);
-                print(posY);
-                SetTile(posX, posY, section[sectionNum, i, j]);
+                SetTile(posX, posY, sectionTiles[i, j]);
             }
         }
     }
