@@ -181,10 +181,14 @@ public class LevelManager : Base
         {
             if (IsTileWater(tileHit))
             {
-                gameObject.GetComponent<Player>().water += 200;
+                playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", distance.y > 0);
+                playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", distance.y < 0);
+                playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", distance.x < 0);
+                playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", distance.x > 0);
+                player.water += 200;
                 WriteText("You take a hearty gulp, hoping that it's not poisoned.");
             }
-            else if (IsTileCamp(tileHit) && artifacts == req_artifacts)
+            else if (IsTileCamp(tileHit) && artifacts >= req_artifacts)
             {
                 EndLevel();
                 return;
@@ -193,11 +197,8 @@ public class LevelManager : Base
             {
                 return;
             }
-            SetTileDepleted(distance);
-            playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", distance.y > 0);
-            playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", distance.y < 0);
-            playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", distance.x < 0);
-            playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", distance.x > 0);
+            SetTileDepleted(tileHit);
+            return;
         }
     }
 
@@ -222,6 +223,11 @@ public class LevelManager : Base
 
 	public override void BaseUpdate(float dt)
     {
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", false);
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", false);
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", false);
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", false);
+
 		if (PauseMenu != null && Input.GetKeyUp (menuKey) && (!GameOverMenu.activeSelf) && (!ShopMenu.activeSelf))
 		{
 			UpdateMenu();
