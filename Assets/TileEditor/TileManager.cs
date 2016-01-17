@@ -12,6 +12,7 @@ public class TileManager : TileEditorBase
     public GameObject[,] tilePickers;
     public float section;
     public int currentSectionNum;
+    public int tileToPaint;
 
     public ExpandingChildren shownExpanding;
     public int[,] tileIDs;
@@ -68,7 +69,10 @@ public class TileManager : TileEditorBase
 
                     if (renderer) {
                         tilePickers[i, j].GetComponent<ExpandingChildren>().shownPickup.GetComponent<SpriteRenderer>().sprite = renderer.sprite;
+                        tilePickers[i, j].GetComponent<ExpandingChildren>().shownPickup.SetActive(true);
                     }
+                } else {
+                    tilePickers[i, j].GetComponent<ExpandingChildren>().shownPickup.SetActive(false);
                 }
             }
         }
