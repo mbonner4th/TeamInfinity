@@ -42,6 +42,19 @@ public class LevelManager : MonoBehaviour
         return tiles[tileTypes[posX, posY]];
     }
 
+    public bool IsTileWater(Vector3 position)
+    {
+        Vector3 tilePos = position - startPosition;
+        tilePos /= tileSpacing;
+        int posX = Mathf.RoundToInt(tilePos.x);
+        int posY = Mathf.RoundToInt(tilePos.y);
+
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1)) {
+            return false;
+        }
+        return tileTypes[posX, posY] == 2;
+    }
+
     void Start()
     {
         numSectionTypes = 3;

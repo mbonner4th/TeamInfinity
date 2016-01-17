@@ -50,6 +50,16 @@ public class Player : Character
 			bulletRb.AddForce(go.transform.up * 1000.0f);
 		}
 
+        if (water == 0)
+        {
+            health -= 1;
+            WriteText("You're dehydrating!");
+        }
+        else
+        {
+            water -= 1;
+        }
+
 		// Update all the relevant gauges and status displays with the current values
 		healthBar.value = health;
 		waterBar.value = water;
