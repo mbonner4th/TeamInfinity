@@ -58,7 +58,7 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        numSectionTypes = 9;
+        numSectionTypes = 35;
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(Application.dataPath + "/Levels/Section");
@@ -107,6 +107,7 @@ public class LevelManager : MonoBehaviour
 
     void LoadSection(string sectionFileName, int sectionNum)
     {
+        print(sectionNum);
         StreamReader input = new StreamReader(sectionFileName);
         for (uint i = 0; i < sectionSize; ++i) {
             for (uint j = 0; j < sectionSize; ++j) {
