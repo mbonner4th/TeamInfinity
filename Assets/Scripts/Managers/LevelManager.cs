@@ -36,6 +36,7 @@ public class LevelManager : Base
     public bool gamePaused = false;
     public GameObject PauseMenu;
 	public GameObject GameOverMenu;
+	public GameObject ShopMenu;
 
     
     public System.Collections.Generic.List<GameObject> enemies;
@@ -126,7 +127,7 @@ public class LevelManager : Base
 
 	public override void BaseUpdate(float dt)
     {
-		if (PauseMenu != null && Input.GetKeyUp (menuKey)) 
+		if (PauseMenu != null && Input.GetKeyUp (menuKey) && (!GameOverMenu.activeSelf) && (!ShopMenu.activeSelf)) 
 		{
 			UpdateMenu();
 		}
@@ -152,12 +153,17 @@ public class LevelManager : Base
     public void EndLevel()
     {
         WriteText("Congratulations!");
+		ShopMenu.SetActive (true);
+		Time.timeScale = 0;
+		gamePaused = true;
 	}
 	
 	
 	public void GameOver(Player lastPlayer)
 	{
 		if (!GameOverMenu.activeSelf) {
+			WriteText ("You died X(");
+
 			GameOverMenu.SetActive (true);
 			//Time.timeScale = 0;
 			gamePaused = true;
