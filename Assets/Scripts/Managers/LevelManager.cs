@@ -22,11 +22,14 @@ public class LevelManager : MonoBehaviour
     public float tileSpacing;
 
     public Vector3 startPosition;
-    public Vector2 bounds;
+
+    public KeyCode menuKey;
+    public bool gamePaused = false;
+    public GameObject GameMenu;
 
     public GameObject[,] tileObjects;
 
-    public int GetTile(Vector3 position)
+    public bool IsTileSolid(Vector3 position)
     {
         Vector3 tilePos = position - startPosition;
         tilePos /= tileSpacing;
@@ -34,9 +37,9 @@ public class LevelManager : MonoBehaviour
         int posY = Mathf.RoundToInt(tilePos.y);
 
         if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1)) {
-            return - 1;
+            return true;
         }
-        return tileTypes[posX, posY];
+        return tiles[tileTypes[posX, posY]];
     }
 
     void Start()
@@ -48,11 +51,6 @@ public class LevelManager : MonoBehaviour
         LoadLevel(Application.dataPath + "/Levels/Level", 1);
         GenerateLevel();
     }
-
-	public KeyCode menuKey;
-	public bool gamePaused = false;
-	public GameObject GameMenu;
-
 
 	void Update()
     {
@@ -80,6 +78,7 @@ public class LevelManager : MonoBehaviour
 
 	public void ExitToMainMenu()
 	{
+        print("ExitToMainMenu");
 		Application.LoadLevel ("MainMenu");
 		Time.timeScale = 1.0f;
 		gamePaused = false;

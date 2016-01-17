@@ -16,13 +16,11 @@ public class Movement : Base
     public override void BaseUpdate(float dt)
     {
         if (Input.GetKeyDown(forward)) {
-            int tile = level.GetTile(transform.position + speed * axis);
-            if (tile != -1 && !level.tiles[tile]) {
+            if (!level.IsTileSolid(transform.position + speed * axis)) {
                 transform.Translate(speed * axis);
             }
         } else if (Input.GetKeyDown(backward)) {
-            int tile = level.GetTile(transform.position - speed * axis);
-            if (tile != -1 && !level.tiles[tile]) {
+            if (!level.IsTileSolid(transform.position - speed * axis)) {
                 transform.Translate(-speed * axis);
             }
         }
