@@ -16,7 +16,14 @@ public class SimpleEnemyMovement : EnemyBase {
         yAxis = new Vector3(0, 1, 0);
         possiblePaths = new Vector4(0, 0, 0, 0);
         //^Use this
-        speed = 1;
+        if (viewDistance == 0)
+        {
+            viewDistance = 10;
+        }
+        if (speed == 0)
+        {
+            speed = 1;
+        }
     }
 
     public override void BaseUpdate(float dt)
@@ -30,71 +37,63 @@ public class SimpleEnemyMovement : EnemyBase {
     public override void tickEnemy()
     {
         base.tickEnemy();
-        checkPossiblePath();
         moveEnemy();
     }
 
-    private void checkPossiblePath()
-    {
-        possiblePaths = new Vector4(
-            !level.IsTileSolid(transform.position + (-speed * xAxis)) ? 1 : 0,
-            !level.IsTileSolid(transform.position + (speed * xAxis)) ? 1 : 0,
-            !level.IsTileSolid(transform.position + (-speed * yAxis)) ? 1 : 0,
-            !level.IsTileSolid(transform.position + (speed * yAxis)) ? 1 : 0
-            );
-    }
 
     public override void moveEnemy()
     {
-        base.tickEnemy();
+        base.moveEnemy();
+        //TryToMoveCharacter(Vector3 distance, Character characterToMove);
        
-        //Debug.Log(enemy.transform.position);
+       // //Debug.Log(enemy.transform.position);
         playerDistance = transform.position - playerObject.transform.position;
-      
-       // Debug.Log(playerDistance);
-        print("move left " + "\nmove right "+"\nmove up "+"\nmove down ");
+        
+
 
         if (Mathf.Abs(playerDistance.x) >= 2)
         {
+            print("far side");
             //print(Mathf.Abs(playerDistance.x));
-            if (playerDistance.x > 0 && !level.IsTileSolid(transform.position  + (-speed * xAxis)))
-            { 
+            if (playerDistance.x > 0 && !level.IsTileSolid(transform.position + (-speed * xAxis)))
+            {
                 //move left      
                 print("move left");
-                transform.Translate(-speed * xAxis);
+                level.TryToMoveCharacter((-speed * xAxis), gameObject.GetComponent<Enemy>());
+                //transform.Translate(-speed * xAxis);
             }
             else if (playerDistance.x < 0 && !level.IsTileSolid(transform.position + (speed * xAxis)))
             {
                 //move right
                 print("move right");
-                transform.Translate(speed * xAxis);
+                level.TryToMoveCharacter((speed * xAxis), gameObject.GetComponent<Enemy>());
+                //transform.Translate(speed * xAxis);
 
             }
         }
         else if (Mathf.Abs(playerDistance.y) >= 2)
         {
+            print("far up");
             //print(Mathf.Abs(playerDistance.y));
             if (playerDistance.y > 0 && !level.IsTileSolid(transform.position + (-speed * yAxis)))
             {
                 //move down
                 print("move down");
-                transform.Translate(-speed * yAxis);
+                level.TryToMoveCharacter((-speed * yAxis), gameObject.GetComponent<Enemy>());
+                //transform.Translate(-speed * yAxis);
             }
             else if (playerDistance.y < 0 && !level.IsTileSolid(transform.position + (speed * yAxis)))
             {
                 //move up
                 print("move up");
-                transform.Translate(speed * yAxis);
+                level.TryToMoveCharacter((speed * yAxis), gameObject.GetComponent<Enemy>());
+                //transform.Translate(speed * yAxis);
             }
         }
         //check to see if you're stuck on the environment
-        else if ((level.IsTileSolid(transform.position + (-speed * yAxis)) && !level.IsTileSolid(transform.position + (speed * yAxis))) ||
-            (level.IsTileSolid(transform.position + (-speed * xAxis)) && level.IsTileSolid(transform.position  + (speed * xAxis))))
-        {
-
-        }
         else
         {
+            print("x distance = " + Mathf.Abs(playerDistance.x) + "y distance = " + Mathf.Abs(playerDistance.y));
             print("get hurt");
             hurtPlayer();
         }

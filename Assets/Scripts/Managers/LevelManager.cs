@@ -68,13 +68,20 @@ public class LevelManager : Base
         Character other = GetCharacter(GetTileByPosition(characterToMove.transform.position + distance));
         if (other != null)
         {
+            print("in the way");
             // do damage to other
+            //hit
         }
         else if (!IsTileSolid(characterToMove.transform.position + distance))
         {
+            print("can move");
             SetCharacter(GetTileByPosition(characterToMove.transform.position), null);
             characterToMove.transform.Translate(distance);
             SetCharacter(GetTileByPosition(characterToMove.transform.position), characterToMove);
+        }
+        else
+        {
+            print("can't move");
         }
     }
 
@@ -162,7 +169,7 @@ public class LevelManager : Base
 
     void Awake()
     {
-        numSectionTypes = 71;
+        numSectionTypes = 73;
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(Application.dataPath + "/Levels/Section");
@@ -498,17 +505,14 @@ public class LevelManager : Base
 
     public bool addToEnemies(GameObject enemy)
     {
-        print(GetCharacter(GetTileByPosition(enemy.transform.position)));
        if(GetCharacter(GetTileByPosition(enemy.transform.position)) == null){
             enemies.Add(enemy);
-            Debug.Log("added to enemies");
-            
-           
+            //Debug.Log("added to enemies");  
              SetCharacter(GetTileByPosition(enemy.transform.position), enemy.GetComponent<Enemy>());
              return true;
        }
        else{
-           print("sorry, you don't get to play");
+           //print("sorry, you don't get to play");
            return false;
        }
         
