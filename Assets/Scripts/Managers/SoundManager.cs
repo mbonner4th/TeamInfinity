@@ -7,7 +7,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySound(int index)
     {
-        print("playing sound?");
+        //print("playing sound?");
         GetComponent<AudioSource>().PlayOneShot(sounds[index]);
     }
 

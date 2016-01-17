@@ -14,11 +14,18 @@ public class Base : MonoBehaviour
     {
         level = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         playerObject = GameObject.Find("Player");
-        player = GameObject.Find("Player").GetComponent<Player>();
+        if (playerObject != null) {
+            player = GameObject.Find("Player").GetComponent<Player>();
+        }
+
+        GameObject camera = GameObject.Find("Main Camera");
+        if (camera != null) {
+            sound = camera.GetComponent<SoundManager>();
+        }
+
 		textBox = GameObject.Find("TextBox").GetComponent<Text>();
-        sound = GameObject.Find("Main Camera").GetComponent<SoundManager>();
         BaseStart();
-        print("playing sound!");
+        //print("playing sound!");
         sound.PlaySound(1);
 	}
 

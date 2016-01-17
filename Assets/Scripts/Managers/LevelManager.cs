@@ -8,16 +8,18 @@ public class LevelManager : Base
     public int req_artifacts;
     public int artifacts;
     public int guilt;
-    public string leveltoload;
+    public int leveltoload;
 
     public int[,] tileTypes;
     public GameObject[,] tileObjects;
+    public Character[,] tileCharacters;
     public GameObject[,] tilePickups;
     public bool[] tiles;
     public GameObject[] spawnObject;
     public GameObject[] tileType;
     public int[] depletedVersion;
 
+    public List<int>[] randomLevelLayout;
     public List<int>[] randomSectionLayout;
     public List<int>[] randomSectionLayoutFrequency;
 
@@ -34,20 +36,21 @@ public class LevelManager : Base
 
     public KeyCode menuKey;
     public bool gamePaused = false;
-	public GameObject MainUI;
-	public GameObject PauseMenu;
+    public GameObject MainUI;
+    public GameObject PauseMenu;
 	public GameObject GameOverMenu;
-	public GameObject ShopMenu;
+    public GameObject ShopMenu;
 
-	public int persHealth;
-	public int persWater;
-	public int persAmmo;
-	public int persMoney;
-	public int persDamage;
-	public int persMaxHealth;
-	public int persMaxWater;
-	
-	public System.Collections.Generic.List<GameObject> enemies;
+    public int persHealth;
+    public int persWater;
+    public int persAmmo;
+    public int persMoney;
+    public int persDamage;
+    public int persMaxHealth;
+    public int persMaxWater;
+    
+    public System.Collections.Generic.List<GameObject> enemies;
+    public Character[] characterList;
 
     public void SetTileDepleted(Vector3 position)
     {
@@ -67,6 +70,63 @@ public class LevelManager : Base
             int newVersion = depletedVersion[cntTileType];
             SetTile(posX, posY, newVersion);
         }
+    }
+
+    public void TryToMoveCharacter(Vector3 distance, Character characterToMove)
+    {
+        Character other = GetCharacter(GetTileByPosition(characterToMove.transform.position + distance));
+        if (other != null)
+        {
+
+            // do damage to other
+        }
+        else if (!IsTileSolid(characterToMove.transform.position + distance))
+        {
+            SetCharacter(GetTileByPosition(characterToMove.transform.position), null);
+            characterToMove.transform.Translate(distance);
+            SetCharacter(GetTileByPosition(characterToMove.transform.position), characterToMove);
+        }
+    }
+
+    public Character GetCharacter(Vector2 tilePosition)
+    {
+        int posX = Mathf.RoundToInt(tilePosition.x);
+        int posY = Mathf.RoundToInt(tilePosition.y);
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
+            return null;
+        }
+        print(posX + " " + posY);
+        Character temp = tileCharacters[posX, posY];
+        return tileCharacters[posX, posY];
+    }
+
+    public void SetCharacter(Vector2 tilePosition, Character characterToSet)
+    {
+        int posX = Mathf.RoundToInt(tilePosition.x);
+        int posY = Mathf.RoundToInt(tilePosition.y);
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
+            return;
+        }
+        print(tileCharacters);
+
+        tileCharacters[posX, posY] = characterToSet;
+    }
+
+
+    public Vector2 GetTileByPosition(Vector3 position)
+    {
+        Vector3 tilePos = position - startPosition;
+        tilePos /= tileSpacing;
+        int posX = Mathf.RoundToInt(tilePos.x);
+        int posY = Mathf.RoundToInt(tilePos.y);
+
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
+            return new Vector2(-1.0f, -1.0f);
+        }
+        return new Vector2(posX * 1.0f, posY * 1.0f);
     }
 
     public bool IsTileSolid(Vector3 position)
@@ -111,6 +171,46 @@ public class LevelManager : Base
         return tileTypes[posX, posY] == 10;
     }
 
+    public bool IsTileOutOfBounds(Vector3 position)
+    {
+        Vector3 tilePos = position - startPosition;
+        tilePos /= tileSpacing;
+        int posX = Mathf.RoundToInt(tilePos.x);
+        int posY = Mathf.RoundToInt(tilePos.y);
+
+        return (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1));
+    }
+
+    public void MovePlayer(Vector3 distance)
+    {
+        Vector3 tileHit = player.transform.position + distance;
+        TryToMoveCharacter(distance, player);
+
+        if (IsTileSolid(tileHit))
+        {
+            if (IsTileWater(tileHit))
+            {
+                playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", distance.y > 0);
+                playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", distance.y < 0);
+                playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", distance.x < 0);
+                playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", distance.x > 0);
+                player.water += 200;
+                WriteText("You take a hearty gulp, hoping that it's not poisoned.");
+            }
+            else if (IsTileCamp(tileHit) && artifacts >= req_artifacts)
+            {
+                EndLevel();
+                return;
+            }
+            else if (IsTileOutOfBounds(tileHit))
+            {
+                return;
+            }
+            SetTileDepleted(tileHit);
+            return;
+        }
+    }
+
     void Awake()
     {
         numSectionTypes = 71;
@@ -118,11 +218,24 @@ public class LevelManager : Base
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(Application.dataPath + "/Levels/Section");
         LoadRandomSectionLayout(Application.dataPath + "/Levels/RandomSectionTypes.txt");
-        if (leveltoload != "") {
-            LoadLevel(Application.dataPath + "/Levels/Level" + leveltoload + ".txt");
-            GenerateLevel();
+        LoadRandomLevelLayout(Application.dataPath + "/Levels/RandomLevelTypes.txt");
+        if (leveltoload != 0) {
+            int loadingLevel = leveltoload;
+            if (loadingLevel < 0) {
+                List<int> levelPool = randomLevelLayout[-loadingLevel];
+                loadingLevel = levelPool[Random.Range(0, levelPool.Count)];
+                LoadLevel(Application.dataPath + "/Levels/Level" + loadingLevel + ".txt");
+                GenerateLevel(true);
+            } else {
+                LoadLevel(Application.dataPath + "/Levels/Level" + loadingLevel + ".txt");
+                GenerateLevel(false);
+            }
+            
+            
         }
         InvokeRepeating("tickEnimies", 1.0f, 1.0f);
+        characterList = GameObject.FindObjectsOfType(typeof(Character)) as Character[];
+        //print(characterList.Length);
     }
 
 
@@ -130,6 +243,11 @@ public class LevelManager : Base
 
 	public override void BaseUpdate(float dt)
     {
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", false);
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", false);
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", false);
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", false);
+
 		if (PauseMenu != null && Input.GetKeyUp (menuKey) && (!GameOverMenu.activeSelf) && (!ShopMenu.activeSelf))
 		{
 			UpdateMenu();
@@ -153,56 +271,58 @@ public class LevelManager : Base
 		}
 	}
 
-	public void RestartLevel()
-	{
-		GameOverMenu.SetActive (false);
-		Time.timeScale = 1.0f;
-		gamePaused = false;
-		LoadLevel(Application.dataPath + "/Levels/Level" + leveltoload + ".txt");
-		GenerateLevel();
-	}
+    public void RestartLevel()
+    {
+        GameOverMenu.SetActive(false);
+        Time.timeScale = 1.0f;
+        gamePaused = false;
+        LoadLevel(Application.dataPath + "/Levels/Level" + leveltoload + ".txt");
+        GenerateLevel();
+    }
 
-	public void NextLevel()
-	{
-		ShopMenu.SetActive (false);
-		MainUI.SetActive (true);
-		Time.timeScale = 1.0f;
-		gamePaused = false;
+    public void NextLevel()
+    {
+        ShopMenu.SetActive(false);
+        MainUI.SetActive(true);
+        Time.timeScale = 1.0f;
+        gamePaused = false;
 
-		persHealth = player.health;
-		persWater = player.water;
-		persAmmo = player.ammo;
-		persMoney = player.money;
-		persDamage = player.damage;
-		persMaxHealth = player.maxHealth;
-		persMaxWater = player.maxWater;
+        persHealth = player.health;
+        persWater = player.water;
+        persAmmo = player.ammo;
+        persMoney = player.money;
+        persDamage = player.damage;
+        persMaxHealth = player.maxHealth;
+        persMaxWater = player.maxWater;
 
-		LoadLevel(Application.dataPath + "/Levels/Level" + (leveltoload+1) + ".txt");
-		GenerateLevel();
-	}
+        LoadLevel(Application.dataPath + "/Levels/Level" + (leveltoload + 1) + ".txt");
+        GenerateLevel();
+    }
 
     public void EndLevel()
     {
-		if (!ShopMenu.activeSelf) {
-			ShopMenu.SetActive (true);
-			ShopMenu.GetComponent<ShopManager>().PrepareShop(player);
-			WriteText ("\n\n\n\n");
-			MainUI.SetActive (false);
-			Time.timeScale = 0;
-			gamePaused = true;
-		}
-	}
-	
-	
-	public void GameOver(Player lastPlayer)
-	{
-		if (!GameOverMenu.activeSelf) {
-			GameOverMenu.SetActive (true);
-			//Time.timeScale = 0;
-			gamePaused = true;
-			GameOverMenu.GetComponent<GameOverManager>().GameOver (lastPlayer, guilt, artifacts);
-		}
-	}
+        if (!ShopMenu.activeSelf)
+        {
+            ShopMenu.SetActive(true);
+            ShopMenu.GetComponent<ShopManager>().PrepareShop(player);
+            WriteText("\n\n\n\n");
+            MainUI.SetActive(false);
+            Time.timeScale = 0;
+            gamePaused = true;
+        }
+    }
+
+
+    public void GameOver(Player lastPlayer)
+    {
+        if (!GameOverMenu.activeSelf)
+        {
+            GameOverMenu.SetActive(true);
+            //Time.timeScale = 0;
+            gamePaused = true;
+            GameOverMenu.GetComponent<GameOverManager>().GameOver(lastPlayer, guilt, artifacts);
+        }
+    }
 
 	public void ExitToMainMenu()
 	{
@@ -212,16 +332,16 @@ public class LevelManager : Base
 		Application.LoadLevel ("MainMenu");
 	}
 
-	public void ReloadPlayerAtts()
-	{
-		player.health = persHealth;
-		player.water = persWater;
-		player.ammo = persAmmo;
-		player.money = persMoney;
-		player.damage = persDamage;
-		player.maxHealth = persMaxHealth;
-		player.maxWater = persMaxWater;
-	}
+    public void ReloadPlayerAtts()
+    {
+        player.health = persHealth;
+        player.water = persWater;
+        player.ammo = persAmmo;
+        player.money = persMoney;
+        player.damage = persDamage;
+        player.maxHealth = persMaxHealth;
+        player.maxWater = persMaxWater;
+    }
     
     void LoadSections(string fileNameBase)
     {
@@ -232,10 +352,13 @@ public class LevelManager : Base
 
     void LoadSection(string sectionFileName, int sectionNum)
     {
+        
         StreamReader input = new StreamReader(sectionFileName);
-        for (uint i = 0; i < sectionSize; ++i) {
-            for (uint j = 0; j < sectionSize; ++j) {
-                section[sectionNum, j, sectionSize - i - 1] = ReadNextNumber(input);
+        for (int i = 0; i < sectionSize; ++i) {
+            for (int j = 0; j < sectionSize; ++j) {
+                int posX = j;
+                int posY = sectionSize - i - 1;
+                section[sectionNum, posX, posY] = ReadNextNumber(input);
             }
         }
     }
@@ -248,16 +371,30 @@ public class LevelManager : Base
         randomSectionLayoutFrequency = new List<int>[numberRandomSectionTypes];
         int next = ReadNextNumber(input);
         for (int i = 1; i < numberRandomSectionTypes; ++i) {
-            int sectionID = -next;
-            print(i);
-            print(sectionID);
-            randomSectionLayout[sectionID] = new List<int>();
+            int sectionID = -next;            randomSectionLayout[sectionID] = new List<int>();
             randomSectionLayoutFrequency[sectionID] = new List<int>();
             next = ReadNextNumber(input);
             while (next > 0) {
                 randomSectionLayout[sectionID].Add(next);
                 next = ReadNextNumber(input);
                 randomSectionLayoutFrequency[sectionID].Add(next);
+                next = ReadNextNumber(input);
+            }
+        }
+    }
+
+    void LoadRandomLevelLayout(string fileName)
+    {
+        StreamReader input = new StreamReader(fileName);
+        int numberRandomLevels = ReadNextNumber(input) + 1;
+        randomLevelLayout = new List<int>[numberRandomLevels];
+        int next = ReadNextNumber(input);
+        for (int i = 1; i < numberRandomLevels; ++i) {
+            int levelID = -next;
+            randomLevelLayout[levelID] = new List<int>();
+            next = ReadNextNumber(input);
+            while (next > 0) {
+                randomLevelLayout[levelID].Add(next);
                 next = ReadNextNumber(input);
             }
         }
@@ -342,10 +479,16 @@ public class LevelManager : Base
                 }
             }
         }
+
+
         
         tileObjects = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
         tilePickups = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
+        tileCharacters = new Character[levelWidth * sectionSize, levelHeight * sectionSize];
         tileTypes = new int[levelWidth * sectionSize, levelHeight * sectionSize];
+        
+
+
     }
 
     public int SelectRandomSection(int sectionType)
@@ -390,25 +533,51 @@ public class LevelManager : Base
     }
 
     // ============================================= Level Generation =============================================//
-    void GenerateLevel()
+    void GenerateLevel(bool rotateRandomly)
     {
         for (int i = 0; i < levelWidth; ++i) {
             for (int j = 0; j < levelHeight; ++j) {
-                GenerateSection(i * sectionSize, j * sectionSize, level[i, j]);
+                GenerateSection(i * sectionSize, j * sectionSize, level[i, j], rotateRandomly);
             }
         }
     }
-    
-    void GenerateSection(int tilePositionX, int tilePositionY, int sectionNum)
+
+    // Some awesome dude on Stack Overflow wrote this cool rotate function.
+    static int[,] RotateMatrix(int[,] matrix, int n)
     {
+        int[,] ret = new int[n, n];
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                ret[i, j] = matrix[n - j - 1, i];
+            }
+        }
+
+        return ret;
+    }
+
+    void GenerateSection(int tilePositionX, int tilePositionY, int sectionNum, bool rotateRandomly)
+    {
+        int[,] sectionTiles = new int[sectionSize, sectionSize];
+        for (int i = 0; i < sectionSize; ++i) {
+            for (int j = 0; j < sectionSize; ++j) {
+                sectionTiles[i, j] = section[sectionNum, i, j];
+            }
+        }
+
+        if (rotateRandomly) {
+            int numRotations = Random.Range(0, 4);
+            print("rotating " + numRotations + " times");
+            for (int i = 0; i < numRotations; ++i) {
+                sectionTiles = RotateMatrix(sectionTiles, sectionSize);
+            }
+        }
+
         for (int i = 0; i < sectionSize; ++i) {
             for (int j = 0; j < sectionSize; ++j) {
                 int posX = tilePositionX + i;
                 int posY = tilePositionY + j;
-                print(posX);
-                print(posY);
-                SetTile(posX, posY, section[sectionNum, i, j]);
-            }
+                SetTile(posX, posY, section[sectionNum, i, j]);            }
         }
     }
 
@@ -479,10 +648,22 @@ public class LevelManager : Base
         guilt -= intensity;
     }
 
-    public void addToEnemies(GameObject enemy)
+    public bool addToEnemies(GameObject enemy)
     {
-        //Debug.Log("added to enemies");
-        enemies.Add(enemy);
+        print(GetCharacter(GetTileByPosition(enemy.transform.position)));
+       if(GetCharacter(GetTileByPosition(enemy.transform.position)) == null){
+            enemies.Add(enemy);
+            Debug.Log("added to enemies");
+            
+           
+             SetCharacter(GetTileByPosition(enemy.transform.position), enemy.GetComponent<Enemy>());
+             return true;
+       }
+       else{
+           print("sorry, you don't get to play");
+           return false;
+       }
+        
     }
 
     public void tickEnimies()
