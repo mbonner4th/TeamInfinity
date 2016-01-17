@@ -17,7 +17,12 @@ public class Movement : Base
 
     public override void BaseUpdate(float dt)
     {
-        bool movingForward = false;
+		if (level.gamePaused) {
+			// don't do anything if the game is paused
+			return;
+		}
+
+		bool movingForward = false;
         bool movingBackward = false;
         if (Input.GetKeyDown(forward))
         {
