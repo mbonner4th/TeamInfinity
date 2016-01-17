@@ -6,6 +6,7 @@ public class Player : Character
 {
 	public int water;
     public int ammo;
+	public int money = 0;
 	public int maxHealth = 1000;
 	public int maxWater = 1000;
 

@@ -116,7 +116,10 @@ public class LevelManager : Base
         InvokeRepeating("tickEnimies", 1.0f, 1.0f);
     }
 
-    public override void BaseUpdate(float dt)
+
+
+
+	public override void BaseUpdate(float dt)
     {
 		if (PauseMenu != null && Input.GetKeyUp (menuKey)) 
 		{
@@ -153,33 +156,18 @@ public class LevelManager : Base
 	{
 		if (!GameOverMenu.activeSelf) {
 			GameOverMenu.SetActive (true);
-			Time.timeScale = 0;
+			//Time.timeScale = 0;
 			gamePaused = true;
-			
-			if (lastPlayer.water == 0) {
-				WriteText ("You didn't have enough water.");
-			}
-			if (lastPlayer.health == 0) {
-				WriteText ("You didn't have enough food.");
-			}
-			if (lastPlayer.ammo == 0) {
-				WriteText ("You didn't have enough rocks.");
-			}
-			if (guilt >= 10) {
-				WriteText ("You didn't have enough love.");
-			}
-			if (artifacts == 0) {
-				WriteText ("You didn't have enough artifacts.");
-			}
+			GameOverMenu.GetComponent<GameOverManager>().GameOver (lastPlayer, guilt, artifacts);
 		}
 	}
 
 	public void ExitToMainMenu()
 	{
-        print("ExitToMainMenu");
-		Application.LoadLevel ("MainMenu");
+		//print("ExitToMainMenu");
 		Time.timeScale = 1.0f;
 		gamePaused = false;
+		Application.LoadLevel ("MainMenu");
 	}
     
     void LoadSections(string fileNameBase)
