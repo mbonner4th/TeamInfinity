@@ -89,7 +89,7 @@ public class Player : Character
         else if (other.type == 2)
         {
             health += other.intensity;
-			WriteText("Picked up " + health + " health!");
+			WriteText("Picked up " + other.intensity + " health!");
             sound.PlaySound(1);
         }
         else if (other.type == 3)
@@ -101,7 +101,7 @@ public class Player : Character
         else if (other.type == 4)
         {
             ammo += other.intensity;
-			WriteText("Picked up ammo!");
+			WriteText("Picked up " + other.intensity + " rocks!");
             sound.PlaySound(1);
         }
         else if (other.type == 5)
