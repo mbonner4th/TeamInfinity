@@ -226,8 +226,7 @@ public class LevelManager : Base
 
     void Awake()
     {
-   
-        numSectionTypes = 160;
+        numSectionTypes = 210;
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(Application.dataPath + "/Levels/Section");
@@ -256,10 +255,12 @@ public class LevelManager : Base
 
 	public override void BaseUpdate(float dt)
     {
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", false);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", false);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", false);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", false);
+        if (playerObject) {
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", false);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", false);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", false);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", false);
+        }
 
 		if (PauseMenu != null && Input.GetKeyUp (menuKey) && (!GameOverMenu.activeSelf) && (!ShopMenu.activeSelf))
 		{
