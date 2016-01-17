@@ -211,6 +211,8 @@ public class LevelManager : Base
         int next = ReadNextNumber(input);
         for (int i = 1; i < numberRandomSectionTypes; ++i) {
             int sectionID = -next;
+            print(i);
+            print(sectionID);
             randomSectionLayout[sectionID] = new List<int>();
             randomSectionLayoutFrequency[sectionID] = new List<int>();
             next = ReadNextNumber(input);
@@ -320,7 +322,7 @@ public class LevelManager : Base
             if (c == '\r') {
                 input.Read();
                 break;
-            } else if (c == '\n' || c == ' ') {
+            } else if (c == '\n' || c == ' ' || c == '\t') {
                 break;
             }
 
