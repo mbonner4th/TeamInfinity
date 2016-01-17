@@ -3,8 +3,8 @@ using System.Collections;
 
 public class Clickable : TileEditorBase
 {
-    public float hitWidth = 1.0f;
-    public float hitHeight = 1.0f;
+    public float hitWidth = 45.0f;
+    public float hitHeight = 45.0f;
 
 	// Use this for initialization
 	void Start()
