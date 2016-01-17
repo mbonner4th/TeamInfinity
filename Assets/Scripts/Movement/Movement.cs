@@ -1,24 +1,30 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Movement : MonoBehaviour
+public class Movement : Base
 {
     public KeyCode forward;
     public KeyCode backward;
     public Vector3 axis;
-    public uint speed;
+    public float speed;
 
-    void Start()
+    public override void BaseStart()
     {
 
     }
 
-    void Update()
+    public override void BaseUpdate(float dt)
     {
         if (Input.GetKeyDown(forward)) {
-            transform.Translate(speed * axis);
+            int tile = level.GetTile(transform.position + speed * axis);
+            if (tile != -1 && !level.tiles[tile]) {
+                transform.Translate(speed * axis);
+            }
         } else if (Input.GetKeyDown(backward)) {
-            transform.Translate(-speed * axis);
+            int tile = level.GetTile(transform.position - speed * axis);
+            if (tile != -1 && !level.tiles[tile]) {
+                transform.Translate(-speed * axis);
+            }
         }
     }
 }

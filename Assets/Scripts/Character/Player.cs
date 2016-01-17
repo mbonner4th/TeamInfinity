@@ -9,7 +9,7 @@ public class Player : Character
 
 	public Slider waterBar;
 	public Slider healthBar;
-	public Text bulletDisp;
+	public Text ammoDisp;
 	public GameObject projectile;
 	public Ray2D mousePos;
 
@@ -18,7 +18,7 @@ public class Player : Character
 		base.BaseStart ();
 		healthBar = GameObject.Find("HealthSlider").GetComponent<Slider>();
 		waterBar = GameObject.Find("WaterSlider").GetComponent<Slider>();
-		bulletDisp = GameObject.Find("BulletDisplay").GetComponent<Text>();
+		ammoDisp = GameObject.Find("AmmoDisplay").GetComponent<Text>();
 	}
 
 	public override void OnCollision(Character other)
@@ -31,10 +31,15 @@ public class Player : Character
 	{
 		base.BaseUpdate (dt);
 
+		if (level.gamePaused) {
+			// don't do anything if the game is paused
+			return;
+		}
+
 		// Fire a bullet in the direction of the mouse when you click!
 		if (Input.GetMouseButtonDown (0) && ammo > 0) {
 			ammo--;
-			WriteText ("Pew! " + ammo + " bullets remaining!");
+			WriteText ("Pew! " + ammo + " ROCKS remaining!");
 			Vector3 pos = Input.mousePosition;
 			pos.z = transform.position.z - Camera.main.transform.position.z;
 			pos = Camera.main.ScreenToWorldPoint(pos);
@@ -48,7 +53,12 @@ public class Player : Character
 		// Update all the relevant gauges and status displays with the current values
 		healthBar.value = health;
 		waterBar.value = water;
-		bulletDisp.text = bulletDisp.text.Substring(0,bulletDisp.text.IndexOf('\n')+1) + "x" + ammo;
+		//ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + "x" + ammo;
+		string rocks = "";
+		for (int i=0; i<ammo; i++) {
+			rocks += "o";
+		}
+		ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + rocks;
 	}
 
     public override void OnPickup(Pickup other)
