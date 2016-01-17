@@ -3,7 +3,6 @@ using System.Collections;
 
 public class SimpleEnemyMovement : EnemyBase {
     
-    
     public override void BaseStart()
     {
         base.BaseStart();
@@ -17,12 +16,7 @@ public class SimpleEnemyMovement : EnemyBase {
     {
         //TODO delete when level manager is finished
         base.BaseUpdate(dt);
- 
-        if (prevPlayerPostion != playerObject.transform.position)
-        {
-            tickEnemy();
-            prevPlayerPostion = playerObject.transform.position;
-        }
+            //tickEnemy();
 
     }
 
@@ -35,29 +29,43 @@ public class SimpleEnemyMovement : EnemyBase {
     public override void moveEnemy()
     {
         base.tickEnemy();
- 
+       
         //Debug.Log(enemy.transform.position);
         playerDistance = transform.position - playerObject.transform.position;
+
+
+        if (Mathf.Abs(playerDistance.x) >= 1 && Mathf.Abs(playerDistance.y) >= 1)
+        {
+            if (playerDistance.x > 0)
+            {
+                Debug.Log(playerDistance);
+                transform.Translate(-speed * xAxis);
+            }
+            else if (playerDistance.x < 0)
+            {
+                transform.Translate(speed * xAxis);
+
+            }
+            else if (playerDistance.y > 0)
+            {
+                transform.Translate(-speed * yAxis);
+            }
+            else if (playerDistance.y < 0)
+            {
+                transform.Translate(speed * yAxis);
+            }
+        }
+        else
+        {
+            hurtPlayer();
+        }
+
+    }
+
+    public override void hurtPlayer()
+    {
+        player.health -= gameObject.GetComponent<Enemy>().damage;
         
-        if (playerDistance.x > 0)
-        {
-            Debug.Log(playerDistance);
-            transform.Translate(-speed* xAxis);
-        }
-        else if (playerDistance.x < 0)
-        {
-            transform.Translate(speed * xAxis);
-
-        }
-        else if (playerDistance.y > 0)
-        {
-            transform.Translate(-speed * yAxis);
-        }
-        else if (playerDistance.y < 0)
-        {
-            transform.Translate(speed * yAxis);
-        }     
-
     }
 
     public Vector3 getPlayerDistance()

@@ -11,6 +11,8 @@ public class EnemyBase : Base {
     public Vector3 prevPlayerPostion;
     public Vector3 playerDistance;
 
+
+
 	// Use this for initialization
     public override void BaseStart()
     {
@@ -39,6 +41,11 @@ public class EnemyBase : Base {
     }
 
     public virtual void moveEnemy()
+    {
+
+    }
+
+    public virtual void hurtPlayer()
     {
 
     }

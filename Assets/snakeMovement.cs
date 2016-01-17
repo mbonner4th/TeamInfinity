@@ -19,12 +19,8 @@ public class snakeMovement : EnemyBase
         //TODO delete when level manager is finished
         base.BaseUpdate(dt);
 
-        if (prevPlayerPostion != playerObject.transform.position)
-        {
-            //Debug.Log("called");
-            tickEnemy();
-            prevPlayerPostion = playerObject.transform.position;
-        }
+       
+       
 
     }
 
@@ -38,125 +34,146 @@ public class snakeMovement : EnemyBase
     {
         base.moveEnemy();
         Vector3 playerDistance = transform.position - playerObject.transform.position;
+       
 
-        if (Mathf.Abs(playerDistance.x) > Mathf.Abs(playerDistance.y) && Mathf.Abs(playerDistance.x) > 2)
+        if (Mathf.Abs(playerDistance.x) >= 1 && Mathf.Abs(playerDistance.y) >= 1)
         {
-            //side squiggle
-            Debug.Log("Side squliggle");
-            switch (movementTacker%5)
+
+            if (Mathf.Abs(playerDistance.x) > Mathf.Abs(playerDistance.y) && Mathf.Abs(playerDistance.x) > 2)
             {
-               
-                case 0:
-                    //forward
-                    if (playerDistance.x > 0)
-                    {
-                        transform.Translate(-speed * xAxis);
-                    }else{
-                        transform.Translate(speed * xAxis);
+                //side squiggle
+                Debug.Log("Side squliggle");
+                switch (movementTacker % 5)
+                {
 
-                    }
-                    movementTacker++;
-                    break;
-                case 1:
-                case 4:
-                    //up
-                    if (playerDistance.x > 0){
-                        transform.Translate(-speed * xAxis);
-                    }else{
-                        transform.Translate(speed * xAxis);
-                    }
-                    transform.Translate(speed* yAxis);
-                    movementTacker++;
-                    break;
-                case 2:
-                case 3:
-                    //down
-                    if (playerDistance.x > 0){
-                        transform.Translate(-speed * xAxis);
-                    }else{
-                        transform.Translate(speed * xAxis);
-                    }
-                    transform.Translate(-speed * yAxis);
-                    movementTacker++;
+                    case 0:
+                        //forward
+                        if (playerDistance.x > 0)
+                        {
+                            transform.Translate(-speed * xAxis);
+                        }
+                        else
+                        {
+                            transform.Translate(speed * xAxis);
 
-                    break;
+                        }
+                        movementTacker++;
+                        break;
+                    case 1:
+                    case 4:
+                        //up
+                        if (playerDistance.x > 0)
+                        {
+                            transform.Translate(-speed * xAxis);
+                        }
+                        else
+                        {
+                            transform.Translate(speed * xAxis);
+                        }
+                        transform.Translate(speed * yAxis);
+                        movementTacker++;
+                        break;
+                    case 2:
+                    case 3:
+                        //down
+                        if (playerDistance.x > 0)
+                        {
+                            transform.Translate(-speed * xAxis);
+                        }
+                        else
+                        {
+                            transform.Translate(speed * xAxis);
+                        }
+                        transform.Translate(-speed * yAxis);
+                        movementTacker++;
 
+                        break;
+
+                }
             }
-        }
-        else if (Mathf.Abs(playerDistance.y) > Mathf.Abs(playerDistance.x) && Mathf.Abs(playerDistance.y) > 2)
-        {
-            //up/down squiggle
-            Debug.Log("up/down squiggler");
-            switch (movementTacker % 5)
+            else if (Mathf.Abs(playerDistance.y) > Mathf.Abs(playerDistance.x) && Mathf.Abs(playerDistance.y) > 2)
             {
+                //up/down squiggle
+                Debug.Log("up/down squiggler");
+                switch (movementTacker % 5)
+                {
 
-                case 0:
-                    //forward
-                    if (playerDistance.y > 0)
-                    {
-                        transform.Translate(-speed * yAxis);
-                    }
-                    else
-                    {
-                        transform.Translate(speed * yAxis);
+                    case 0:
+                        //forward
+                        if (playerDistance.y > 0)
+                        {
+                            transform.Translate(-speed * yAxis);
+                        }
+                        else
+                        {
+                            transform.Translate(speed * yAxis);
 
-                    }
-                    movementTacker++;
-                    break;
-                case 1:
-                case 4:
-                    //up
-                    if (playerDistance.y > 0)
-                    {
-                        transform.Translate(-speed * yAxis);
-                    }
-                    else
-                    {
-                        transform.Translate(speed * yAxis);
-                    }
-                    transform.Translate(speed * xAxis);
-                    movementTacker++;
-                    break;
-                case 2:
-                case 3:
-                    //down
-                    if (playerDistance.y > 0)
-                    {
-                        transform.Translate(-speed * yAxis);
-                    }
-                    else
-                    {
-                        transform.Translate(speed * yAxis);
-                    }
+                        }
+                        movementTacker++;
+                        break;
+                    case 1:
+                    case 4:
+                        //up
+                        if (playerDistance.y > 0)
+                        {
+                            transform.Translate(-speed * yAxis);
+                        }
+                        else
+                        {
+                            transform.Translate(speed * yAxis);
+                        }
+                        transform.Translate(speed * xAxis);
+                        movementTacker++;
+                        break;
+                    case 2:
+                    case 3:
+                        //down
+                        if (playerDistance.y > 0)
+                        {
+                            transform.Translate(-speed * yAxis);
+                        }
+                        else
+                        {
+                            transform.Translate(speed * yAxis);
+                        }
+                        transform.Translate(-speed * xAxis);
+                        movementTacker++;
+
+                        break;
+
+                }
+            }
+            else
+            {
+                if (playerDistance.x > 0)
+                {
                     transform.Translate(-speed * xAxis);
-                    movementTacker++;
+                }
+                else if (playerDistance.x < 0)
+                {
+                    transform.Translate(speed * xAxis);
 
-                    break;
+                }
+                if (playerDistance.y > 0)
+                {
+                    transform.Translate(-speed * yAxis);
+                }
+                else if (playerDistance.y < 0)
+                {
+                    transform.Translate(speed * yAxis);
+                }
 
             }
         }
         else
         {
-            if (playerDistance.x > 0)
-            {
-                transform.Translate(-speed * xAxis);
-            }
-            else if (playerDistance.x < 0)
-            {
-                transform.Translate(speed * xAxis);
-
-            }
-            if (playerDistance.y > 0)
-            {
-                transform.Translate(-speed * yAxis);
-            }
-            else if (playerDistance.y < 0)
-            {
-                transform.Translate(speed * yAxis);
-            }  
-
+            hurtPlayer();
         }
+    }
 
-   
+    public override void hurtPlayer()
+    {
+        
+        //player.health -= GameObject.Find("Enemy");
     }
 }

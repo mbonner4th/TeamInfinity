@@ -5,6 +5,14 @@ public class Enemy : Character {
 
     public int damage = 1;
 
+    public void Awake()
+    {
+        level = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        level.addToEnemies(this.gameObject);
+        Debug.Log("i'm awake");
+
+    }
+
     public override void BaseStart()
     {
         base.BaseStart();
@@ -17,7 +25,8 @@ public class Enemy : Character {
 
 	public override void OnCollision(Character other)
     {
-        print("Player hit, Get him");
-		other.health -= damage;
+        //print("Player hit, Get him");
+		//other.health -= damage;
     }
+
 }

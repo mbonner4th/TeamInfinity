@@ -28,6 +28,7 @@ public class LevelManager : MonoBehaviour
     public GameObject GameMenu;
 
     public GameObject[,] tileObjects;
+    public System.Collections.Generic.List<GameObject> enemies;
 
     public bool IsTileSolid(Vector3 position)
     {
@@ -44,12 +45,14 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
+        
         numSectionTypes = 3;
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(Application.dataPath + "/Levels/Section");
         LoadLevel(Application.dataPath + "/Levels/Level", 1);
         GenerateLevel();
+        InvokeRepeating("tickEnimies", 1.0f, 1.0f);
     }
 
 	void Update()
@@ -58,6 +61,7 @@ public class LevelManager : MonoBehaviour
 		{
 			UpdateMenu();
 		}
+        //tickEnimies();
 	}
 
 	public void UpdateMenu()
@@ -251,4 +255,24 @@ public class LevelManager : MonoBehaviour
     {
         guilt -= intensity;
     }
+
+    public void addToEnemies(GameObject enemy)
+    {
+        //Debug.Log("added to enemies");
+        enemies.Add(enemy);
+    }
+
+    public void tickEnimies()
+    {
+        Debug.Log("ticked");
+        foreach (GameObject enemy in enemies)
+        {
+            if (enemy != null)
+            {
+                enemy.GetComponent<EnemyBase>().tickEnemy();
+            }
+            
+        }
+    }
+
 }
