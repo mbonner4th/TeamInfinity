@@ -101,7 +101,7 @@ public class LevelManager : Base
 
     void Awake()
     {
-        numSectionTypes = 35;
+        numSectionTypes = 71;
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(Application.dataPath + "/Levels/Section");
