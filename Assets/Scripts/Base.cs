@@ -18,7 +18,7 @@ public class Base : MonoBehaviour
 		textBox = GameObject.Find("TextBox").GetComponent<Text>();
         sound = GameObject.Find("Main Camera").GetComponent<SoundManager>();
         BaseStart();
-        print("playing sound!");
+        //print("playing sound!");
         sound.PlaySound(1);
 	}
 
