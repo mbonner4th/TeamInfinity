@@ -7,6 +7,7 @@ public class Player : Character
 	public int water;
     public int ammo;
 	public int money = 0;
+	public int damage = 50;
 	public int maxHealth = 1000;
 	public int maxWater = 1000;
 
@@ -46,6 +47,8 @@ public class Player : Character
 			Rigidbody2D bulletRb = go.GetComponent<Rigidbody2D>();
 			bulletRb.AddForce(go.transform.up * 1000.0f);
             sound.PlaySound(0);
+			Projectile newBullet = go.GetComponent<Projectile>();
+			newBullet.damage = damage;
 		}
 
         if (water == 0)
@@ -59,14 +62,15 @@ public class Player : Character
         }
 
 		// Update all the relevant gauges and status displays with the current values
-		healthBar.value = health;
-		waterBar.value = water;
-		//ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + "x" + ammo;
+		healthBar.value = health; healthBar.maxValue = maxHealth;
+		waterBar.value = water; waterBar.maxValue = maxWater;
+
 		string rocks = "";
 		for (int i=0; i<ammo; i++) {
 			rocks += "o";
 		}
 		ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + rocks;
+		//ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + "x" + ammo;
 
 		// Correct health and water if they're over the max
 		if(health > maxHealth){health=maxHealth;}

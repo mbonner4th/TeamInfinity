@@ -37,6 +37,7 @@ public class LevelManager : Base
     public bool gamePaused = false;
     public GameObject PauseMenu;
 	public GameObject GameOverMenu;
+	public GameObject ShopMenu;
 
     
     public System.Collections.Generic.List<GameObject> enemies;
@@ -176,7 +177,7 @@ public class LevelManager : Base
 
 	public override void BaseUpdate(float dt)
     {
-		if (PauseMenu != null && Input.GetKeyUp (menuKey)) 
+		if (PauseMenu != null && Input.GetKeyUp (menuKey) && (!GameOverMenu.activeSelf) && (!ShopMenu.activeSelf))
 		{
 			UpdateMenu();
 		}
@@ -204,6 +205,10 @@ public class LevelManager : Base
         WriteText("Congratulations!");
         LoadLevel(Application.dataPath + "/Levels/Level" + 2 + ".txt");
         GenerateLevel();
+
+		/*ShopMenu.SetActive (true);
+		Time.timeScale = 0;
+		gamePaused = true;*/
 	}
 	
 	
