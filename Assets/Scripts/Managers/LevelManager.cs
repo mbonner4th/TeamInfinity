@@ -12,6 +12,7 @@ public class LevelManager : Base
 
     public int[,] tileTypes;
     public GameObject[,] tileObjects;
+    public GameObject[,] tilePickups;
     public bool[] tiles;
     public GameObject[] spawnObject;
     public GameObject[] tileType;
@@ -52,14 +53,15 @@ public class LevelManager : Base
         }
 
         int cntTileType = tileTypes[posX, posY];
-        int depletedTile = 1;
         if (depletedVersion[cntTileType] != null)
         {
-            depletedTile = depletedVersion[cntTileType];            
+            int newVersion = depletedVersion[cntTileType];
+            if (tileObjects[posX, posY] == null) {
+                GameObject obj = tileObjects[posX, posY].gameObject;
+            }
+            tileObjects[posX, posY].GetComponent<SpriteRenderer>().sprite = tileType[newVersion].GetComponent<SpriteRenderer>().sprite;
+            tileTypes[posX, posY] = newVersion;
         }
-
-        tileObjects[posX, posY].GetComponent<SpriteRenderer>().sprite = tileType[depletedTile].GetComponent<SpriteRenderer>().sprite;
-        tileTypes[posX, posY] = depletedTile;
     }
 
     public bool IsTileSolid(Vector3 position)
@@ -84,6 +86,9 @@ public class LevelManager : Base
 
         if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1)) {
             return false;
+        }
+        if (tileTypes[posX, posY] == 2) {
+            //LoadLevel(Application.dataPath + "/Levels/Level" + 2 + ".txt");
         }
         return tileTypes[posX, posY] == 2;
     }
@@ -194,6 +199,8 @@ public class LevelManager : Base
         int next = ReadNextNumber(input);
         for (int i = 1; i < numberRandomSectionTypes; ++i) {
             int sectionID = -next;
+            print(i);
+            print(sectionID);
             randomSectionLayout[sectionID] = new List<int>();
             randomSectionLayoutFrequency[sectionID] = new List<int>();
             next = ReadNextNumber(input);
@@ -203,11 +210,6 @@ public class LevelManager : Base
                 randomSectionLayoutFrequency[sectionID].Add(next);
                 next = ReadNextNumber(input);
             }
-        }
-
-        for (int i = 0; i < randomSectionLayout[1].Count; ++i) {
-            print(randomSectionLayout[1][i]);
-            print(randomSectionLayoutFrequency[1][i]);
         }
     }
 
@@ -308,7 +310,7 @@ public class LevelManager : Base
             if (c == '\r') {
                 input.Read();
                 break;
-            } else if (c == '\n' || c == ' ') {
+            } else if (c == '\n' || c == ' ' || c == '\t') {
                 break;
             }
 
@@ -338,11 +340,12 @@ public class LevelManager : Base
             for (int j = 0; j < sectionSize; ++j) {
                 int posX = tilePositionX + i;
                 int posY = tilePositionY + j;
+                print(posX);
+                print(posY);
                 tileObjects[posX, posY] = (GameObject)GameObject.Instantiate(tileType[section[sectionNum, i, j]], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z), Quaternion.identity);
                 tileTypes[posX, posY] = section[sectionNum, i, j];
                 
                 if (spawnObject[section[sectionNum, i, j]] != null) {
-                    print(spawnObject[section[sectionNum, i, j]]);
                     GameObject newObject = (GameObject) GameObject.Instantiate(spawnObject[section[sectionNum, i, j]], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
                     if (newObject.name == "Player(Clone)") {
                         if (!GameObject.Find("Player")) {
