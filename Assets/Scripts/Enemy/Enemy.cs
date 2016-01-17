@@ -4,7 +4,6 @@ using System.Collections;
 public class Enemy : Character {
 
     public int damage = 1;
-    //public string forwardAttackAnimationCondition;
 
     public override void BaseStart()
     {
@@ -18,10 +17,7 @@ public class Enemy : Character {
 
 	public override void OnCollision(Character other)
     {
-        //bool attackingForward = true;
-        print("Player hit, Get him");
+        //WriteText("Player hit, Get him");
 		other.health -= damage;
-
-        //playerObject.GetComponentInChildren<Animator>().SetBool(forwardAttackAnimationCondition, attackingForward);
     }
 }
