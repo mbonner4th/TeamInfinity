@@ -81,13 +81,13 @@ public class Player : Character
         else if (other.type == 2)
         {
             health += other.intensity;
-			if(health > 100){health=100;}
-			print("Picked up health!");
+			if(health > 1000){health=1000;}
+			print("Yum! You feel rejuvenated!");
         }
         else if (other.type == 3)
         {
             water += other.intensity;
-			if(water > 100){water=100;}
+			if(water > 1000){water=1000;}
             print("Picked up water!");
         }
         else if (other.type == 4)
