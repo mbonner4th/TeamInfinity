@@ -102,6 +102,35 @@ public class LevelManager : Base
         return tileTypes[posX, posY] == 10;
     }
 
+    public void MovePlayer(Vector3 distance)
+    {
+        int tileHit = -1; // To be replace by movecharacter
+        if (tileHit == -1)
+        {
+            return;
+        }
+
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", distance.y > 0);
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", distance.y < 0);
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", distance.x < 0);
+        playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", distance.x > 0);
+
+        if (IsTileSolid(distance))
+        {
+            if (tileHit == 2)
+            {
+                gameObject.GetComponent<Player>().water += 200;
+                WriteText("You take a hearty gulp, hoping that it's not poisoned.");
+            }
+            else if (tileHit == 10 && artifacts == req_artifacts)
+            {
+                EndLevel();
+                return;
+            }
+            SetTileDepleted(distance);
+        }
+    }
+
     void Awake()
     {
         numSectionTypes = 71;
