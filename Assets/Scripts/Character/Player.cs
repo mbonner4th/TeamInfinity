@@ -31,6 +31,11 @@ public class Player : Character
 	{
 		base.BaseUpdate (dt);
 
+		if (level.gamePaused) {
+			// don't do anything if the game is paused
+			return;
+		}
+
 		// Fire a bullet in the direction of the mouse when you click!
 		if (Input.GetMouseButtonDown (0) && ammo > 0) {
 			ammo--;

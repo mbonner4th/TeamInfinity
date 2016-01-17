@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FaceMouse : MonoBehaviour {
+public class FaceMouse : Base {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
 	// Update is called once per frame
 	void Update () {
+		if (level.gamePaused) {
+			// don't do anything if the game is paused
+			return;
+		}
+
 		Vector3 pos = Input.mousePosition;
 		pos.z = transform.position.z - Camera.main.transform.position.z;
 		pos = Camera.main.ScreenToWorldPoint(pos);

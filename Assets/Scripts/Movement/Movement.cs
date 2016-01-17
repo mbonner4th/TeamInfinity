@@ -1,24 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Movement : MonoBehaviour
+public class Movement : Base
 {
     public KeyCode forward;
     public KeyCode backward;
     public Vector3 axis;
-    public uint speed;
+    public float speed;
 
-    void Start()
+    public override void BaseStart()
     {
 
     }
 
-    void Update()
+    public override void BaseUpdate(float dt)
     {
         if (Input.GetKeyDown(forward)) {
-            transform.Translate(speed * axis);
+            if (!level.IsTileSolid(transform.position + speed * axis)) {
+                transform.Translate(speed * axis);
+            }
         } else if (Input.GetKeyDown(backward)) {
-            transform.Translate(-speed * axis);
+            if (!level.IsTileSolid(transform.position - speed * axis)) {
+                transform.Translate(-speed * axis);
+            }
         }
     }
 }
