@@ -226,16 +226,15 @@ public class LevelManager : Base
         LoadRandomSectionLayout(Application.dataPath + "/Levels/RandomSectionTypes.txt");
         LoadRandomLevelLayout(Application.dataPath + "/Levels/RandomLevelTypes.txt");
         if (leveltoload != 0) {
-            int loadingLevel = leveltoload;
-            if (loadingLevel < 0) {
-                List<int> levelPool = randomLevelLayout[-loadingLevel];
-                loadingLevel = levelPool[Random.Range(0, levelPool.Count)];
-                LoadLevel(Application.dataPath + "/Levels/Level" + loadingLevel + ".txt");
+            LoadLevel(leveltoload);
+            if (leveltoload < 0) {
+                LoadLevel(leveltoload);
                 GenerateLevel(true);
             } else {
-                LoadLevel(Application.dataPath + "/Levels/Level" + loadingLevel + ".txt");
+                LoadLevel(leveltoload);
                 GenerateLevel(false);
             }
+            
             
             
         }
@@ -282,7 +281,7 @@ public class LevelManager : Base
         GameOverMenu.SetActive(false);
         Time.timeScale = 1.0f;
         gamePaused = false;
-        LoadLevel(Application.dataPath + "/Levels/Level" + leveltoload + ".txt");
+        LoadLevel(leveltoload);
         GenerateLevel(false);
     }
 
@@ -302,8 +301,16 @@ public class LevelManager : Base
         persMaxHealth = player.maxHealth;
         persMaxWater = player.maxWater;
 
-        ++leveltoload;
-        LoadLevel(Application.dataPath + "/Levels/Level" + leveltoload + ".txt");
+        if (leveltoload > 0)
+        {
+            ++leveltoload;
+        }
+        else
+        {
+            --leveltoload;
+        }
+        
+        LoadLevel(leveltoload);
         GenerateLevel(false);
         player = GameObject.Find("Player").GetComponent<Player>();
         ReloadPlayerAtts();
@@ -410,8 +417,16 @@ public class LevelManager : Base
         }
     }
 
-    void LoadLevel(string fileName)
+    void LoadLevel(int levelNum)
     {
+        int loadingLevel = levelNum;
+        if (loadingLevel < 0)
+        {
+            List<int> levelPool = randomLevelLayout[-loadingLevel];
+            loadingLevel = levelPool[Random.Range(0, levelPool.Count)];
+        }
+
+        string fileName = Application.dataPath + "/Levels/Level" + loadingLevel + ".txt";
         StreamReader input = new StreamReader(fileName);
         levelWidth = ReadNextNumber(input);
         levelHeight = ReadNextNumber(input);
