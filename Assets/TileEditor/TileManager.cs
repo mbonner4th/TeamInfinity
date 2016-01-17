@@ -50,12 +50,7 @@ public class TileManager : TileEditorBase
                 SpriteRenderer renderer = level.spawnObject[i].GetComponent<SpriteRenderer>();
                 Sprite sprite = null;
                 if (!renderer) {
-                    renderer = level.spawnObject[i].GetComponentInChildren<SpriteRenderer>();
-                    if (!renderer) {
-                        sprite = level.spawnObject[i].GetComponentInChildren<Animator>().animation.sprite
-                    } else {
-                        sprite = renderer.sprite;
-                    }
+                    continue;
                 } else {
                     sprite = renderer.sprite;
                 }
