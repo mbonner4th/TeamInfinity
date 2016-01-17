@@ -4,7 +4,6 @@ using System.Collections;
 public class Enemy : Character {
 
     public int damage = 1;
-    public int enemyHealth = 1;
 
     public override void BaseStart()
     {
@@ -19,5 +18,6 @@ public class Enemy : Character {
 	public override void OnCollision(Character other)
     {
         print("Player hit, Get him");
+		other.health -= damage;
     }
 }
