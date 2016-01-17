@@ -74,10 +74,13 @@ public class LevelManager : Base
 
     public void TryToMoveCharacter(Vector3 distance, Character characterToMove)
     {
+        if (gamePaused) {
+            return;
+        }
+
         Character other = GetCharacter(GetTileByPosition(characterToMove.transform.position + distance));
         if (other != null)
         {
-
             // do damage to other
         }
         else if (!IsTileSolid(characterToMove.transform.position + distance))
@@ -182,6 +185,10 @@ public class LevelManager : Base
 
     public void MovePlayer(Vector3 distance)
     {
+        if (gamePaused) {
+            return;
+        }
+
         Vector3 tileHit = player.transform.position + distance;
         TryToMoveCharacter(distance, player);
 
