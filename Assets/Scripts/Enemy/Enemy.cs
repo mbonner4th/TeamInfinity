@@ -13,7 +13,7 @@ public class Enemy : Character {
             GameObject.Destroy(this.gameObject);
         }
 
-        Debug.Log("i'm awake");
+      //  Debug.Log("i'm awake");
 
     }
 

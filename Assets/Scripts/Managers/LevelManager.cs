@@ -41,6 +41,7 @@ public class LevelManager : Base
 
     
     public System.Collections.Generic.List<GameObject> enemies;
+    public Character[] characterList;
 
     public void SetTileDepleted(Vector3 position)
     {
@@ -97,6 +98,7 @@ public class LevelManager : Base
         {
             return;
         }
+        print(tileCharacters);
 
         tileCharacters[posX, posY] = characterToSet;
     }
@@ -170,6 +172,8 @@ public class LevelManager : Base
             GenerateLevel();
         }
         InvokeRepeating("tickEnimies", 1.0f, 1.0f);
+        characterList = GameObject.FindObjectsOfType(typeof(Character)) as Character[];
+        //print(characterList.Length);
     }
 
 
@@ -256,8 +260,8 @@ public class LevelManager : Base
         int next = ReadNextNumber(input);
         for (int i = 1; i < numberRandomSectionTypes; ++i) {
             int sectionID = -next;
-            print(i);
-            print(sectionID);
+            //print(i);
+            //print(sectionID);
             randomSectionLayout[sectionID] = new List<int>();
             randomSectionLayoutFrequency[sectionID] = new List<int>();
             next = ReadNextNumber(input);
@@ -349,10 +353,16 @@ public class LevelManager : Base
                 }
             }
         }
+
+
         
         tileObjects = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
         tilePickups = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
+        tileCharacters = new Character[levelWidth * sectionSize, levelHeight * sectionSize];
         tileTypes = new int[levelWidth * sectionSize, levelHeight * sectionSize];
+        
+
+
     }
 
     public int SelectRandomSection(int sectionType)
@@ -412,8 +422,8 @@ public class LevelManager : Base
             for (int j = 0; j < sectionSize; ++j) {
                 int posX = tilePositionX + i;
                 int posY = tilePositionY + j;
-                print(posX);
-                print(posY);
+                //print(posX);
+                //print(posY);
                 SetTile(posX, posY, section[sectionNum, i, j]);
             }
         }
@@ -488,14 +498,19 @@ public class LevelManager : Base
 
     public bool addToEnemies(GameObject enemy)
     {
-        //Debug.Log("added to enemies");
-        if(GetCharacter(GetTileByPosition(enemy.transform.position)) != null){
+        print(GetCharacter(GetTileByPosition(enemy.transform.position)));
+       if(GetCharacter(GetTileByPosition(enemy.transform.position)) == null){
             enemies.Add(enemy);
-            return true;
-        }
-        else{
-            return false;
-        }
+            Debug.Log("added to enemies");
+            
+           
+             SetCharacter(GetTileByPosition(enemy.transform.position), enemy.GetComponent<Enemy>());
+             return true;
+       }
+       else{
+           print("sorry, you don't get to play");
+           return false;
+       }
         
     }
 
