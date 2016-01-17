@@ -81,13 +81,20 @@ public class LevelManager : Base
         Character other = GetCharacter(GetTileByPosition(characterToMove.transform.position + distance));
         if (other != null)
         {
+            print("in the way");
             // do damage to other
+            //hit
         }
         else if (!IsTileSolid(characterToMove.transform.position + distance))
         {
+            print("can move");
             SetCharacter(GetTileByPosition(characterToMove.transform.position), null);
             characterToMove.transform.Translate(distance);
             SetCharacter(GetTileByPosition(characterToMove.transform.position), characterToMove);
+        }
+        else
+        {
+            print("can't move");
         }
     }
 
@@ -219,7 +226,7 @@ public class LevelManager : Base
 
     void Awake()
     {
-        numSectionTypes = 160;
+        numSectionTypes = 210;
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(Application.dataPath + "/Levels/Section");
@@ -248,10 +255,12 @@ public class LevelManager : Base
 
 	public override void BaseUpdate(float dt)
     {
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", false);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", false);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", false);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", false);
+        if (playerObject) {
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", false);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", false);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", false);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", false);
+        }
 
 		if (PauseMenu != null && Input.GetKeyUp (menuKey) && (!GameOverMenu.activeSelf) && (!ShopMenu.activeSelf))
 		{
@@ -322,7 +331,7 @@ public class LevelManager : Base
         {
             ShopMenu.SetActive(true);
             ShopMenu.GetComponent<ShopManager>().PrepareShop(player);
-            WriteText("\n\n\n\n");
+            //WriteText("\n\n\n\n");
             MainUI.SetActive(false);
             Time.timeScale = 0;
             gamePaused = true;
@@ -560,7 +569,8 @@ public class LevelManager : Base
     // ============================================= Level Generation =============================================//
     void GenerateLevel(bool rotateRandomly)
     {
-        for (int i = 0; i < levelWidth; ++i) {
+		artifacts = 0;
+		for (int i = 0; i < levelWidth; ++i) {
             for (int j = 0; j < levelHeight; ++j) {
                 GenerateSection(i * sectionSize, j * sectionSize, level[i, j], rotateRandomly);
             }
@@ -662,7 +672,7 @@ public class LevelManager : Base
 
     public virtual void OnPickPart(int intensity)
     {
-        artifacts += intensity;
+        artifacts += 1;
     }
 
     public virtual void OnPickPerson(int intensity)
@@ -672,17 +682,14 @@ public class LevelManager : Base
 
     public bool addToEnemies(GameObject enemy)
     {
-        print(GetCharacter(GetTileByPosition(enemy.transform.position)));
        if(GetCharacter(GetTileByPosition(enemy.transform.position)) == null){
             enemies.Add(enemy);
-            Debug.Log("added to enemies");
-            
-           
+            //Debug.Log("added to enemies");  
              SetCharacter(GetTileByPosition(enemy.transform.position), enemy.GetComponent<Enemy>());
              return true;
        }
        else{
-           print("sorry, you don't get to play");
+           //print("sorry, you don't get to play");
            return false;
        }
         

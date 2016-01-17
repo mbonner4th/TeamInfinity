@@ -25,8 +25,6 @@ public class Base : MonoBehaviour
 
 		textBox = GameObject.Find("TextBox").GetComponent<Text>();
         BaseStart();
-        //print("playing sound!");
-        sound.PlaySound(1);
 	}
 
     public virtual void BaseStart()
