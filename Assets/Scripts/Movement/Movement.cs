@@ -28,14 +28,15 @@ public class Movement : Base
         {
             if (!level.IsTileSolid(transform.position + speed * axis))
             {
+                level.SetTileDepleted(transform.position + speed * axis);
                 transform.Translate(speed * axis);   
             }
             else if (level.IsTileWater(transform.position + speed * axis))
             {
+                level.SetTileDepleted(transform.position + speed * axis);
                 movingForward = true;
                 gameObject.GetComponent<Player>().water += 200;
                 WriteText("You take a hearty gulp, hoping that it's not poisoned.");
-                level.SetTileDepleted(transform.position + speed * axis);
             }
             else if (level.IsTileCamp(transform.position + speed * axis) && level.artifacts == level.req_artifacts)
             {
@@ -46,14 +47,15 @@ public class Movement : Base
         {
             if (!level.IsTileSolid(transform.position - speed * axis))
             {
+                level.SetTileDepleted(transform.position - speed * axis);
                 transform.Translate(-speed * axis);
             }
             else if (level.IsTileWater(transform.position - speed * axis))
             {
+                level.SetTileDepleted(transform.position - speed * axis);
                 movingBackward = true;
                 gameObject.GetComponent<Player>().water += 200;
                 WriteText("You take a hearty gulp, hoping that it's not poisoned.");
-                level.SetTileDepleted(transform.position - speed * axis);
             }
         }
 
