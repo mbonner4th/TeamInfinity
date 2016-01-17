@@ -53,14 +53,10 @@ public class LevelManager : Base
         }
 
         int cntTileType = tileTypes[posX, posY];
-        if (depletedVersion[cntTileType] != null)
+        if (depletedVersion[cntTileType] != 0)
         {
             int newVersion = depletedVersion[cntTileType];
-            if (tileObjects[posX, posY] == null) {
-                GameObject obj = tileObjects[posX, posY].gameObject;
-            }
-            tileObjects[posX, posY].GetComponent<SpriteRenderer>().sprite = tileType[newVersion].GetComponent<SpriteRenderer>().sprite;
-            tileTypes[posX, posY] = newVersion;
+            SetTile(posX, posY, newVersion);
         }
     }
 
@@ -87,9 +83,7 @@ public class LevelManager : Base
         if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1)) {
             return false;
         }
-        if (tileTypes[posX, posY] == 2) {
-            //LoadLevel(Application.dataPath + "/Levels/Level" + 2 + ".txt");
-        }
+        
         return tileTypes[posX, posY] == 2;
     }
 
@@ -104,6 +98,7 @@ public class LevelManager : Base
         {
             return false;
         }
+
         return tileTypes[posX, posY] == 10;
     }
 
@@ -121,7 +116,10 @@ public class LevelManager : Base
         InvokeRepeating("tickEnimies", 1.0f, 1.0f);
     }
 
-    public override void BaseUpdate(float dt)
+
+
+
+	public override void BaseUpdate(float dt)
     {
 		if (PauseMenu != null && Input.GetKeyUp (menuKey)) 
 		{
@@ -149,6 +147,8 @@ public class LevelManager : Base
     public void EndLevel()
     {
         WriteText("Congratulations!");
+        LoadLevel(Application.dataPath + "/Levels/Level" + 2 + ".txt");
+        GenerateLevel();
 	}
 	
 	
@@ -156,33 +156,18 @@ public class LevelManager : Base
 	{
 		if (!GameOverMenu.activeSelf) {
 			GameOverMenu.SetActive (true);
-			Time.timeScale = 0;
+			//Time.timeScale = 0;
 			gamePaused = true;
-			
-			if (lastPlayer.water == 0) {
-				WriteText ("You didn't have enough water.");
-			}
-			if (lastPlayer.health == 0) {
-				WriteText ("You didn't have enough food.");
-			}
-			if (lastPlayer.ammo == 0) {
-				WriteText ("You didn't have enough rocks.");
-			}
-			if (guilt >= 10) {
-				WriteText ("You didn't have enough love.");
-			}
-			if (artifacts == 0) {
-				WriteText ("You didn't have enough artifacts.");
-			}
+			GameOverMenu.GetComponent<GameOverManager>().GameOver (lastPlayer, guilt, artifacts);
 		}
 	}
 
 	public void ExitToMainMenu()
 	{
-        print("ExitToMainMenu");
-		Application.LoadLevel ("MainMenu");
+		//print("ExitToMainMenu");
 		Time.timeScale = 1.0f;
 		gamePaused = false;
+		Application.LoadLevel ("MainMenu");
 	}
     
     void LoadSections(string fileNameBase)
@@ -291,7 +276,22 @@ public class LevelManager : Base
             }
         }
 
+        if (tileObjects != null) {
+            for (int i = 0; i < tileObjects.GetLength(0); ++i) {
+                for (int j = 0; j < tileObjects.GetLength(1); ++j) {
+                    if (tileObjects[i, j] != null) {
+                        GameObject.Destroy(tileObjects[i, j]);
+                    }
+
+                    if (tilePickups[i, j] != null) {
+                        GameObject.Destroy(tilePickups[i, j]);
+                    }
+                }
+            }
+        }
+        
         tileObjects = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
+        tilePickups = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
         tileTypes = new int[levelWidth * sectionSize, levelHeight * sectionSize];
     }
 
@@ -354,18 +354,36 @@ public class LevelManager : Base
                 int posY = tilePositionY + j;
                 print(posX);
                 print(posY);
-                tileObjects[posX, posY] = (GameObject)GameObject.Instantiate(tileType[section[sectionNum, i, j]], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z), Quaternion.identity);
-                tileTypes[posX, posY] = section[sectionNum, i, j];
-                
-                if (spawnObject[section[sectionNum, i, j]] != null) {
-                    GameObject newObject = (GameObject) GameObject.Instantiate(spawnObject[section[sectionNum, i, j]], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
-                    if (newObject.name == "Player(Clone)") {
-                        if (!GameObject.Find("Player")) {
-                            newObject.name = "Player";
-                        }
-                    }
-                }
+                SetTile(posX, posY, section[sectionNum, i, j]);
             }
+        }
+    }
+
+    void SetTile(int posX, int posY, int tileID)
+    {
+        if (tileObjects[posX, posY] != null) {
+            GameObject.Destroy(tileObjects[posX, posY]);
+        }
+
+        if (tilePickups[posX, posY] != null) {
+            GameObject.Destroy(tilePickups[posX, posY]);
+        }
+
+        tileObjects[posX, posY] = (GameObject)GameObject.Instantiate(tileType[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z), Quaternion.identity);
+        tileTypes[posX, posY] = tileID;
+
+        if (spawnObject[tileID] != null) {
+            GameObject newObject = null;
+            if (spawnObject[tileID].name == "Player") {
+                //if (!GameObject.Find("Player")) {
+                    newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
+                    newObject.name = "Player";
+                //}
+            } else {
+                newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
+            }
+
+            tilePickups[posX, posY] = newObject;
         }
     }
 
