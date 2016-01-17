@@ -76,10 +76,13 @@ public class LevelManager : Base
 
     public void TryToMoveCharacter(Vector3 distance, Character characterToMove)
     {
+        if (gamePaused) {
+            return;
+        }
+
         Character other = GetCharacter(GetTileByPosition(characterToMove.transform.position + distance));
         if (other != null)
         {
-
             // do damage to other
         }
         else if (!IsTileSolid(characterToMove.transform.position + distance))
@@ -98,7 +101,6 @@ public class LevelManager : Base
         {
             return null;
         }
-        print(posX + " " + posY);
         Character temp = tileCharacters[posX, posY];
         return tileCharacters[posX, posY];
     }
@@ -185,6 +187,10 @@ public class LevelManager : Base
 
     public void MovePlayer(Vector3 distance)
     {
+        if (gamePaused) {
+            return;
+        }
+
         Vector3 tileHit = player.transform.position + distance;
         TryToMoveCharacter(distance, player);
 
@@ -222,16 +228,15 @@ public class LevelManager : Base
         LoadRandomSectionLayout(Application.dataPath + "/Levels/RandomSectionTypes.txt");
         LoadRandomLevelLayout(Application.dataPath + "/Levels/RandomLevelTypes.txt");
         if (leveltoload != 0) {
-            int loadingLevel = leveltoload;
-            if (loadingLevel < 0) {
-                List<int> levelPool = randomLevelLayout[-loadingLevel];
-                loadingLevel = levelPool[Random.Range(0, levelPool.Count)];
-                LoadLevel(Application.dataPath + "/Levels/Level" + loadingLevel + ".txt");
+            LoadLevel(leveltoload);
+            if (leveltoload < 0) {
+                LoadLevel(leveltoload);
                 GenerateLevel(true);
             } else {
-                LoadLevel(Application.dataPath + "/Levels/Level" + loadingLevel + ".txt");
+                LoadLevel(leveltoload);
                 GenerateLevel(false);
             }
+            
             
             
         }
@@ -287,8 +292,8 @@ public class LevelManager : Base
         GameOverMenu.SetActive(false);
         Time.timeScale = 1.0f;
         gamePaused = false;
-        LoadLevel(Application.dataPath + "/Levels/Level" + leveltoload + ".txt");
-        GenerateLevel();
+        LoadLevel(leveltoload);
+        GenerateLevel(false);
     }
 
     public void NextLevel()
@@ -300,14 +305,26 @@ public class LevelManager : Base
 
         persHealth = player.health;
         persWater = player.water;
+        print(persWater);
         persAmmo = player.ammo;
         persMoney = player.money;
         persDamage = player.damage;
         persMaxHealth = player.maxHealth;
         persMaxWater = player.maxWater;
 
-        LoadLevel(Application.dataPath + "/Levels/Level" + (leveltoload + 1) + ".txt");
-        GenerateLevel();
+        if (leveltoload > 0)
+        {
+            ++leveltoload;
+        }
+        else
+        {
+            --leveltoload;
+        }
+        
+        LoadLevel(leveltoload);
+        GenerateLevel(false);
+        player = GameObject.Find("Player").GetComponent<Player>();
+        ReloadPlayerAtts();
     }
 
     public void EndLevel()
@@ -411,8 +428,16 @@ public class LevelManager : Base
         }
     }
 
-    void LoadLevel(string fileName)
+    void LoadLevel(int levelNum)
     {
+        int loadingLevel = levelNum;
+        if (loadingLevel < 0)
+        {
+            List<int> levelPool = randomLevelLayout[-loadingLevel];
+            loadingLevel = levelPool[Random.Range(0, levelPool.Count)];
+        }
+
+        string fileName = Application.dataPath + "/Levels/Level" + loadingLevel + ".txt";
         StreamReader input = new StreamReader(fileName);
         levelWidth = ReadNextNumber(input);
         levelHeight = ReadNextNumber(input);
@@ -481,11 +506,11 @@ public class LevelManager : Base
             for (int i = 0; i < tileObjects.GetLength(0); ++i) {
                 for (int j = 0; j < tileObjects.GetLength(1); ++j) {
                     if (tileObjects[i, j] != null) {
-                        GameObject.Destroy(tileObjects[i, j]);
+                        GameObject.DestroyImmediate(tileObjects[i, j]);
                     }
 
                     if (tilePickups[i, j] != null) {
-                        GameObject.Destroy(tilePickups[i, j]);
+                        GameObject.DestroyImmediate(tilePickups[i, j]);
                     }
                 }
             }
@@ -578,7 +603,6 @@ public class LevelManager : Base
 
         if (rotateRandomly) {
             int numRotations = Random.Range(0, 4);
-            print("rotating " + numRotations + " times");
             for (int i = 0; i < numRotations; ++i) {
                 sectionTiles = RotateMatrix(sectionTiles, sectionSize);
             }
@@ -608,10 +632,8 @@ public class LevelManager : Base
         if (spawnObject[tileID] != null) {
             GameObject newObject = null;
             if (spawnObject[tileID].name == "Player") {
-                //if (!GameObject.Find("Player")) {
-                    newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
-                    newObject.name = "Player";
-                //}
+                 newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
+                 newObject.name = "Player";
             } else {
                 newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
             }
