@@ -32,6 +32,17 @@ public class Character : Base
         }
     }
 
+	/*public virtual void OnTriggerStay2D(Collider2D other)
+	{
+		Character otherCharacter = other.GetComponent<Character>();
+		if (otherCharacter == null) {
+			return;
+		}
+		if (otherCharacter.team != team) {
+			OnCollision(otherCharacter);
+		}
+	}*/
+
     public virtual void OnCollision(Character other)
     {
 

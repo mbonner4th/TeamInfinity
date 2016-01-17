@@ -18,5 +18,6 @@ public class Enemy : Character {
 	public override void OnCollision(Character other)
     {
         print("Player hit, Get him");
+		other.health -= damage;
     }
 }
