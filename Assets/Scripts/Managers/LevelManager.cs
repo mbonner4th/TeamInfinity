@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.IO;
+using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour
 {
     public int parts;
     public int guilt;
+    public int leveltoload;
 
     public int[,] tileTypes;
     public bool[] tiles;
@@ -43,15 +45,29 @@ public class LevelManager : MonoBehaviour
         return tiles[tileTypes[posX, posY]];
     }
 
-    void Start()
+    public bool IsTileWater(Vector3 position)
     {
-        
-        numSectionTypes = 3;
+        Vector3 tilePos = position - startPosition;
+        tilePos /= tileSpacing;
+        int posX = Mathf.RoundToInt(tilePos.x);
+        int posY = Mathf.RoundToInt(tilePos.y);
+
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1)) {
+            return false;
+        }
+        return tileTypes[posX, posY] == 2;
+    }
+
+    void Awake()
+    {
+        numSectionTypes = 35;
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(Application.dataPath + "/Levels/Section");
-        LoadLevel(Application.dataPath + "/Levels/Level", 1);
-        GenerateLevel();
+        if (leveltoload >= 0) {
+            LoadLevel(Application.dataPath + "/Levels/Level", leveltoload);
+            GenerateLevel();
+        }
         InvokeRepeating("tickEnimies", 1.0f, 1.0f);
     }
 
@@ -97,10 +113,11 @@ public class LevelManager : MonoBehaviour
 
     void LoadSection(string sectionFileName, int sectionNum)
     {
+        print(sectionNum);
         StreamReader input = new StreamReader(sectionFileName);
         for (uint i = 0; i < sectionSize; ++i) {
             for (uint j = 0; j < sectionSize; ++j) {
-                section[sectionNum, sectionSize - j - 1, sectionSize - i - 1] = ReadNextNumber(input);
+                section[sectionNum, j, sectionSize - i - 1] = ReadNextNumber(input);
             }
         }
     }
@@ -112,9 +129,10 @@ public class LevelManager : MonoBehaviour
         levelWidth = ReadNextNumber(input);
         levelHeight = ReadNextNumber(input);
         level = new int[levelWidth, levelHeight];
-        for (uint i = 0; i < levelWidth; ++i) {
-            for (uint j = 0; j < levelHeight; ++j) {
-                level[i, j] = ReadNextNumber(input);
+        for (uint i = 0; i < levelHeight; ++i) {
+            for (uint j = 0; j < levelWidth; ++j) {
+                level[j, (levelHeight - 1) - i] = ReadNextNumber(input);
+                /*
                 if (level[i, j] == 0) {
                     int[] possibleSections = new int[numSectionTypes];
                     for (int k = 0; k < numSectionTypes; ++k) {
@@ -160,8 +178,9 @@ public class LevelManager : MonoBehaviour
                             ++actuallyPossible;
                         }
                     }
-                    level[i, j] = possible[Random.Range(0, actuallyPossible + 1)];
+                    level[j, levelWidth - 1 - i] = possible[Random.Range(0, actuallyPossible + 1)];
                 }
+                */
             }
         }
 
