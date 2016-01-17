@@ -50,6 +50,7 @@ public class Player : Character
 			GameObject go = (GameObject)Instantiate(projectile, transform.position, q);
 			Rigidbody2D bulletRb = go.GetComponent<Rigidbody2D>();
 			bulletRb.AddForce(go.transform.up * 1000.0f);
+            sound.PlaySound(0);
 		}
 
         if (water == 0)
@@ -83,21 +84,25 @@ public class Player : Character
         {
             level.OnPickPart(other.intensity);
 			WriteText("Picked up a part!");
+            sound.PlaySound(2);
         }
         else if (other.type == 2)
         {
             health += other.intensity;
 			WriteText("Picked up " + health + " health!");
+            sound.PlaySound(1);
         }
         else if (other.type == 3)
         {
             water += other.intensity;
 			WriteText("Picked up water!");
+            sound.PlaySound(1);
         }
         else if (other.type == 4)
         {
             ammo += other.intensity;
 			WriteText("Picked up ammo!");
+            sound.PlaySound(1);
         }
         else if (other.type == 5)
         {

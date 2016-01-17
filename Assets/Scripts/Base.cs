@@ -6,6 +6,7 @@ public class Base : MonoBehaviour
 {
     public LevelManager level;
     public GameObject playerObject;
+    public SoundManager sound;
     public Player player;
 	public Text textBox;
 
@@ -15,7 +16,10 @@ public class Base : MonoBehaviour
         playerObject = GameObject.Find("Player");
         player = GameObject.Find("LevelManager").GetComponent<Player>();
 		textBox = GameObject.Find("TextBox").GetComponent<Text>();
+        sound = GameObject.Find("Main Camera").GetComponent<SoundManager>();
         BaseStart();
+        print("playing sound!");
+        sound.PlaySound(1);
 	}
 
     public virtual void BaseStart()
