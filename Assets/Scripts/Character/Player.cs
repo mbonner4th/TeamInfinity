@@ -135,7 +135,7 @@ public class Player : Character
 		else if (other.type == 6)
 		{
 			player.money += other.intensity;
-			WriteText("You found some gold coins! Lucky!");
+			WriteText("You found a rare gemstone! Lucky!");
 		}
 
         GameObject.Destroy(other.gameObject);
