@@ -23,12 +23,6 @@ public class Player : Character
 		ammoDisp = GameObject.Find("AmmoDisplay").GetComponent<Text>();
 	}
 
-	public override void OnCollision(Character other)
-    {
-        //print("Player colliding!");
-        //GameObject.Destroy(other.gameObject);
-    }
-
 	public override void BaseUpdate(float dt)
 	{
 		base.BaseUpdate (dt);
@@ -112,4 +106,9 @@ public class Player : Character
 
         GameObject.Destroy(other.gameObject);
     }
+
+	public override void onDeath()
+	{
+		level.GameOver (this);
+	}
 }

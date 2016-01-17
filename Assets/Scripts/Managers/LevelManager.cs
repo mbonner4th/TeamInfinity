@@ -30,7 +30,8 @@ public class LevelManager : Base
 
     public KeyCode menuKey;
     public bool gamePaused = false;
-    public GameObject GameMenu;
+    public GameObject PauseMenu;
+	public GameObject GameOverMenu;
 
     
     public System.Collections.Generic.List<GameObject> enemies;
@@ -113,7 +114,7 @@ public class LevelManager : Base
 
     public override void BaseUpdate(float dt)
     {
-		if (GameMenu != null && Input.GetKeyUp (menuKey)) 
+		if (PauseMenu != null && Input.GetKeyUp (menuKey)) 
 		{
 			UpdateMenu();
 		}
@@ -122,15 +123,15 @@ public class LevelManager : Base
 
 	public void UpdateMenu()
 	{
-		if(GameMenu.activeSelf)
+		if(PauseMenu.activeSelf)
 		{
-			GameMenu.SetActive(false);
+			PauseMenu.SetActive(false);
 			Time.timeScale = 1.0f;
 			gamePaused = false;
 		}
 		else
 		{
-			GameMenu.SetActive(true);
+			PauseMenu.SetActive(true);
 			Time.timeScale = 0;
 			gamePaused = true;
 		}
@@ -139,7 +140,33 @@ public class LevelManager : Base
     public void EndLevel()
     {
         WriteText("Congratulations!");
-    }
+	}
+	
+	
+	public void GameOver(Player lastPlayer)
+	{
+		if (!GameOverMenu.activeSelf) {
+			GameOverMenu.SetActive (true);
+			Time.timeScale = 0;
+			gamePaused = true;
+			
+			if (lastPlayer.water == 0) {
+				WriteText ("You didn't have enough water.");
+			}
+			if (lastPlayer.health == 0) {
+				WriteText ("You didn't have enough food.");
+			}
+			if (lastPlayer.ammo == 0) {
+				WriteText ("You didn't have enough rocks.");
+			}
+			if (guilt >= 10) {
+				WriteText ("You didn't have enough love.");
+			}
+			if (artifacts == 0) {
+				WriteText ("You didn't have enough artifacts.");
+			}
+		}
+	}
 
 	public void ExitToMainMenu()
 	{
