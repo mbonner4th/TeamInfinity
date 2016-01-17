@@ -97,6 +97,7 @@ public class TileManager : TileEditorBase
         for (int i = 0; i < level.sectionSize; ++i) {
             for (int j = 0; j < level.sectionSize; ++j) {
                 int tileID = level.section[currentSectionNum, i, j];
+                tileIDs[i, j] = tileID;
                 tilePickers[i, j].GetComponent<SpriteRenderer>().sprite = level.tileType[tileID].GetComponent<SpriteRenderer>().sprite;
                 if (level.spawnObject[tileID] != null) {
                     SpriteRenderer renderer = level.spawnObject[tileID].GetComponent<SpriteRenderer>();
@@ -121,7 +122,10 @@ public class TileManager : TileEditorBase
         for (int i = 0; i < level.sectionSize; ++i) {
             for (int j = 0; j < level.sectionSize; ++j) {
                 output.Write(tileIDs[j, (level.sectionSize - 1) - i]);
-                output.Write(" ");
+                if (j != level.sectionSize - 1)
+                {
+                    output.Write(" ");
+                }
             }
             output.Write("\n");
         }
