@@ -4,7 +4,6 @@ using System.Collections;
 public class Enemy : Character {
 
     public int damage = 1;
-    public int enemyHealth = 1;
 
     public override void BaseStart()
     {

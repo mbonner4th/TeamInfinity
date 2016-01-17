@@ -53,11 +53,6 @@ public class LevelManager : MonoBehaviour
 	public bool gamePaused = false;
 	public GameObject GameMenu;
 
-	void Start()
-	{
-		//GameMenu = GameObject.Find("PauseMenu");
-		//GameMenu.SetActive(false);
-	}
 
 	void Update()
     {
