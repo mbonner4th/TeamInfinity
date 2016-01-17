@@ -14,6 +14,8 @@ public class Player : Character
 	public Slider waterBar;
 	public Slider healthBar;
 	public Text ammoDisp;
+	public Text moneyDisp;
+	public Text artifactDisp;
 	public GameObject projectile;
 	public Ray2D mousePos;
 
@@ -23,6 +25,8 @@ public class Player : Character
 		healthBar = GameObject.Find("HealthSlider").GetComponent<Slider>();
 		waterBar = GameObject.Find("WaterSlider").GetComponent<Slider>();
 		ammoDisp = GameObject.Find("AmmoDisplay").GetComponent<Text>();
+		moneyDisp = GameObject.Find("MoneyDisplay").GetComponent<Text>();
+		artifactDisp = GameObject.Find("ArtifactDisplay").GetComponent<Text>();
 	}
 
 	public override void BaseUpdate(float dt)
@@ -64,6 +68,8 @@ public class Player : Character
 		// Update all the relevant gauges and status displays with the current values
 		healthBar.value = health; healthBar.maxValue = maxHealth;
 		waterBar.value = water; waterBar.maxValue = maxWater;
+		moneyDisp.text = moneyDisp.text.Substring(0,moneyDisp.text.IndexOf('\n')+1) + "$" + money;
+		artifactDisp.text = artifactDisp.text.Substring(0,artifactDisp.text.IndexOf('\n')+1) + level.artifacts + "/" + level.req_artifacts;
 
 		string rocks = "";
 		for (int i=0; i<ammo; i++) {
@@ -71,6 +77,7 @@ public class Player : Character
 		}
 		ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + rocks;
 		//ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + "x" + ammo;
+
 
 		// Correct health and water if they're over the max
 		if(health > maxHealth){health=maxHealth;}
