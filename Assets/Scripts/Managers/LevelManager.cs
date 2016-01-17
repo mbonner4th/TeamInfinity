@@ -96,7 +96,6 @@ public class LevelManager : Base
         {
             return null;
         }
-        print(posX + " " + posY);
         Character temp = tileCharacters[posX, posY];
         return tileCharacters[posX, posY];
     }
@@ -277,7 +276,7 @@ public class LevelManager : Base
         Time.timeScale = 1.0f;
         gamePaused = false;
         LoadLevel(Application.dataPath + "/Levels/Level" + leveltoload + ".txt");
-        GenerateLevel();
+        GenerateLevel(false);
     }
 
     public void NextLevel()
@@ -289,14 +288,18 @@ public class LevelManager : Base
 
         persHealth = player.health;
         persWater = player.water;
+        print(persWater);
         persAmmo = player.ammo;
         persMoney = player.money;
         persDamage = player.damage;
         persMaxHealth = player.maxHealth;
         persMaxWater = player.maxWater;
 
-        LoadLevel(Application.dataPath + "/Levels/Level" + (leveltoload + 1) + ".txt");
-        GenerateLevel();
+        ++leveltoload;
+        LoadLevel(Application.dataPath + "/Levels/Level" + leveltoload + ".txt");
+        GenerateLevel(false);
+        player = GameObject.Find("Player").GetComponent<Player>();
+        ReloadPlayerAtts();
     }
 
     public void EndLevel()
@@ -470,11 +473,11 @@ public class LevelManager : Base
             for (int i = 0; i < tileObjects.GetLength(0); ++i) {
                 for (int j = 0; j < tileObjects.GetLength(1); ++j) {
                     if (tileObjects[i, j] != null) {
-                        GameObject.Destroy(tileObjects[i, j]);
+                        GameObject.DestroyImmediate(tileObjects[i, j]);
                     }
 
                     if (tilePickups[i, j] != null) {
-                        GameObject.Destroy(tilePickups[i, j]);
+                        GameObject.DestroyImmediate(tilePickups[i, j]);
                     }
                 }
             }
@@ -567,7 +570,6 @@ public class LevelManager : Base
 
         if (rotateRandomly) {
             int numRotations = Random.Range(0, 4);
-            print("rotating " + numRotations + " times");
             for (int i = 0; i < numRotations; ++i) {
                 sectionTiles = RotateMatrix(sectionTiles, sectionSize);
             }
@@ -597,10 +599,8 @@ public class LevelManager : Base
         if (spawnObject[tileID] != null) {
             GameObject newObject = null;
             if (spawnObject[tileID].name == "Player") {
-                //if (!GameObject.Find("Player")) {
-                    newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
-                    newObject.name = "Player";
-                //}
+                 newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
+                 newObject.name = "Player";
             } else {
                 newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
             }
