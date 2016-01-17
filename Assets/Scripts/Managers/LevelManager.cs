@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.IO;
+using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour
 {
@@ -56,14 +57,16 @@ public class LevelManager : MonoBehaviour
         return tileTypes[posX, posY] == 2;
     }
 
-    void Start()
+    void Awake()
     {
         numSectionTypes = 35;
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(Application.dataPath + "/Levels/Section");
-        LoadLevel(Application.dataPath + "/Levels/Level", leveltoload);
-        GenerateLevel();
+        if (leveltoload >= 0) {
+            LoadLevel(Application.dataPath + "/Levels/Level", leveltoload);
+            GenerateLevel();
+        }
     }
 
 	void Update()
