@@ -288,7 +288,7 @@ public class LevelManager : MonoBehaviour
 
     public void tickEnimies()
     {
-        Debug.Log("ticked");
+//Debug.Log("ticked");
         foreach (GameObject enemy in enemies)
         {
             if (enemy != null && enemy.GetComponent<EnemyBase>() != null)

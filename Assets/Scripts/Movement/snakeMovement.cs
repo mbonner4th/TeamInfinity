@@ -36,13 +36,9 @@ public class snakeMovement : EnemyBase
         Vector3 playerDistance = transform.position - playerObject.transform.position;
        
 
-        if (Mathf.Abs(playerDistance.x) >= 1 && Mathf.Abs(playerDistance.y) >= 1)
-        {
 
-            if (Mathf.Abs(playerDistance.x) > Mathf.Abs(playerDistance.y) && Mathf.Abs(playerDistance.x) > 2)
+            if (Mathf.Abs(playerDistance.x) > Mathf.Abs(playerDistance.y) && Mathf.Abs(playerDistance.x) > 1)
             {
-                //side squiggle
-                Debug.Log("Side squliggle");
                 switch (movementTacker % 5)
                 {
 
@@ -91,7 +87,7 @@ public class snakeMovement : EnemyBase
 
                 }
             }
-            else if (Mathf.Abs(playerDistance.y) > Mathf.Abs(playerDistance.x) && Mathf.Abs(playerDistance.y) > 2)
+            else if (Mathf.Abs(playerDistance.y) > Mathf.Abs(playerDistance.x) && Mathf.Abs(playerDistance.y) > 1)
             {
                 //up/down squiggle
                 Debug.Log("up/down squiggler");
@@ -145,38 +141,35 @@ public class snakeMovement : EnemyBase
             }
             else
             {
-                if (playerDistance.x > 0)
-                {
-                    transform.Translate(-speed * xAxis);
-                }
-                else if (playerDistance.x < 0)
-                {
-                    transform.Translate(speed * xAxis);
+                hurtPlayer();
+                //if (playerDistance.x > 0)
+                //{
+                //    transform.Translate(-speed * xAxis);
+                //}
+                //else if (playerDistance.x < 0)
+                //{
+                //    transform.Translate(speed * xAxis);
 
-                }
-                if (playerDistance.y > 0)
-                {
-                    transform.Translate(-speed * yAxis);
-                }
-                else if (playerDistance.y < 0)
-                {
-                    transform.Translate(speed * yAxis);
-                }
+                //}
+                //if (playerDistance.y > 0)
+                //{
+                //    transform.Translate(-speed * yAxis);
+                //}
+                //else if (playerDistance.y < 0)
+                //{
+                //    transform.Translate(speed * yAxis);
+                //}
 
             }
-        }
-        else
-        {
-            hurtPlayer();
-        }
     }
 
     public override void hurtPlayer()
     {
+
         if (player != null)
         {
             Debug.Log(player.health);
-            //player.health -= gameObject.GetComponent<Enemy>().damage;
+            player.health -= gameObject.GetComponent<Enemy>().damage;
         }
         else
         {
