@@ -67,6 +67,7 @@ public class LevelManager : Base
         Character other = GetCharacter(GetTileByPosition(characterToMove.transform.position + distance));
         if (other != null)
         {
+
             // do damage to other
         }
         else if (!IsTileSolid(characterToMove.transform.position + distance))
@@ -85,7 +86,8 @@ public class LevelManager : Base
         {
             return null;
         }
-
+        print(posX + " " + posY);
+        Character temp = tileCharacters[posX, posY];
         return tileCharacters[posX, posY];
     }
 
@@ -158,32 +160,42 @@ public class LevelManager : Base
         return tileTypes[posX, posY] == 10;
     }
 
+    public bool IsTileOutOfBounds(Vector3 position)
+    {
+        Vector3 tilePos = position - startPosition;
+        tilePos /= tileSpacing;
+        int posX = Mathf.RoundToInt(tilePos.x);
+        int posY = Mathf.RoundToInt(tilePos.y);
+
+        return (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1));
+    }
+
     public void MovePlayer(Vector3 distance)
     {
-        int tileHit = -1; // To be replace by movecharacter
-        if (tileHit == -1)
-        {
-            return;
-        }
+        Vector3 tileHit = player.transform.position + distance;
+        TryToMoveCharacter(distance, player);
 
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", distance.y > 0);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", distance.y < 0);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", distance.x < 0);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", distance.x > 0);
-
-        if (IsTileSolid(distance))
+        if (IsTileSolid(tileHit))
         {
-            if (tileHit == 2)
+            if (IsTileWater(tileHit))
             {
                 gameObject.GetComponent<Player>().water += 200;
                 WriteText("You take a hearty gulp, hoping that it's not poisoned.");
             }
-            else if (tileHit == 10 && artifacts == req_artifacts)
+            else if (IsTileCamp(tileHit) && artifacts == req_artifacts)
             {
                 EndLevel();
                 return;
             }
+            else if (IsTileOutOfBounds(tileHit))
+            {
+                return;
+            }
             SetTileDepleted(distance);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", distance.y > 0);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", distance.y < 0);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", distance.x < 0);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", distance.x > 0);
         }
     }
 
