@@ -230,7 +230,12 @@ public class LevelManager : MonoBehaviour
                 
                 if (spawnObject[section[sectionNum, i, j]] != null) {
                     print(spawnObject[section[sectionNum, i, j]]);
-                    GameObject.Instantiate(spawnObject[section[sectionNum, i, j]], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
+                    GameObject newObject = (GameObject) GameObject.Instantiate(spawnObject[section[sectionNum, i, j]], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
+                    if (newObject.name == "Player(Clone)") {
+                        if (!GameObject.Find("Player")) {
+                            newObject.name = "Player";
+                        }
+                    }
                 }
             }
         }
@@ -286,7 +291,7 @@ public class LevelManager : MonoBehaviour
         Debug.Log("ticked");
         foreach (GameObject enemy in enemies)
         {
-            if (enemy != null)
+            if (enemy != null && enemy.GetComponent<EnemyBase>() != null)
             {
                 enemy.GetComponent<EnemyBase>().tickEnemy();
             }
