@@ -53,14 +53,14 @@ public class ExpandingChildren : Clickable
 
     public override void OnClick()
     {
-        if (manager.shownExpanding != null && manager.shownExpanding != this) {
-            return;
-        }
+        //if (manager.shownExpanding != null && manager.shownExpanding != this) {
+        //    return;
+        //}
 
-        if (!on) {
-            manager.SetExpanding(this);
-        } else {
-            manager.SetExpanding(null);
-        }
+        //if (!on) {
+        //    manager.SetExpanding(this);
+        //} else {
+        //    manager.SetExpanding(null);
+        //}
     }
 }

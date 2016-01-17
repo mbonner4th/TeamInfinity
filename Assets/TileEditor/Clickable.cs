@@ -19,7 +19,7 @@ public class Clickable : TileEditorBase
         float yPos = transform.position.y * hitHeight;
 	    if (Input.mousePosition.x > xPos && Input.mousePosition.x < xPos + hitWidth &&
             Input.mousePosition.y > yPos && Input.mousePosition.y < yPos + hitHeight &&
-            Input.GetMouseButtonDown(0)) {
+            Input.GetMouseButton(0)) {
                 OnClick();
         }
 	}

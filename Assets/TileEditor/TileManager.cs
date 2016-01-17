@@ -14,7 +14,8 @@ public class TileManager : TileEditorBase
     public int currentSectionNum;
     public int tileToPaint;
 
-    public ExpandingChildren shownExpanding;
+    public GameObject paintSelectorType;
+    public Vector3 paintSelectionPos;
     public int[,] tileIDs;
 
     public void Start()
@@ -34,6 +35,32 @@ public class TileManager : TileEditorBase
                 tilePickers[i, j] = (GameObject) GameObject.Instantiate(tilePickerType, new Vector3(xOffset + i, yOffset + j, 0), Quaternion.identity);
             }
         }
+
+        int width = Mathf.CeilToInt(Mathf.Sqrt(level.tileType.Length));
+        int height = Mathf.FloorToInt(Mathf.Sqrt(level.tileType.Length));
+        for (int i = 0; i < level.tileType.Length; ++i) {
+            GameObject newChild = (GameObject)GameObject.Instantiate(pastableObject, new Vector3(paintSelectionPos.x + i % width, paintSelectionPos.y + 1 + i / width, paintSelectionPos.z - 1), Quaternion.identity);
+            newChild.transform.parent = transform;
+            PaintSelector newChildScript = newChild.AddComponent<PaintSelector>();
+            newChildScript.tileID = i;
+            newChild.GetComponent<SpriteRenderer>().sprite = level.tileType[i].GetComponent<SpriteRenderer>().sprite;
+
+
+            if (level.spawnObject[i] != null) {
+                SpriteRenderer renderer = level.spawnObject[i].GetComponent<SpriteRenderer>();
+                if (!renderer) {
+                    renderer = level.spawnObject[i].GetComponentInChildren<SpriteRenderer>();
+                }
+
+                if (!renderer) {
+                    continue;
+                }
+
+                GameObject newObject = (GameObject)GameObject.Instantiate(pastableObject, new Vector3(paintSelectionPos.x + i % width, paintSelectionPos.y + 1 + i / width, paintSelectionPos.z - 2), Quaternion.identity);
+                newObject.GetComponent<SpriteRenderer>().sprite = renderer.sprite;
+                newChildScript.spawnPickup = newObject;
+            }
+        }
     }
 
     public void SetSectionNum()
@@ -43,6 +70,16 @@ public class TileManager : TileEditorBase
             currentSectionNum = 0;
         } else {
             currentSectionNum = int.Parse(sectionNumStr);
+        }
+    }
+
+    public void SetTileToPaint()
+    {
+        string inputStr = GameObject.Find("TileTypeInput").GetComponent<InputField>().text;
+        if (inputStr == " ") {
+            tileToPaint = 0;
+        } else {
+            tileToPaint = int.Parse(inputStr);
         }
     }
 
@@ -63,16 +100,16 @@ public class TileManager : TileEditorBase
                 tilePickers[i, j].GetComponent<SpriteRenderer>().sprite = level.tileType[tileID].GetComponent<SpriteRenderer>().sprite;
                 if (level.spawnObject[tileID] != null) {
                     SpriteRenderer renderer = level.spawnObject[tileID].GetComponent<SpriteRenderer>();
-                    if (!renderer) {
+                    if (renderer == null) {
                         renderer = level.spawnObject[tileID].GetComponentInChildren<SpriteRenderer>();
                     }
 
-                    if (renderer) {
-                        tilePickers[i, j].GetComponent<ExpandingChildren>().shownPickup.GetComponent<SpriteRenderer>().sprite = renderer.sprite;
-                        tilePickers[i, j].GetComponent<ExpandingChildren>().shownPickup.SetActive(true);
+                    if (renderer != null) {
+                        tilePickers[i, j].GetComponent<Paintable>().shownPickup.GetComponent<SpriteRenderer>().sprite = renderer.sprite;
+                        tilePickers[i, j].GetComponent<Paintable>().shownPickup.SetActive(true);
                     }
                 } else {
-                    tilePickers[i, j].GetComponent<ExpandingChildren>().shownPickup.SetActive(false);
+                    tilePickers[i, j].GetComponent<Paintable>().shownPickup.SetActive(false);
                 }
             }
         }
@@ -91,34 +128,22 @@ public class TileManager : TileEditorBase
         output.Close();
     }
 
-    public void SetExpanding(ExpandingChildren shown)
+    public void PaintTile(Paintable paintable)
     {
-        if (shownExpanding != null) {
-            shownExpanding.Toggle();
-        }
-
-        shownExpanding = shown;
-
-        if (shownExpanding != null) {
-            shownExpanding.Toggle();
-        }
-    }
-
-    public void ChildClicked(ExpandingChild child)
-    {
-        shownExpanding.GetComponent<SpriteRenderer>().sprite = child.GetComponent<SpriteRenderer>().sprite;
-        if (level.spawnObject[child.tileID] != null) {
-            SpriteRenderer renderer = level.spawnObject[child.tileID].GetComponent<SpriteRenderer>();
+        paintable.GetComponent<SpriteRenderer>().sprite = level.tileType[tileToPaint].GetComponent<SpriteRenderer>().sprite;
+        if (level.spawnObject[tileToPaint] != null) {
+            SpriteRenderer renderer = level.spawnObject[tileToPaint].GetComponent<SpriteRenderer>();
             if (!renderer) {
-                renderer = level.spawnObject[child.tileID].GetComponentInChildren<SpriteRenderer>();
+                renderer = level.spawnObject[tileToPaint].GetComponentInChildren<SpriteRenderer>();
             }
 
             if (renderer) {
-                shownExpanding.shownPickup.GetComponent<SpriteRenderer>().sprite = renderer.sprite;
+                paintable.GetComponent<Paintable>().shownPickup.GetComponent<SpriteRenderer>().sprite = renderer.sprite;
+                paintable.GetComponent<Paintable>().shownPickup.SetActive(true);
             }
+        } else {
+            paintable.GetComponent<Paintable>().shownPickup.SetActive(false);
         }
-        tileIDs[Mathf.RoundToInt(shownExpanding.transform.position.x - xOffset), Mathf.RoundToInt(shownExpanding.transform.position.y - yOffset)] = child.tileID;
-
-        SetExpanding(null);
+        tileIDs[Mathf.RoundToInt(paintable.transform.position.x - xOffset), Mathf.RoundToInt(paintable.transform.position.y - yOffset)] = tileToPaint;
     }
 }

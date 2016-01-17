@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ExpandingChild : Clickable
+public class PaintSelector : Clickable
 {
     public int tileID;
+    public GameObject spawnPickup;
 
     public override void OnClick()
     {
-        //manager.ChildClicked(this);
+        manager.tileToPaint = tileID;
     }
 }
