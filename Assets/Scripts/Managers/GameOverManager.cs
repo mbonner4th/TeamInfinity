@@ -11,7 +11,9 @@ public class GameOverManager : MonoBehaviour {
 
 	public void GameOver(Player lastPlayer, int guilt, int artifacts)
 	{
+		GameOverButtons.SetActive (false);
 		loseText = GameObject.Find("LastText").GetComponent<Text>();
+		outText = "";
 		string dramaText = "";
 		
 		if (lastPlayer.water == 0) {

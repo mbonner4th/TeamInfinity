@@ -34,12 +34,20 @@ public class LevelManager : Base
 
     public KeyCode menuKey;
     public bool gamePaused = false;
-    public GameObject PauseMenu;
+	public GameObject MainUI;
+	public GameObject PauseMenu;
 	public GameObject GameOverMenu;
 	public GameObject ShopMenu;
 
-    
-    public System.Collections.Generic.List<GameObject> enemies;
+	public int persHealth;
+	public int persWater;
+	public int persAmmo;
+	public int persMoney;
+	public int persDamage;
+	public int persMaxHealth;
+	public int persMaxWater;
+	
+	public System.Collections.Generic.List<GameObject> enemies;
 
     public void SetTileDepleted(Vector3 position)
     {
@@ -145,15 +153,44 @@ public class LevelManager : Base
 		}
 	}
 
+	public void RestartLevel()
+	{
+		GameOverMenu.SetActive (false);
+		Time.timeScale = 1.0f;
+		gamePaused = false;
+		LoadLevel(Application.dataPath + "/Levels/Level" + leveltoload + ".txt");
+		GenerateLevel();
+	}
+
+	public void NextLevel()
+	{
+		ShopMenu.SetActive (false);
+		MainUI.SetActive (true);
+		Time.timeScale = 1.0f;
+		gamePaused = false;
+
+		persHealth = player.health;
+		persWater = player.water;
+		persAmmo = player.ammo;
+		persMoney = player.money;
+		persDamage = player.damage;
+		persMaxHealth = player.maxHealth;
+		persMaxWater = player.maxWater;
+
+		LoadLevel(Application.dataPath + "/Levels/Level" + (leveltoload+1) + ".txt");
+		GenerateLevel();
+	}
+
     public void EndLevel()
     {
-        WriteText("Congratulations!");
-        LoadLevel(Application.dataPath + "/Levels/Level" + 2 + ".txt");
-        GenerateLevel();
-
-		/*ShopMenu.SetActive (true);
-		Time.timeScale = 0;
-		gamePaused = true;*/
+		if (!ShopMenu.activeSelf) {
+			ShopMenu.SetActive (true);
+			ShopMenu.GetComponent<ShopManager>().PrepareShop(player);
+			WriteText ("\n\n\n\n");
+			MainUI.SetActive (false);
+			Time.timeScale = 0;
+			gamePaused = true;
+		}
 	}
 	
 	
@@ -173,6 +210,17 @@ public class LevelManager : Base
 		Time.timeScale = 1.0f;
 		gamePaused = false;
 		Application.LoadLevel ("MainMenu");
+	}
+
+	public void ReloadPlayerAtts()
+	{
+		player.health = persHealth;
+		player.water = persWater;
+		player.ammo = persAmmo;
+		player.money = persMoney;
+		player.damage = persDamage;
+		player.maxHealth = persMaxHealth;
+		player.maxWater = persMaxWater;
 	}
     
     void LoadSections(string fileNameBase)
