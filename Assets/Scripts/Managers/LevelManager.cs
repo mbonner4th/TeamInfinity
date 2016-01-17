@@ -308,7 +308,7 @@ public class LevelManager : Base
         {
             ShopMenu.SetActive(true);
             ShopMenu.GetComponent<ShopManager>().PrepareShop(player);
-            WriteText("\n\n\n\n");
+            //WriteText("\n\n\n\n");
             MainUI.SetActive(false);
             Time.timeScale = 0;
             gamePaused = true;
@@ -538,7 +538,8 @@ public class LevelManager : Base
     // ============================================= Level Generation =============================================//
     void GenerateLevel(bool rotateRandomly)
     {
-        for (int i = 0; i < levelWidth; ++i) {
+		artifacts = 0;
+		for (int i = 0; i < levelWidth; ++i) {
             for (int j = 0; j < levelHeight; ++j) {
                 GenerateSection(i * sectionSize, j * sectionSize, level[i, j], rotateRandomly);
             }
@@ -640,7 +641,7 @@ public class LevelManager : Base
 
     public virtual void OnPickPart(int intensity)
     {
-        artifacts += intensity;
+        artifacts += 1;
     }
 
     public virtual void OnPickPerson(int intensity)
