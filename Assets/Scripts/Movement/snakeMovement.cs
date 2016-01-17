@@ -173,7 +173,15 @@ public class snakeMovement : EnemyBase
 
     public override void hurtPlayer()
     {
-        
-        //player.health -= GameObject.Find("Enemy");
+        if (player != null)
+        {
+            Debug.Log(player.health);
+            //player.health -= gameObject.GetComponent<Enemy>().damage;
+        }
+        else
+        {
+            print("no player :(");
+            int explosions = player.health;
+        }
     }
 }

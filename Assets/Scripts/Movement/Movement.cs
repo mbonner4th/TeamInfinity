@@ -35,6 +35,11 @@ public class Movement : Base
                 movingForward = true;
                 gameObject.GetComponent<Player>().water += 200;
                 WriteText("You take a hearty gulp, hoping that it's not poisoned.");
+                level.SetTileDepleted(transform.position + speed * axis);
+            }
+            else if (level.IsTileCamp(transform.position + speed * axis) && level.artifacts == level.req_artifacts)
+            {
+                level.EndLevel();
             }
         }
         else if (Input.GetKeyDown(backward))
@@ -48,6 +53,7 @@ public class Movement : Base
                 movingBackward = true;
                 gameObject.GetComponent<Player>().water += 200;
                 WriteText("You take a hearty gulp, hoping that it's not poisoned.");
+                level.SetTileDepleted(transform.position - speed * axis);
             }
         }
 
