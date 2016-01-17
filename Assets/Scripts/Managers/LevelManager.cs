@@ -12,6 +12,7 @@ public class LevelManager : Base
 
     public int[,] tileTypes;
     public GameObject[,] tileObjects;
+    public Character[,] tileCharacters;
     public GameObject[,] tilePickups;
     public bool[] tiles;
     public GameObject[] spawnObject;
@@ -37,9 +38,11 @@ public class LevelManager : Base
     public bool gamePaused = false;
     public GameObject PauseMenu;
 	public GameObject GameOverMenu;
+	public GameObject ShopMenu;
 
     
     public System.Collections.Generic.List<GameObject> enemies;
+    public Character[] characterList;
 
     public void SetTileDepleted(Vector3 position)
     {
@@ -59,6 +62,61 @@ public class LevelManager : Base
             int newVersion = depletedVersion[cntTileType];
             SetTile(posX, posY, newVersion);
         }
+    }
+
+    public void TryToMoveCharacter(Vector3 distance, Character characterToMove)
+    {
+        Character other = GetCharacter(GetTileByPosition(characterToMove.transform.position + distance));
+        if (other != null)
+        {
+            // do damage to other
+        }
+        else if (!IsTileSolid(characterToMove.transform.position + distance))
+        {
+            SetCharacter(GetTileByPosition(characterToMove.transform.position), null);
+            characterToMove.transform.Translate(distance);
+            SetCharacter(GetTileByPosition(characterToMove.transform.position), characterToMove);
+        }
+    }
+
+    public Character GetCharacter(Vector2 tilePosition)
+    {
+        int posX = Mathf.RoundToInt(tilePosition.x);
+        int posY = Mathf.RoundToInt(tilePosition.y);
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
+            return null;
+        }
+
+        return tileCharacters[posX, posY];
+    }
+
+    public void SetCharacter(Vector2 tilePosition, Character characterToSet)
+    {
+        int posX = Mathf.RoundToInt(tilePosition.x);
+        int posY = Mathf.RoundToInt(tilePosition.y);
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
+            return;
+        }
+        print(tileCharacters);
+
+        tileCharacters[posX, posY] = characterToSet;
+    }
+
+
+    public Vector2 GetTileByPosition(Vector3 position)
+    {
+        Vector3 tilePos = position - startPosition;
+        tilePos /= tileSpacing;
+        int posX = Mathf.RoundToInt(tilePos.x);
+        int posY = Mathf.RoundToInt(tilePos.y);
+
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
+            return new Vector2(-1.0f, -1.0f);
+        }
+        return new Vector2(posX * 1.0f, posY * 1.0f);
     }
 
     public bool IsTileSolid(Vector3 position)
@@ -126,6 +184,8 @@ public class LevelManager : Base
             
         }
         InvokeRepeating("tickEnimies", 1.0f, 1.0f);
+        characterList = GameObject.FindObjectsOfType(typeof(Character)) as Character[];
+        //print(characterList.Length);
     }
 
 
@@ -133,7 +193,7 @@ public class LevelManager : Base
 
 	public override void BaseUpdate(float dt)
     {
-		if (PauseMenu != null && Input.GetKeyUp (menuKey)) 
+		if (PauseMenu != null && Input.GetKeyUp (menuKey) && (!GameOverMenu.activeSelf) && (!ShopMenu.activeSelf))
 		{
 			UpdateMenu();
 		}
@@ -161,6 +221,10 @@ public class LevelManager : Base
         WriteText("Congratulations!");
         LoadLevel(Application.dataPath + "/Levels/Level" + 2 + ".txt");
         GenerateLevel(true);
+
+		/*ShopMenu.SetActive (true);
+		Time.timeScale = 0;
+		gamePaused = true;*/
 	}
 	
 	
@@ -210,8 +274,7 @@ public class LevelManager : Base
         randomSectionLayoutFrequency = new List<int>[numberRandomSectionTypes];
         int next = ReadNextNumber(input);
         for (int i = 1; i < numberRandomSectionTypes; ++i) {
-            int sectionID = -next;
-            randomSectionLayout[sectionID] = new List<int>();
+            int sectionID = -next;            randomSectionLayout[sectionID] = new List<int>();
             randomSectionLayoutFrequency[sectionID] = new List<int>();
             next = ReadNextNumber(input);
             while (next > 0) {
@@ -319,10 +382,16 @@ public class LevelManager : Base
                 }
             }
         }
+
+
         
         tileObjects = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
         tilePickups = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
+        tileCharacters = new Character[levelWidth * sectionSize, levelHeight * sectionSize];
         tileTypes = new int[levelWidth * sectionSize, levelHeight * sectionSize];
+        
+
+
     }
 
     public int SelectRandomSection(int sectionType)
@@ -411,8 +480,7 @@ public class LevelManager : Base
             for (int j = 0; j < sectionSize; ++j) {
                 int posX = tilePositionX + i;
                 int posY = tilePositionY + j;
-                SetTile(posX, posY, sectionTiles[i, j]);
-            }
+                SetTile(posX, posY, section[sectionNum, i, j]);            }
         }
     }
 
@@ -483,15 +551,27 @@ public class LevelManager : Base
         guilt -= intensity;
     }
 
-    public void addToEnemies(GameObject enemy)
+    public bool addToEnemies(GameObject enemy)
     {
-        //Debug.Log("added to enemies");
-        enemies.Add(enemy);
+        print(GetCharacter(GetTileByPosition(enemy.transform.position)));
+       if(GetCharacter(GetTileByPosition(enemy.transform.position)) == null){
+            enemies.Add(enemy);
+            Debug.Log("added to enemies");
+            
+           
+             SetCharacter(GetTileByPosition(enemy.transform.position), enemy.GetComponent<Enemy>());
+             return true;
+       }
+       else{
+           print("sorry, you don't get to play");
+           return false;
+       }
+        
     }
 
     public void tickEnimies()
     {
-        Debug.Log("ticked");
+//Debug.Log("ticked");
         foreach (GameObject enemy in enemies)
         {
             if (enemy != null && enemy.GetComponent<EnemyBase>() != null)
