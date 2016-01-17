@@ -4,8 +4,10 @@ using System.Collections;
 
 public class Player : Character
 {
-    public int water;
+	public int water;
     public int ammo;
+	public int maxHealth = 1000;
+	public int maxWater = 1000;
 
 	public Slider waterBar;
 	public Slider healthBar;
@@ -69,6 +71,10 @@ public class Player : Character
 			rocks += "o";
 		}
 		ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + rocks;
+
+		// Correct health and water if they're over the max
+		if(health > maxHealth){health=maxHealth;}
+		if(water > maxWater){water=maxWater;}
 	}
 
     public override void OnPickup(Pickup other)
@@ -76,29 +82,27 @@ public class Player : Character
         if (other.type == 1)
         {
             level.OnPickPart(other.intensity);
-            print("Picked up a part!");
+			WriteText("Picked up a part!");
         }
         else if (other.type == 2)
         {
             health += other.intensity;
-			if(health > 100){health=100;}
-			print("Picked up health!");
+			WriteText("Picked up " + health + " health!");
         }
         else if (other.type == 3)
         {
             water += other.intensity;
-			if(water > 100){water=100;}
-            print("Picked up water!");
+			WriteText("Picked up water!");
         }
         else if (other.type == 4)
         {
             ammo += other.intensity;
-            print("Picked up ammo!");
+			WriteText("Picked up ammo!");
         }
         else if (other.type == 5)
         {
             level.OnPickPerson(other.intensity);
-            print("Saved a person!");
+			WriteText("Saved a person!");
         }
 
         GameObject.Destroy(other.gameObject);
