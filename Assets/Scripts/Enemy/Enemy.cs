@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Enemy : Character {
 
-	public GameObject drop;
+	public GameObject[] drop;
 
     public void Awake()
     {
@@ -39,7 +39,8 @@ public class Enemy : Character {
 	public override void onDeath ()
 	{
 		if (drop != null) {
-			level.cleanUp.Add((GameObject)GameObject.Instantiate (drop, transform.position, Quaternion.identity));
+			int randomDrop = Random.Range(0, drop.Length);
+			level.cleanUp.Add((GameObject)GameObject.Instantiate (drop[randomDrop], transform.position, Quaternion.identity));
 		}
 		base.onDeath();
 	}
