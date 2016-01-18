@@ -36,7 +36,12 @@ public class MainMenuManager : MonoBehaviour
     {
         float setting = sliders[sliderIndex].value;
         print("Changing settings");
-        PlayerPrefs.SetFloat(settings[sliderIndex], setting);
+
+        if (settings[sliderIndex] == "difficulty") {
+            PlayerPrefs.SetFloat(settings[sliderIndex], 10.0f / setting);
+        } else {
+            PlayerPrefs.SetFloat(settings[sliderIndex], setting);
+        }
     }
 
     public void MuteSound()
