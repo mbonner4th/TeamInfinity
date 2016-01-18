@@ -16,6 +16,7 @@ public class LevelManager : Base
     public float flashlightLvl;
     public float maxFlashlightLvl = 30;
     public bool flashlightMessage;
+    public bool nightMessage;
     public int cntVisionRadius;
     public int baseVisionRadius = 3;
     //public int startingTime = 1800; // 30 seconds
