@@ -8,12 +8,19 @@ public class LevelManager : Base
     public int req_artifacts;
     public int artifacts;
     public int guilt;
+    public float time = 60;
+    public int cntVisionRadius;
+    public int baseVisionRadius = 3;
+    //public int startingTime = 1800; // 30 seconds
     public int leveltoload;
 
     public int[,] tileTypes;
     public GameObject[,] tileObjects;
     public Character[,] tileCharacters;
     public GameObject[,] tilePickups;
+    public GameObject[,] fogObjects;
+    public GameObject dayFogObjectType;
+    public GameObject nightFogObjectType;
     public bool[] tiles;
     public GameObject[] spawnObject;
     public GameObject[] tileType;
@@ -52,9 +59,9 @@ public class LevelManager : Base
     public int persDamage;
     public int persMaxHealth;
     public int persMaxWater;
-    
+
     public System.Collections.Generic.List<GameObject> enemies;
-	public System.Collections.Generic.List<GameObject> cleanUp;
+    public System.Collections.Generic.List<GameObject> cleanUp;
     public Character[] characterList;
 	public int helplessPeople = 0;
 
@@ -173,8 +180,8 @@ public class LevelManager : Base
         if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1)) {
             return false;
         }
-        
-		return (tileTypes[posX, posY] == 2 || tileTypes[posX, posY] == 12);
+
+        return (tileTypes[posX, posY] == 2 || tileTypes[posX, posY] == 12);
     }
 
     public bool IsTileCamp(Vector3 position)
@@ -200,6 +207,59 @@ public class LevelManager : Base
         int posY = Mathf.RoundToInt(tilePos.y);
 
         return (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1));
+    }
+
+    public void ActiveAllFog()
+    {
+        print("Activating all fog");
+        for (int i = 0; i < levelWidth*sectionSize; ++i)
+        {
+            for (int j = 0; j < levelHeight*sectionSize; ++j)
+            {
+                fogObjects[i, j].SetActive(true);
+            }
+        }
+    }
+
+    public void ToggleFog(Vector3 pos, int radius)
+    {
+        ActiveAllFog();
+        Vector3 tilePos = pos - startPosition;
+        tilePos /= tileSpacing;
+        int posX = Mathf.RoundToInt(tilePos.x);
+        int posY = Mathf.RoundToInt(tilePos.y);
+
+        fogObjects[posX, posY].SetActive(false);
+
+        for (int i = 0; i < radius; ++i)
+        {
+            for (int j = 0; j < radius; ++j)
+            {
+                Vector3 currentTile = new Vector3(posX+i+1, posY+j+1);
+                if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX+i+1, posY+j+1].SetActive(false); }
+
+                currentTile = new Vector3(posX + i + 1, posY);
+                if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX + i + 1, posY].SetActive(false); }
+
+                currentTile = new Vector3(posX + i + 1, posY - (j + 1));
+                if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX + i + 1, posY - (j + 1)].SetActive(false); }
+
+                currentTile = new Vector3(posX, posY - (j + 1));
+                if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX, posY - (j + 1)].SetActive(false); }
+
+                currentTile = new Vector3(posX, posY + j + 1);
+                if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX, posY + j + 1].SetActive(false); }
+
+                currentTile = new Vector3(posX-(i+1), posY + j + 1);
+                if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX - (i + 1), posY + j + 1].SetActive(false); }
+
+                currentTile = new Vector3(posX - (i + 1), posY);
+                if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX - (i + 1), posY].SetActive(false); }
+
+                currentTile = new Vector3(posX - (i + 1), posY - (j + 1));
+                if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX - (i + 1), posY - (j + 1)].SetActive(false); }
+            }
+        }
     }
 
     public void MovePlayer(Vector3 distance)
@@ -234,6 +294,8 @@ public class LevelManager : Base
             SetTileDepleted(tileHit);
             return;
         }
+
+        ToggleFog(player.transform.position, cntVisionRadius);
     }
 
     void Awake()
@@ -278,7 +340,30 @@ public class LevelManager : Base
 		{
 			UpdateMenu();
 		}
-        //tickEnimies();
+        print(time);
+        if (time > 0)
+        {
+            time -= dt;
+            if (time <= 30 && cntVisionRadius > 0)
+            {
+                GenerateFog(nightFogObjectType);
+                WriteText("Night has fallen. Spoooooooky...");
+                cntVisionRadius = 0;
+                ToggleFog(player.transform.position, cntVisionRadius); 
+            }
+            else if (time <= 40 && cntVisionRadius > Mathf.FloorToInt(baseVisionRadius / 2.0f))
+            {
+                WriteText("It's getting darker.");
+                cntVisionRadius = Mathf.FloorToInt(baseVisionRadius / 2.0f);
+                ToggleFog(player.transform.position, cntVisionRadius);
+            }
+            else if (time <= 50 && cntVisionRadius == baseVisionRadius)
+            {
+                WriteText("It's getting darker.");
+                cntVisionRadius = baseVisionRadius - 1;
+                ToggleFog(player.transform.position, cntVisionRadius);
+            }
+        }
 	}
 
 	public void UpdateMenu()
@@ -532,19 +617,22 @@ public class LevelManager : Base
                     if (tilePickups[i, j] != null) {
 						GameObject.DestroyImmediate(tilePickups[i, j]);
                     }
+
+                    if (fogObjects[i, j] != null)
+                    {
+                        GameObject.DestroyImmediate(fogObjects[i, j]);
+                    }
                 }
             }
         }
 
-		Cleaning ();
+        Cleaning();
         
         tileObjects = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
         tilePickups = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
         tileCharacters = new Character[levelWidth * sectionSize, levelHeight * sectionSize];
         tileTypes = new int[levelWidth * sectionSize, levelHeight * sectionSize];
-        
-
-
+        fogObjects = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
     }
 
     public int SelectRandomSection(int sectionType)
@@ -595,6 +683,23 @@ public class LevelManager : Base
 		for (int i = 0; i < levelWidth; ++i) {
             for (int j = 0; j < levelHeight; ++j) {
                 GenerateSection(i * sectionSize, j * sectionSize, level[i, j], rotateRandomly);
+            }
+        }
+        GenerateFog(dayFogObjectType);
+    }
+
+    void GenerateFog(GameObject fogObjectType)
+    {
+        for (int i = 0; i < levelWidth * sectionSize; ++i)
+        {
+            for (int j = 0; j < levelHeight * sectionSize; ++j)
+            {
+                if (fogObjects[i, j] != null)
+                {
+                    GameObject.Destroy(fogObjects[i, j]);
+                }
+                Vector3 currentTile = new Vector3(i, j);
+                fogObjects[i, j] = (GameObject)GameObject.Instantiate(fogObjectType, new Vector3(i, j, -2.5f), Quaternion.identity);
             }
         }
     }
@@ -700,10 +805,11 @@ public class LevelManager : Base
     public virtual void OnPickPerson(int intensity)
     {
         guilt -= intensity;
-		if (guilt <= 0) {
-			guilt = 0;
-		}
-		helplessPeople--;
+        if (guilt <= 0)
+        {
+            guilt = 0;
+        }
+        helplessPeople--;
     }
 
     public bool addToEnemies(GameObject enemy)
@@ -734,23 +840,23 @@ public class LevelManager : Base
         }
     }
 
-	public void Cleaning()
-	{
-		foreach (GameObject stuff in cleanUp)
-		{
-			if (stuff != null)
-			{
-				GameObject.DestroyImmediate(stuff);
-			}
-			
-		}
-	}
-
 	public void ActiveUI(bool activate){
 		UITextBox.SetActive (activate);
 		UITextPanel.SetActive (activate);
 		UIHealthSlider.SetActive (activate);
 		UIWaterSlider.SetActive (activate);
 	}
+
+    public void Cleaning()
+    {
+        foreach (GameObject stuff in cleanUp)
+        {
+            if (stuff != null)
+            {
+                GameObject.DestroyImmediate(stuff);
+            }
+
+        }
+    }
 
 }
