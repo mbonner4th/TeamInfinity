@@ -81,6 +81,10 @@ public class LevelManager : Base
     public float moneyMod;
     public float pickupIntensity;
     public float spawnRateMod;
+    public Sprite playerSpriteFacingDown;
+    public Sprite playerSpriteFacingUp;
+    public Sprite playerSpriteFacingLeft;
+    public Sprite playerSpriteFacingRight;
 
     public void SetTileDepleted(Vector3 position)
     {
@@ -280,18 +284,41 @@ public class LevelManager : Base
         if (gamePaused) {
             return;
         }
-
+        print("moveplayer");
         Vector3 tileHit = player.transform.position + distance;
         TryToMoveCharacter(distance, player);
 
+        if (distance.y > 0)
+        {
+            playerObject.GetComponentInChildren<Animator>().enabled = false;
+            playerObject.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = playerSpriteFacingUp;
+        }
+        else if (distance.y < 0)
+        {
+            playerObject.GetComponentInChildren<Animator>().enabled = false;
+            playerObject.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = playerSpriteFacingDown;
+        }
+        else if (distance.x < 0)
+        {
+            playerObject.GetComponentInChildren<Animator>().enabled = false;
+            playerObject.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = playerSpriteFacingLeft;
+        }
+        else if (distance.x > 0)
+        {
+            playerObject.GetComponentInChildren<Animator>().enabled = false;
+            playerObject.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = playerSpriteFacingRight;
+        }
+
         if (IsTileSolid(tileHit))
         {
+            playerObject.GetComponentInChildren<Animator>().Play("Idle");
+            playerObject.GetComponentInChildren<Animator>().enabled = true;
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", distance.y > 0);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", distance.y < 0);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", distance.x < 0);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", distance.x > 0);
             if (IsTileWater(tileHit))
             {
-                playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", distance.y > 0);
-                playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", distance.y < 0);
-                playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", distance.x < 0);
-                playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", distance.x > 0);
                 player.water += 200;
                 WriteText("You take a hearty gulp, hoping that it's not poisoned.");
             }
@@ -746,8 +773,7 @@ public class LevelManager : Base
     // ============================================= Level Generation =============================================//
     void GenerateLevel(bool rotateRandomly)
     {
-        flashlightLvl = maxFlashlightLvl;
-		artifacts = 0;
+        artifacts = 0;
         req_artifacts = 0;
 		for (int i = 0; i < levelWidth; ++i) {
             for (int j = 0; j < levelHeight; ++j) {
