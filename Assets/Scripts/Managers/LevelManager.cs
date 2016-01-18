@@ -395,7 +395,7 @@ public class LevelManager : Base
 			UpdateMenu();
 		}
 
-        if (time > 10 && !gamePaused)
+        if (time > 0 && !gamePaused)
         {
             time -= dt * dayTimeMod;
             if (time <= 30 && cntVisionRadius > 0)
@@ -855,8 +855,10 @@ public class LevelManager : Base
         if (spawnObject[tileID] != null) {
             GameObject newObject = null;
             if (spawnObject[tileID].name == "Player") {
-                 newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
-                 newObject.name = "Player";
+                if (GameObject.Find("Player") == null) {
+                    newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
+                    newObject.name = "Player";
+                }
             } else {
                 newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
                 if (newObject.name == "Artifact(Clone)") {
