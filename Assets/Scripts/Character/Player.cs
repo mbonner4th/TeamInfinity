@@ -41,9 +41,6 @@ public class Player : Character
         {
             damage = 50;
         }
-
-        ammo = Mathf.FloorToInt(ammo * level.pickupIntensity);
-        money = Mathf.FloorToInt(money * level.moneyMod);
 	}
 
 	public override void BaseUpdate(float dt)

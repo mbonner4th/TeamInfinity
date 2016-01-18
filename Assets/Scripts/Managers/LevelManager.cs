@@ -284,7 +284,7 @@ public class LevelManager : Base
         if (gamePaused) {
             return;
         }
-        print("moveplayer");
+
         Vector3 tileHit = player.transform.position + distance;
         TryToMoveCharacter(distance, player);
 
@@ -365,12 +365,7 @@ public class LevelManager : Base
         moneyMod = difficultySetting;
         pickupIntensity = difficultySetting;
 
-        float spawnRate = PlayerPrefs.GetFloat("spawnRate", 1.0f);
-        if (spawnRate == 0) {
-            spawnRateMod = 0;
-        } else {
-            spawnRateMod = 1 / spawnRate;
-        }
+        spawnRateMod = PlayerPrefs.GetFloat("spawnRate", 1.0f);
 
         flashlightLvl = maxFlashlightLvl;
 
@@ -451,7 +446,6 @@ public class LevelManager : Base
 
     public void UpdateMenu()
     {
-        print("UpdateMenu()");
         if (PauseMenu.activeSelf)
         {
             PauseMenu.SetActive(false);

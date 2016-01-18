@@ -12,7 +12,6 @@ public class snakeMovement : EnemyBase
         xAxis = new Vector3(1, 0, 0);
         yAxis = new Vector3(0, 1, 0);
         speed = 1;
-        print(viewDistance);
         if (viewDistance == 0.0f)
         {
             viewDistance = 100.0f;
@@ -41,7 +40,6 @@ public class snakeMovement : EnemyBase
         float totalX = playerObject.transform.position.x - transform.position.x;
         float totalY = playerObject.transform.position.y - transform.position.y;
         float distance = Mathf.Pow(totalX, 2) + Mathf.Pow(totalY, 2);
-       //print("distance: " + Mathf.Sqrt(distance) + " can see: " + viewDistance);
         if (Mathf.Sqrt(distance) <= viewDistance)
         {
             //print("I see you");
@@ -64,7 +62,6 @@ public class snakeMovement : EnemyBase
         {
             if (Mathf.Abs(playerDistance.x) > Mathf.Abs(playerDistance.y) && Mathf.Abs(playerDistance.x) > 1)
             {
-                print("move left/right");
                 switch (movementTacker % 5)
                 {
                     case 0:

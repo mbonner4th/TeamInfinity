@@ -24,7 +24,6 @@ public class SoundManager : MonoBehaviour
 
     public void PlayNextMusic()
     {
-        print("PlayNextMusic");
         if (fixedMusicIndex != -1) {
             musicPlayer.clip = music[fixedMusicIndex];
             musicPlayer.Play();
@@ -47,7 +46,6 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySound(int index)
     {
-        //print("playing sound?");
         soundPlayer.PlayOneShot(sounds[index]);
     }
 }

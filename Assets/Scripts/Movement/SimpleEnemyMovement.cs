@@ -53,19 +53,15 @@ public class SimpleEnemyMovement : EnemyBase {
 
         if (Mathf.Abs(playerDistance.x) >= 2)
         {
-            print("far side");
-            //print(Mathf.Abs(playerDistance.x));
             if (playerDistance.x > 0 && !level.IsTileSolid(transform.position + (-speed * xAxis)))
             {
                 //move left      
-                print("move left");
                 level.TryToMoveCharacter((-speed * xAxis), gameObject.GetComponent<Enemy>());
                 //transform.Translate(-speed * xAxis);
             }
             else if (playerDistance.x < 0 && !level.IsTileSolid(transform.position + (speed * xAxis)))
             {
                 //move right
-                print("move right");
                 level.TryToMoveCharacter((speed * xAxis), gameObject.GetComponent<Enemy>());
                 //transform.Translate(speed * xAxis);
 
@@ -73,19 +69,15 @@ public class SimpleEnemyMovement : EnemyBase {
         }
         else if (Mathf.Abs(playerDistance.y) >= 2)
         {
-            print("far up");
-            //print(Mathf.Abs(playerDistance.y));
             if (playerDistance.y > 0 && !level.IsTileSolid(transform.position + (-speed * yAxis)))
             {
                 //move down
-                print("move down");
                 level.TryToMoveCharacter((-speed * yAxis), gameObject.GetComponent<Enemy>());
                 //transform.Translate(-speed * yAxis);
             }
             else if (playerDistance.y < 0 && !level.IsTileSolid(transform.position + (speed * yAxis)))
             {
                 //move up
-                print("move up");
                 level.TryToMoveCharacter((speed * yAxis), gameObject.GetComponent<Enemy>());
                 //transform.Translate(speed * yAxis);
             }

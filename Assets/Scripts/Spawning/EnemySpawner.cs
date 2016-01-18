@@ -5,7 +5,7 @@ public class EnemySpawner : Base
 {
     public GameObject enemyToSpawn;
     public GameObject epicEnemyToSpawn;
-    public float baseSpawnTime = 100.0F;
+    public float baseSpawnTime = 100.0f;
     public float spawnVariation;
     public float spawnTime;
     public float chanceOfEpic;
@@ -16,7 +16,12 @@ public class EnemySpawner : Base
     // Use this for initialization
     void BaseStart()
     {
-        Spawn();
+        print(level.spawnRateMod);
+        if (level.spawnRateMod != 0.0f) {
+            Spawn();
+            maxSpawnedEnemies = Mathf.CeilToInt(level.spawnRateMod * maxSpawnedEnemies);
+        }
+        timeSinceLastSpawn = 0.0f;
     }
 
     void UpdateSpawnedEnemies()
@@ -57,7 +62,7 @@ public class EnemySpawner : Base
     public override void BaseUpdate(float dt)
     {
         UpdateSpawnedEnemies();
-        timeSinceLastSpawn += dt;
+        timeSinceLastSpawn += dt * level.spawnRateMod;
 
         if (numSpawnedEnemies == maxSpawnedEnemies)
         {

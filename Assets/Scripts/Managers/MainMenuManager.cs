@@ -20,6 +20,16 @@ public class MainMenuManager : MonoBehaviour
         } else {
             GameObject.Find("MuteMusic").GetComponent<Toggle>().isOn = false;
         }
+
+        GameObject.Find("Options").SetActive(false);
+
+        for (int i = 0; i < sliders.Length; ++i) {
+            if (settings[i] == "difficulty") {
+                sliders[i].value = (Mathf.Pow(PlayerPrefs.GetFloat(settings[i], 1.0f), -1.0f)) * 10.0f;
+            } else {
+                sliders[i].value = PlayerPrefs.GetFloat(settings[i], 1.0f);
+            }
+        }
     }
 
     public void LoadLevel(int index)
@@ -35,7 +45,6 @@ public class MainMenuManager : MonoBehaviour
     public void SetSetting(int sliderIndex)
     {
         float setting = sliders[sliderIndex].value;
-        print("Changing settings");
 
         if (settings[sliderIndex] == "difficulty") {
             PlayerPrefs.SetFloat(settings[sliderIndex], 10.0f / setting);
