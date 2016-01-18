@@ -3,8 +3,11 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 
+
 public class LevelManager : Base
 {
+    public string folderName = "Levels/BenLevels/";
+
     public int req_artifacts;
     public int artifacts;
     public int guilt;
@@ -222,9 +225,9 @@ public class LevelManager : Base
         numSectionTypes = 210;
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
-        LoadSections(Application.dataPath + "/Levels/Section");
-        LoadRandomSectionLayout(Application.dataPath + "/Levels/RandomSectionTypes.txt");
-        LoadRandomLevelLayout(Application.dataPath + "/Levels/RandomLevelTypes.txt");
+        LoadSections(folderName + "Section");
+        LoadRandomSectionLayout(folderName + "RandomSectionTypes");
+        LoadRandomLevelLayout(folderName + "RandomLevelTypes");
         if (leveltoload != 0) {
             LoadLevel(leveltoload);
             if (leveltoload < 0) {
@@ -365,14 +368,14 @@ public class LevelManager : Base
     void LoadSections(string fileNameBase)
     {
         for (int i = 0; i < numSectionTypes; ++i) {
-            LoadSection(fileNameBase + i + ".txt", i);
+            LoadSection(fileNameBase + i, i);
         }
     }
 
     void LoadSection(string sectionFileName, int sectionNum)
     {
-        
-        StreamReader input = new StreamReader(sectionFileName);
+        TextAsset assetFile = (TextAsset)Resources.Load(folderName + "Section" + sectionNum, typeof(TextAsset));
+        StringReader input = new StringReader(assetFile.text);
         for (int i = 0; i < sectionSize; ++i) {
             for (int j = 0; j < sectionSize; ++j) {
                 int posX = j;
@@ -384,13 +387,16 @@ public class LevelManager : Base
 
     void LoadRandomSectionLayout(string fileName)
     {
-        StreamReader input = new StreamReader(fileName);
+        TextAsset inputFile = (TextAsset)Resources.Load(fileName, typeof(TextAsset));
+        StringReader input = new StringReader(inputFile.text);
         int numberRandomSectionTypes = ReadNextNumber(input) + 1;
         randomSectionLayout = new List<int>[numberRandomSectionTypes];
         randomSectionLayoutFrequency = new List<int>[numberRandomSectionTypes];
         int next = ReadNextNumber(input);
         for (int i = 1; i < numberRandomSectionTypes; ++i) {
-            int sectionID = -next;            randomSectionLayout[sectionID] = new List<int>();
+            
+            int sectionID = -next;
+            randomSectionLayout[sectionID] = new List<int>();
             randomSectionLayoutFrequency[sectionID] = new List<int>();
             next = ReadNextNumber(input);
             while (next > 0) {
@@ -404,7 +410,8 @@ public class LevelManager : Base
 
     void LoadRandomLevelLayout(string fileName)
     {
-        StreamReader input = new StreamReader(fileName);
+        TextAsset inputFile = (TextAsset)Resources.Load(fileName, typeof(TextAsset));
+        StringReader input = new StringReader(inputFile.text);
         int numberRandomLevels = ReadNextNumber(input) + 1;
         randomLevelLayout = new List<int>[numberRandomLevels];
         int next = ReadNextNumber(input);
@@ -428,8 +435,8 @@ public class LevelManager : Base
             loadingLevel = levelPool[Random.Range(0, levelPool.Count)];
         }
 
-        string fileName = Application.dataPath + "/Levels/Level" + loadingLevel + ".txt";
-        StreamReader input = new StreamReader(fileName);
+        TextAsset inputFile = (TextAsset) Resources.Load(folderName + "Level" + loadingLevel, typeof(TextAsset));
+        StringReader input = new StringReader(inputFile.text);
         levelWidth = ReadNextNumber(input);
         levelHeight = ReadNextNumber(input);
         level = new int[levelWidth, levelHeight];
@@ -507,15 +514,10 @@ public class LevelManager : Base
             }
         }
 
-
-        
         tileObjects = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
         tilePickups = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
         tileCharacters = new Character[levelWidth * sectionSize, levelHeight * sectionSize];
         tileTypes = new int[levelWidth * sectionSize, levelHeight * sectionSize];
-        
-
-
     }
 
     public int SelectRandomSection(int sectionType)
@@ -537,7 +539,7 @@ public class LevelManager : Base
         return randomSectionLayout[sectionType][0];
     }
 
-    int ReadNextNumber(StreamReader input)
+    int ReadNextNumber(StringReader input)
     {
         string result = "";
         while (input.Peek() >= 0) {
@@ -603,7 +605,8 @@ public class LevelManager : Base
             for (int j = 0; j < sectionSize; ++j) {
                 int posX = tilePositionX + i;
                 int posY = tilePositionY + j;
-                SetTile(posX, posY, section[sectionNum, i, j]);            }
+                SetTile(posX, posY, section[sectionNum, i, j]);
+            }
         }
     }
 
