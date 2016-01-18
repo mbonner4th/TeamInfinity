@@ -51,4 +51,17 @@ public class EnemySpawner : Base
             Spawn();
         }
     }
+
+    public virtual void OnDestroy()
+    {
+        List<GameObject> children = new List<GameObject>();
+        for (int i = 0; i < transform.childCount; ++i) {
+            children.Add(transform.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < children.Count; ++i) {
+            level.cleanUp.Add(children[i]);
+            children[i].transform.parent = null;
+        }
+    }
 }
