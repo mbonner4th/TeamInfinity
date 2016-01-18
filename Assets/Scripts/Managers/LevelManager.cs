@@ -12,7 +12,7 @@ public class LevelManager : Base
     public int artifacts;
     public int guilt;
     public float time;
-    public float maxTime = 60;
+    public float maxTime = 90;
     public float flashlightLvl;
     public float maxFlashlightLvl = 10;
     public bool flashlightMessage;
@@ -73,6 +73,14 @@ public class LevelManager : Base
     public System.Collections.Generic.List<GameObject> cleanUp;
     public Character[] characterList;
 	public int helplessPeople = 0;
+
+    public float waterMod;
+    public float damageMod;
+    public float enemyDamageMod;
+    public float dayTimeMod;
+    public float moneyMod;
+    public float pickupIntensity;
+    public float spawnRateMod;
 
     public void SetTileDepleted(Vector3 position)
     {
@@ -320,10 +328,25 @@ public class LevelManager : Base
                 LoadLevel(leveltoload);
                 GenerateLevel(false);
             }
-            
-            
-            
         }
+
+        float difficultySetting = PlayerPrefs.GetFloat("difficulty", 1.0f);
+        waterMod = difficultySetting;
+        damageMod = difficultySetting;
+        enemyDamageMod = 1 / difficultySetting;
+        dayTimeMod = 1 / difficultySetting;
+        moneyMod = difficultySetting;
+        pickupIntensity = difficultySetting;
+
+        float spawnRate = PlayerPrefs.GetFloat("spawnRate", 1.0f);
+        if (spawnRate == 0) {
+            spawnRateMod = 0;
+        } else {
+            spawnRateMod = 1 / spawnRate;
+        }
+
+        flashlightLvl = maxFlashlightLvl;
+
         InvokeRepeating("tickEnimies", 1.0f, 1.0f);
         characterList = GameObject.FindObjectsOfType(typeof(Character)) as Character[];
     }
@@ -347,7 +370,7 @@ public class LevelManager : Base
 
         if (time > 10 && !gamePaused)
         {
-            time -= dt;
+            time -= dt * dayTimeMod;
             if (time <= 30 && cntVisionRadius > 0)
             {
                 GenerateFog(nightFogObjectType);
@@ -380,13 +403,13 @@ public class LevelManager : Base
                 }
                 ToggleFog(player.transform.position, cntVisionRadius); 
             }
-            else if (time <= 40 && cntVisionRadius > Mathf.FloorToInt(baseVisionRadius / 2.0f))
+            else if (time <= 45 && cntVisionRadius > Mathf.FloorToInt(baseVisionRadius / 2.0f))
             {
                 WriteText("It's getting darker.");
                 cntVisionRadius = Mathf.FloorToInt(baseVisionRadius / 2.0f);
                 ToggleFog(player.transform.position, cntVisionRadius);
             }
-            else if (time <= 50 && cntVisionRadius == baseVisionRadius)
+            else if (time <= 60 && cntVisionRadius == baseVisionRadius)
             {
                 WriteText("It's getting darker.");
                 cntVisionRadius = baseVisionRadius - 1;
@@ -723,7 +746,8 @@ public class LevelManager : Base
     // ============================================= Level Generation =============================================//
     void GenerateLevel(bool rotateRandomly)
     {
-		artifacts = 0;
+        artifacts = 0;
+        req_artifacts = 0;
 		for (int i = 0; i < levelWidth; ++i) {
             for (int j = 0; j < levelHeight; ++j) {
                 GenerateSection(i * sectionSize, j * sectionSize, level[i, j], rotateRandomly);
@@ -811,6 +835,9 @@ public class LevelManager : Base
                  newObject.name = "Player";
             } else {
                 newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
+                if (newObject.name == "Artifact(Clone)") {
+                    ++req_artifacts;
+                }
             }
 
             tilePickups[posX, posY] = newObject;

@@ -28,7 +28,7 @@ public class Enemy : Character {
 
     public override void BaseUpdate(float dt)
     {
-        base.BaseUpdate(dt);        
+        base.BaseUpdate(dt);
     }
 
 	public override void OnCollision(Character other)
@@ -41,7 +41,7 @@ public class Enemy : Character {
 		if (drop != null) {
 			level.cleanUp.Add((GameObject)GameObject.Instantiate (drop, transform.position, Quaternion.identity));
 		}
-		base.onDeath ();
+		base.onDeath();
 	}
 
 }

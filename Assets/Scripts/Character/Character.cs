@@ -56,6 +56,6 @@ public class Character : Base
 
 	public virtual void onDeath()
 	{
-		GameObject.Destroy (gameObject);
+		GameObject.Destroy(gameObject);
 	}
 }

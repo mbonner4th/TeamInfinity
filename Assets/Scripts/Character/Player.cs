@@ -5,8 +5,8 @@ using System.Collections;
 public class Player : Character
 {
 	public int water;
-    public int ammo;
-	public int money = 0;
+    public int ammo = 20;
+	public int money = 50;
 	public int rescueCount = 0;
 	
 	public int maxHealth = 1000;
@@ -41,6 +41,9 @@ public class Player : Character
         {
             damage = 50;
         }
+
+        ammo = Mathf.FloorToInt(ammo * level.pickupIntensity);
+        money = Mathf.FloorToInt(money * level.moneyMod);
 	}
 
 	public override void BaseUpdate(float dt)
@@ -66,7 +69,7 @@ public class Player : Character
 			bulletRb.AddForce(go.transform.up * 1000.0f);
             sound.PlaySound(0);
 			Projectile newBullet = go.GetComponent<Projectile>();
-			newBullet.damage = damage;
+			newBullet.damage = Mathf.FloorToInt(damage * level.damageMod);
 		}
 
         if (water == 0)
@@ -116,19 +119,19 @@ public class Player : Character
         if (other.type == 1)
         {
             level.OnPickPart(other.intensity);
-			money += other.intensity;
+            money += Mathf.FloorToInt(other.intensity * level.moneyMod);
 			WriteText("You found a cool artifact! It must be valuable.");
             sound.PlaySound(5);
         }
         else if (other.type == 2)
         {
             health += other.intensity;
-			WriteText("You gobbled a snack and gained " + other.intensity + " health!");
+			WriteText("You gobbled a snack and gained " + Mathf.FloorToInt(other.intensity * level.pickupIntensity) + " health!");
             sound.PlaySound(4);
         }
         else if (other.type == 3)
         {
-            water += other.intensity;
+            water += Mathf.FloorToInt(other.intensity * level.waterMod);
 			WriteText("You found some water from a cactus!");
             sound.PlaySound(4);
         }
@@ -138,7 +141,7 @@ public class Player : Character
 			if (other.intensity == 1){
 				WriteText("You found a rock! Use it well!");
 			} else{
-				WriteText("You found " + other.intensity + " rocks!");
+				WriteText("You found " + Mathf.FloorToInt(other.intensity * level.pickupIntensity) + " rocks!");
 			}
             sound.PlaySound(5);
 		}
@@ -151,7 +154,7 @@ public class Player : Character
 		}
 		else if (other.type == 6)
 		{
-			player.money += other.intensity;
+			player.money += Mathf.FloorToInt(other.intensity * level.moneyMod);
 			WriteText("You found a rare gemstone! Lucky!");
             sound.PlaySound(9);
 		}
