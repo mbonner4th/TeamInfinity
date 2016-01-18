@@ -22,3 +22,4 @@
 21 GoldBig
 22 GoldMed
 23 GoldSm
+24 SnakeBoss

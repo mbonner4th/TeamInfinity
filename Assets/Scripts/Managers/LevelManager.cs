@@ -304,7 +304,7 @@ public class LevelManager : Base
 
     void Awake()
     {
-        numSectionTypes = 101;
+        numSectionTypes = 102;
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(folderName + "Section");
