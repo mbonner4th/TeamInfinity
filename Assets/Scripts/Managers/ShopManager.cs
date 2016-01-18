@@ -52,13 +52,16 @@ public class ShopManager : MonoBehaviour {
 		rectangle = waterBar.GetComponent<RectTransform> ().rect;
 		waterBar.GetComponent<RectTransform> ().sizeDelta = new Vector2( player.maxWater*150/1000,rectangle.height);
 
+		// Update all the relevant gauges and status displays with the current values
 		player.moneyDisp.text = player.moneyDisp.text.Substring(0,player.moneyDisp.text.IndexOf('\n')+1) + "$" + player.money;
 		player.artifactDisp.text = player.artifactDisp.text.Substring(0,player.artifactDisp.text.IndexOf('\n')+1) + player.level.artifacts + "/" + player.level.req_artifacts;
-		string rocks = "";
-		for (int i=0; i<player.ammo; i++) {
-			rocks += "o";
-		}
-		player.ammoDisp.text = player.ammoDisp.text.Substring(0,player.ammoDisp.text.IndexOf('\n')+1) + rocks;
+		player.rescueDisp.text = ""; player.rescueDisp.text += player.rescueCount;
+
+		player.ammoDisp.text = "x" + player.ammo;
+		
+		float guiltyColor = 1.0f - (0.8f * player.level.guilt / 100.0f);
+		player.playerImg.color = new Color (guiltyColor, guiltyColor, guiltyColor);
+
 		if(player.health > player.maxHealth){player.health=player.maxHealth;}
 		if(player.water > player.maxWater){player.water=player.maxWater;}
 	}

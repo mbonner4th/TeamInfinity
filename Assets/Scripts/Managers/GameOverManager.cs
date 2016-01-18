@@ -16,10 +16,10 @@ public class GameOverManager : MonoBehaviour {
 		outText = "";
 		string dramaText = "";
 		
-		if (lastPlayer.water == 0) {
+		if (lastPlayer.water <= 0) {
 			dramaText += "You didn't have enough water.\n";
 		}
-		if (lastPlayer.health == 0) {
+		if (lastPlayer.health <= 0) {
 			dramaText += "You didn't have enough food.\n";
 		}
 		if (lastPlayer.ammo == 0) {
@@ -28,7 +28,7 @@ public class GameOverManager : MonoBehaviour {
 		if (guilt >= 15) {
 			dramaText += "You didn't have enough love.\n";
 		}
-		if (lastPlayer.money == 0) {
+		if (lastPlayer.money <= 10) {
 			dramaText += "You didn't have enough money.\n";
 		}
 		if (artifacts == 0) {

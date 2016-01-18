@@ -101,7 +101,8 @@ public class SimpleEnemyMovement : EnemyBase {
 
     public override void hurtPlayer()
     {
-        player.health -= gameObject.GetComponent<Enemy>().damage;
+        WriteText("Ouch! You were stung for " + Mathf.FloorToInt(gameObject.GetComponent<Enemy>().damage * level.enemyDamageMod) + " damage.");
+        player.health -= Mathf.FloorToInt(gameObject.GetComponent<Enemy>().damage * level.enemyDamageMod);
         sound.PlaySound(3);
         
     }
