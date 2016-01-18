@@ -30,6 +30,7 @@ public class EnemySpawner : Base
 
         spawnTime = baseSpawnTime + Random.Range(-spawnVariation, spawnVariation);
         GameObject newEnemy = (GameObject) GameObject.Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
+        level.addToEnemies(newEnemy);
         newEnemy.transform.parent = transform;
     }
 

@@ -44,7 +44,7 @@ public class snakeMovement : EnemyBase
         print("distance: " + Mathf.Sqrt(distance) + " can see: " + viewDistance);
         if (Mathf.Sqrt(distance) <= viewDistance)
         {
-            print("I see you");
+            //print("I see you");
             return true;
         }
         else
@@ -64,20 +64,17 @@ public class snakeMovement : EnemyBase
         {
             if (Mathf.Abs(playerDistance.x) > Mathf.Abs(playerDistance.y) && Mathf.Abs(playerDistance.x) > 1)
             {
+                print("move left/right");
                 switch (movementTacker % 5)
                 {
                     case 0:
-                        //forward
                         if (playerDistance.x > 0)
                         {
-                            //transform.Translate(-speed * xAxis);
                             level.TryToMoveCharacter((-speed * xAxis), gameObject.GetComponent<Enemy>());
                         }
                         else
                         {
-                            //transform.Translate(speed * xAxis);
                             level.TryToMoveCharacter((speed * xAxis), gameObject.GetComponent<Enemy>());
-
                         }
                         movementTacker++;
                         break;
@@ -86,15 +83,12 @@ public class snakeMovement : EnemyBase
                         //up
                         if (playerDistance.x > 0)
                         {
-                            //transform.Translate(-speed * xAxis);
                             level.TryToMoveCharacter((-speed * xAxis), gameObject.GetComponent<Enemy>());
                         }
                         else
                         {
-                            //transform.Translate(speed * xAxis);
                             level.TryToMoveCharacter((speed * xAxis), gameObject.GetComponent<Enemy>());
                         }
-                        //transform.Translate(speed * yAxis);
                         level.TryToMoveCharacter((speed * yAxis), gameObject.GetComponent<Enemy>());
                         movementTacker++;
                         break;
@@ -103,15 +97,12 @@ public class snakeMovement : EnemyBase
                         //down
                         if (playerDistance.x > 0)
                         {
-                            //transform.Translate(-speed * xAxis);
                             level.TryToMoveCharacter((-speed * xAxis), gameObject.GetComponent<Enemy>());
                         }
                         else
                         {
-                            //transform.Translate(speed * xAxis);
                             level.TryToMoveCharacter((speed * xAxis), gameObject.GetComponent<Enemy>());
                         }
-                        //transform.Translate(-speed * yAxis);
                         level.TryToMoveCharacter((-speed * yAxis), gameObject.GetComponent<Enemy>());
                         movementTacker++;
                         break;
@@ -121,7 +112,7 @@ public class snakeMovement : EnemyBase
             else if (Mathf.Abs(playerDistance.y) > Mathf.Abs(playerDistance.x) && Mathf.Abs(playerDistance.y) > 1)
             {
                 //up/down squiggle
-                //Debug.Log("up/down squiggler");
+                Debug.Log("up/down squiggler");
                 switch (movementTacker % 5)
                 {
 
@@ -129,12 +120,10 @@ public class snakeMovement : EnemyBase
                         //forward
                         if (playerDistance.y > 0)
                         {
-                            //transform.Translate(-speed * yAxis);
                             level.TryToMoveCharacter((-speed * yAxis), gameObject.GetComponent<Enemy>());
                         }
                         else
                         {
-                            //transform.Translate(speed * yAxis);
                             level.TryToMoveCharacter((speed * yAxis), gameObject.GetComponent<Enemy>());
 
                         }
@@ -145,15 +134,12 @@ public class snakeMovement : EnemyBase
                         //up
                         if (playerDistance.y > 0)
                         {
-                            //transform.Translate(-speed * yAxis);
                             level.TryToMoveCharacter((-speed * yAxis), gameObject.GetComponent<Enemy>());
                         }
                         else
                         {
-                            //transform.Translate(speed * yAxis);
                             level.TryToMoveCharacter((speed * yAxis), gameObject.GetComponent<Enemy>());
                         }
-                        //transform.Translate(speed * xAxis);
                         level.TryToMoveCharacter((speed * xAxis), gameObject.GetComponent<Enemy>());
                         movementTacker++;
                         break;
@@ -162,60 +148,42 @@ public class snakeMovement : EnemyBase
                         //down
                         if (playerDistance.y > 0)
                         {
-                            //transform.Translate(-speed * yAxis);
                             level.TryToMoveCharacter(transform.position + (-speed * yAxis), gameObject.GetComponent<Enemy>());
                         }
                         else
                         {
-                            //transform.Translate(speed * yAxis);
                             level.TryToMoveCharacter(transform.position + (speed * yAxis), gameObject.GetComponent<Enemy>());
                         }
-                        //transform.Translate(-speed * xAxis);
                         level.TryToMoveCharacter(transform.position + (-speed * xAxis), gameObject.GetComponent<Enemy>());
                         movementTacker++;
-
                         break;
 
                 }
             }
             else
             {
-                //hurtPlayer();
-                if (playerDistance.x > 0)
+                if ((Mathf.Abs(playerDistance.x) + Mathf.Abs(playerDistance.y)) >= 2)
                 {
-                    //hurtPlayer();
-                    if ((Mathf.Abs(playerDistance.x) + Mathf.Abs(playerDistance.y)) >= 2)
+                    if (playerDistance.x > 0)
                     {
-                        if (playerDistance.x > 0)
-                        {
-                            level.TryToMoveCharacter((-speed * xAxis), gameObject.GetComponent<Enemy>());
-                            //transform.Translate(-speed * xAxis);
-                        }
-                        else if (playerDistance.x < 0)
-                        {
-                            level.TryToMoveCharacter((speed * xAxis), gameObject.GetComponent<Enemy>());
-                            //transform.Translate(speed * xAxis);
-
-                        }
-                        if (playerDistance.y > 0)
-                        {
-                            level.TryToMoveCharacter((-speed * yAxis), gameObject.GetComponent<Enemy>());
-                            //transform.Translate(-speed * yAxis);
-                        }
-                        else if (playerDistance.y < 0)
-                        {
-                            level.TryToMoveCharacter((speed * yAxis), gameObject.GetComponent<Enemy>());
-                            //transform.Translate(speed * yAxis);
-                        }
-
+                        level.TryToMoveCharacter((-speed * xAxis), gameObject.GetComponent<Enemy>());
                     }
-
-
+                    else if (playerDistance.x < 0)
+                    {
+                        level.TryToMoveCharacter((speed * xAxis), gameObject.GetComponent<Enemy>());
+                    }
+                    if (playerDistance.y > 0)
+                    {
+                        level.TryToMoveCharacter((-speed * yAxis), gameObject.GetComponent<Enemy>());
+                    }
+                    else if (playerDistance.y < 0)
+                    {
+                        level.TryToMoveCharacter((speed * yAxis), gameObject.GetComponent<Enemy>());
+                    }
                 }
-                if (playerDistance.y > 0)
+                else
                 {
-                    level.TryToMoveCharacter((-speed * yAxis), gameObject.GetComponent<Enemy>());
-                    //transform.Translate(-speed * yAxis);
+                    hurtPlayer();
                 }
             }
         }
@@ -226,8 +194,6 @@ public class snakeMovement : EnemyBase
 
         if (player != null)
         {
-            //sound.PlaySound();
-            //Debug.Log(player.health);
             player.health -= gameObject.GetComponent<Enemy>().damage;
             sound.PlaySound(2);
         }

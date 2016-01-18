@@ -116,7 +116,7 @@ public class LevelManager : Base
         }
         else if (!IsTileSolid(characterToMove.transform.position + distance))
         {
-            print("can move");
+            //print("can move");
             SetCharacter(GetTileByPosition(characterToMove.transform.position), null);
             characterToMove.transform.Translate(distance);
             SetCharacter(GetTileByPosition(characterToMove.transform.position), characterToMove);
@@ -147,7 +147,7 @@ public class LevelManager : Base
         {
             return;
         }
-        print(tileCharacters);
+        //print(tileCharacters);
 
         tileCharacters[posX, posY] = characterToSet;
     }
@@ -223,14 +223,14 @@ public class LevelManager : Base
 
     public void ActiveAllFog()
     {
-        print("Activating all fog");
-        for (int i = 0; i < levelWidth * sectionSize; ++i)
-        {
-            for (int j = 0; j < levelHeight * sectionSize; ++j)
-            {
-                fogObjects[i, j].SetActive(true);
-            }
-        }
+        //print("Activating all fog");
+        //for (int i = 0; i < levelWidth * sectionSize; ++i)
+        //{
+        //    for (int j = 0; j < levelHeight * sectionSize; ++j)
+        //    {
+        //        fogObjects[i, j].SetActive(true);
+        //    }
+        //}
     }
 
     public void ToggleFog(Vector3 pos, int radius)
@@ -358,7 +358,7 @@ public class LevelManager : Base
         {
             UpdateMenu();
         }
-        print(time);
+        //print(time);
         if (time > 10 && !gamePaused)
         {
             time -= dt;
