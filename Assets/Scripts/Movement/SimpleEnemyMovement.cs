@@ -102,6 +102,7 @@ public class SimpleEnemyMovement : EnemyBase {
     public override void hurtPlayer()
     {
         player.health -= gameObject.GetComponent<Enemy>().damage;
+        sound.PlaySound(3);
         
     }
 

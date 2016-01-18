@@ -109,6 +109,7 @@ public class LevelManager : Base
                 hit = hit / 2;
             }
             other.health -= hit;
+            characterToMove.health -= other.damage;
             // do damage to other
             //hit
         }
