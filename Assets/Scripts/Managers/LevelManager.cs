@@ -347,7 +347,7 @@ public class LevelManager : Base
 			UpdateMenu();
 		}
         print(time);
-        if (time > 0)
+        if (time > 0 && !gamePaused)
         {
             time -= dt;
             if (time <= 30 && cntVisionRadius > 0)
@@ -393,7 +393,7 @@ public class LevelManager : Base
         GameOverMenu.SetActive(false);
         Time.timeScale = 1.0f;
         gamePaused = false;
-		time = 60;
+		time = maxTime;
 		player.health = 100;
 
         LoadLevel(leveltoload);
@@ -406,7 +406,7 @@ public class LevelManager : Base
         ActiveUI(true);
         Time.timeScale = 1.0f;
         gamePaused = false;
-		time = 60;
+		time = maxTime;
 
         persHealth = player.health;
         persWater = player.water;
@@ -460,7 +460,7 @@ public class LevelManager : Base
             GameOverMenu.SetActive(true);
             //Time.timeScale = 0;
             gamePaused = true;
-            GameOverMenu.GetComponent<GameOverManager>().GameOver(lastPlayer, guilt, artifacts);
+            GameOverMenu.GetComponent<GameOverManager>().GameOver(lastPlayer, guilt, artifacts, flashlightLvl, time);
         }
     }
 

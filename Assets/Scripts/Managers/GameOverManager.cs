@@ -9,7 +9,7 @@ public class GameOverManager : MonoBehaviour {
 	public string outText = "";
 	public bool giveUp = false;
 
-	public void GameOver(Player lastPlayer, int guilt, int artifacts)
+	public void GameOver(Player lastPlayer, int guilt, int artifacts, float light, float time)
 	{
 		GameOverButtons.SetActive (false);
 		loseText = GameObject.Find("LastText").GetComponent<Text>();
@@ -33,6 +33,9 @@ public class GameOverManager : MonoBehaviour {
 		}
 		if (artifacts == 0) {
 			dramaText += "You didn't have enough artifacts.\n";
+		}
+		if (light == 0 && time <= 30) {
+			dramaText += "You didn't have enough light.\n";
 		}
 		StartCoroutine(DramaticText (dramaText));
 	}
