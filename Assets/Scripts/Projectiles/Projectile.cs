@@ -33,7 +33,6 @@ public class Projectile : Base
 			return;
 		}
 		
-		//print("Collide!!");
 		if (otherCharacter.team != team) {
 			OnCollision(otherCharacter);
 		}
@@ -41,7 +40,6 @@ public class Projectile : Base
 	
 	public virtual void OnCollision(Character other)
 	{
-		//print("Someone's been shot!");
 		other.health -= damage;
 		GameObject.Destroy (gameObject);
 	}

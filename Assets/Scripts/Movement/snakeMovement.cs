@@ -42,12 +42,10 @@ public class snakeMovement : EnemyBase
         float distance = Mathf.Pow(totalX, 2) + Mathf.Pow(totalY, 2);
         if (Mathf.Sqrt(distance) <= viewDistance)
         {
-            //print("I see you");
             return true;
         }
         else
         {
-            print("we ain't found shit");
             return false;
         }
 
@@ -179,7 +177,6 @@ public class snakeMovement : EnemyBase
         }
         else
         {
-            print("no player :(");
             int explosions = player.health;
         }
     }

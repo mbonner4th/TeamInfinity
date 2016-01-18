@@ -340,7 +340,12 @@ public class LevelManager : Base
 
     void Awake()
     {
-        numSectionTypes = 102;
+        if (folderName == "Levels/") {
+            numSectionTypes = 102;
+        } else {
+            numSectionTypes = 220;
+        }
+        
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(folderName + "Section");
@@ -489,12 +494,10 @@ public class LevelManager : Base
         persMaxWater = player.maxWater;
 		persRescue = player.rescueCount;
 
-        if (leveltoload > 0)
-        {
+        if (leveltoload > 0) {
             ++leveltoload;
-        }
-        else
-        {
+        } else if (leveltoload == -3 && folderName == "Levels/BenLevels/") {
+        } else if (leveltoload != -10) {
             --leveltoload;
         }
         
