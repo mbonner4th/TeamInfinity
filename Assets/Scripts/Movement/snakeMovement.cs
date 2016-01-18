@@ -41,12 +41,15 @@ public class snakeMovement : EnemyBase
         float totalX = playerObject.transform.position.x - transform.position.x;
         float totalY = playerObject.transform.position.y - transform.position.y;
         float distance = Mathf.Pow(totalX, 2) + Mathf.Pow(totalY, 2);
-        if (Mathf.Sqrt(distance) >= viewDistance)
+        print("distance: " + Mathf.Sqrt(distance) + " can see: " + viewDistance);
+        if (Mathf.Sqrt(distance) <= viewDistance)
         {
+            print("I see you");
             return true;
         }
         else
         {
+            print("we ain't found shit");
             return false;
         }
 
@@ -56,11 +59,10 @@ public class snakeMovement : EnemyBase
     {
         base.moveEnemy();
         Vector3 playerDistance = transform.position - playerObject.transform.position;
-        //gameObject.GetComponent<Animator>().SetBool("attackingPlayerLeft", false);
 
-        if (Mathf.Abs(playerDistance.x) > Mathf.Abs(playerDistance.y) && Mathf.Abs(playerDistance.x) > 1)
+        if (seePlayer())
         {
-            switch (movementTacker % 5)
+            if (Mathf.Abs(playerDistance.x) > Mathf.Abs(playerDistance.y) && Mathf.Abs(playerDistance.x) > 1)
             {
 
                 case 0:
@@ -180,13 +182,33 @@ public class snakeMovement : EnemyBase
             //hurtPlayer();
             if (playerDistance.x > 0)
             {
-                level.TryToMoveCharacter((-speed * xAxis), gameObject.GetComponent<Enemy>());
-                //transform.Translate(-speed * xAxis);
-            }
-            else if (playerDistance.x < 0)
-            {
-                level.TryToMoveCharacter((speed * xAxis), gameObject.GetComponent<Enemy>());
-                //transform.Translate(speed * xAxis);
+                //hurtPlayer();
+                if ((Mathf.Abs(playerDistance.x) + Mathf.Abs(playerDistance.y)) >= 2)
+                {
+                    if (playerDistance.x > 0)
+                    {
+                        level.TryToMoveCharacter((-speed * xAxis), gameObject.GetComponent<Enemy>());
+                        //transform.Translate(-speed * xAxis);
+                    }
+                    else if (playerDistance.x < 0)
+                    {
+                        level.TryToMoveCharacter((speed * xAxis), gameObject.GetComponent<Enemy>());
+                        //transform.Translate(speed * xAxis);
+
+                    }
+                    if (playerDistance.y > 0)
+                    {
+                        level.TryToMoveCharacter((-speed * yAxis), gameObject.GetComponent<Enemy>());
+                        //transform.Translate(-speed * yAxis);
+                    }
+                    else if (playerDistance.y < 0)
+                    {
+                        level.TryToMoveCharacter((speed * yAxis), gameObject.GetComponent<Enemy>());
+                        //transform.Translate(speed * yAxis);
+                    }
+
+                }
+
 
             }
             if (playerDistance.y > 0)
@@ -194,24 +216,6 @@ public class snakeMovement : EnemyBase
                 level.TryToMoveCharacter((-speed * yAxis), gameObject.GetComponent<Enemy>());
                 //transform.Translate(-speed * yAxis);
             }
-            else if (playerDistance.y < 0)
-            {
-                level.TryToMoveCharacter((speed * yAxis), gameObject.GetComponent<Enemy>());
-                //transform.Translate(speed * yAxis);
-            }
-
-        }
-        if ((Mathf.Abs(playerDistance.x) + Mathf.Abs(playerDistance.y)) <= 2)
-        {
-            WriteText("A snake bit you!");
-            hurtPlayer();
-
-            print((playerDistance.y > 0) + ", " + (playerDistance.x > 0));
-            //gameObject.GetComponent<Animator>().SetBool("attackingPlayerUp", playerDistance.y > 0);
-            //gameObject.GetComponent<Animator>().SetBool("attackingPlayerDown", playerDistance.y < 0);
-            //gameObject.GetComponent<Animator>().SetBool("attackingPlayerLeft", true);
-            //gameObject.GetComponent<Animator>().SetBool("attackingPlayerRight", playerDistance.x > 0);
-            gameObject.GetComponent<Animator>().Play("AttackingPlayerLeft");
         }
     }
 
@@ -220,8 +224,10 @@ public class snakeMovement : EnemyBase
 
         if (player != null)
         {
+            //sound.PlaySound();
             //Debug.Log(player.health);
             player.health -= gameObject.GetComponent<Enemy>().damage;
+            sound.PlaySound(2);
         }
         else
         {

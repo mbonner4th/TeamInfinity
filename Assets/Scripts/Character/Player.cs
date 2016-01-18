@@ -114,19 +114,19 @@ public class Player : Character
             level.OnPickPart(other.intensity);
 			money += other.intensity;
 			WriteText("You found a cool artifact! It must be valuable.");
-            sound.PlaySound(2);
+            sound.PlaySound(5);
         }
         else if (other.type == 2)
         {
             health += other.intensity;
 			WriteText("You gobbled a snack and gained " + other.intensity + " health!");
-            sound.PlaySound(1);
+            sound.PlaySound(4);
         }
         else if (other.type == 3)
         {
             water += other.intensity;
 			WriteText("You found some water from a cactus!");
-            sound.PlaySound(1);
+            sound.PlaySound(4);
         }
         else if (other.type == 4)
         {
@@ -136,17 +136,19 @@ public class Player : Character
 			} else{
 				WriteText("You found " + other.intensity + " rocks!");
 			}
-            sound.PlaySound(1);
+            sound.PlaySound(5);
 		}
 		else if (other.type == 5)
 		{
 			level.OnPickPerson(other.intensity);
 			WriteText("You saved a person's life! You feel good.");
+            sound.PlaySound(10);
 		}
 		else if (other.type == 6)
 		{
 			player.money += other.intensity;
 			WriteText("You found a rare gemstone! Lucky!");
+            sound.PlaySound(9);
 		}
 
         GameObject.Destroy(other.gameObject);
@@ -154,6 +156,7 @@ public class Player : Character
 
 	public override void onDeath()
 	{
+
 		level.GameOver (this);
 	}
 }

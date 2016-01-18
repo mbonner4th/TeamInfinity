@@ -109,6 +109,7 @@ public class LevelManager : Base
                 hit = hit / 2;
             }
             other.health -= hit;
+            characterToMove.health -= other.damage;
             // do damage to other
             //hit
         }
@@ -884,10 +885,10 @@ public class LevelManager : Base
     }
 
 	public void ActiveUI(bool activate){
-		UITextBox.SetActive (activate);
-		UITextPanel.SetActive (activate);
-		UIHealthSlider.SetActive (activate);
-		UIWaterSlider.SetActive (activate);
+		//UITextBox.SetActive (activate);
+		//UITextPanel.SetActive (activate);
+		//UIHealthSlider.SetActive (activate);
+		//UIWaterSlider.SetActive (activate);
 	}
 
     public void Cleaning()
