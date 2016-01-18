@@ -16,7 +16,6 @@ public class LevelManager : Base
     public float flashlightLvl;
     public float maxFlashlightLvl = 30;
     public bool flashlightMessage;
-    public bool nightMessage;
     public int cntVisionRadius;
     public int baseVisionRadius = 3;
     //public int startingTime = 1800; // 30 seconds
@@ -40,7 +39,7 @@ public class LevelManager : Base
 
     public int numSectionTypes;
     public int sectionSize;
-    public int[,,] section;
+    public int[, ,] section;
     public int[,] level;
     public int levelWidth;
     public int levelHeight;
@@ -51,14 +50,14 @@ public class LevelManager : Base
 
     public KeyCode menuKey;
     public bool gamePaused = false;
-	public GameObject PauseMenu;
-	public GameObject GameOverMenu;
+    public GameObject PauseMenu;
+    public GameObject GameOverMenu;
     public GameObject ShopMenu;
-	//public GameObject MainUI;
-	public GameObject UITextBox;
-	public GameObject UITextPanel;
-	public GameObject UIHealthSlider;
-	public GameObject UIWaterSlider;
+    //public GameObject MainUI;
+    public GameObject UITextBox;
+    public GameObject UITextPanel;
+    public GameObject UIHealthSlider;
+    public GameObject UIWaterSlider;
 
     public int persHealth;
     public int persWater;
@@ -71,7 +70,7 @@ public class LevelManager : Base
     public System.Collections.Generic.List<GameObject> enemies;
     public System.Collections.Generic.List<GameObject> cleanUp;
     public Character[] characterList;
-	public int helplessPeople = 0;
+    public int helplessPeople = 0;
 
     public void SetTileDepleted(Vector3 position)
     {
@@ -95,7 +94,8 @@ public class LevelManager : Base
 
     public void TryToMoveCharacter(Vector3 distance, Character characterToMove)
     {
-        if (gamePaused) {
+        if (gamePaused)
+        {
             return;
         }
 
@@ -173,7 +173,8 @@ public class LevelManager : Base
         int posX = Mathf.RoundToInt(tilePos.x);
         int posY = Mathf.RoundToInt(tilePos.y);
 
-        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1)) {
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
             return true;
         }
         return tiles[tileTypes[posX, posY]];
@@ -186,7 +187,8 @@ public class LevelManager : Base
         int posX = Mathf.RoundToInt(tilePos.x);
         int posY = Mathf.RoundToInt(tilePos.y);
 
-        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1)) {
+        if (posX < 0 || posY < 0 || posX >= tileTypes.GetLength(0) || posY >= tileTypes.GetLength(1))
+        {
             return false;
         }
 
@@ -221,9 +223,9 @@ public class LevelManager : Base
     public void ActiveAllFog()
     {
         print("Activating all fog");
-        for (int i = 0; i < levelWidth*sectionSize; ++i)
+        for (int i = 0; i < levelWidth * sectionSize; ++i)
         {
-            for (int j = 0; j < levelHeight*sectionSize; ++j)
+            for (int j = 0; j < levelHeight * sectionSize; ++j)
             {
                 fogObjects[i, j].SetActive(true);
             }
@@ -244,8 +246,8 @@ public class LevelManager : Base
         {
             for (int j = 0; j < radius; ++j)
             {
-                Vector3 currentTile = new Vector3(posX+i+1, posY+j+1);
-                if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX+i+1, posY+j+1].SetActive(false); }
+                Vector3 currentTile = new Vector3(posX + i + 1, posY + j + 1);
+                if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX + i + 1, posY + j + 1].SetActive(false); }
 
                 currentTile = new Vector3(posX + i + 1, posY);
                 if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX + i + 1, posY].SetActive(false); }
@@ -259,7 +261,7 @@ public class LevelManager : Base
                 currentTile = new Vector3(posX, posY + j + 1);
                 if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX, posY + j + 1].SetActive(false); }
 
-                currentTile = new Vector3(posX-(i+1), posY + j + 1);
+                currentTile = new Vector3(posX - (i + 1), posY + j + 1);
                 if (!IsTileOutOfBounds(currentTile)) { fogObjects[posX - (i + 1), posY + j + 1].SetActive(false); }
 
                 currentTile = new Vector3(posX - (i + 1), posY);
@@ -273,7 +275,8 @@ public class LevelManager : Base
 
     public void MovePlayer(Vector3 distance)
     {
-        if (gamePaused) {
+        if (gamePaused)
+        {
             return;
         }
 
@@ -315,18 +318,22 @@ public class LevelManager : Base
         LoadSections(folderName + "Section");
         LoadRandomSectionLayout(folderName + "RandomSectionTypes");
         LoadRandomLevelLayout(folderName + "RandomLevelTypes");
-        if (leveltoload != 0) {
+        if (leveltoload != 0)
+        {
             LoadLevel(leveltoload);
-            if (leveltoload < 0) {
+            if (leveltoload < 0)
+            {
                 LoadLevel(leveltoload);
                 GenerateLevel(true);
-            } else {
+            }
+            else
+            {
                 LoadLevel(leveltoload);
                 GenerateLevel(false);
             }
-            
-            
-            
+
+
+
         }
         InvokeRepeating("tickEnimies", 1.0f, 1.0f);
         characterList = GameObject.FindObjectsOfType(typeof(Character)) as Character[];
@@ -336,21 +343,22 @@ public class LevelManager : Base
 
 
 
-	public override void BaseUpdate(float dt)
+    public override void BaseUpdate(float dt)
     {
-        if (playerObject) {
+        if (playerObject)
+        {
             playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", false);
             playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", false);
             playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", false);
             playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", false);
         }
 
-		if (PauseMenu != null && Input.GetKeyUp (menuKey) && (!GameOverMenu.activeSelf) && (!ShopMenu.activeSelf))
-		{
-			UpdateMenu();
-		}
-
-        if (time > -10)
+        if (PauseMenu != null && Input.GetKeyUp(menuKey) && (!GameOverMenu.activeSelf) && (!ShopMenu.activeSelf))
+        {
+            UpdateMenu();
+        }
+        print(time);
+        if (time > 10 && !gamePaused)
         {
             time -= dt;
             if (time <= 30 && cntVisionRadius > 0)
@@ -383,7 +391,7 @@ public class LevelManager : Base
                         cntVisionRadius += 1;
                     }
                 }
-                ToggleFog(player.transform.position, cntVisionRadius); 
+                ToggleFog(player.transform.position, cntVisionRadius);
             }
             else if (time <= 40 && cntVisionRadius > Mathf.FloorToInt(baseVisionRadius / 2.0f))
             {
@@ -398,31 +406,31 @@ public class LevelManager : Base
                 ToggleFog(player.transform.position, cntVisionRadius);
             }
         }
-	}
+    }
 
-	public void UpdateMenu()
-	{
-		if(PauseMenu.activeSelf)
-		{
-			PauseMenu.SetActive(false);
-			Time.timeScale = 1.0f;
-			gamePaused = false;
-		}
-		else
-		{
-			PauseMenu.SetActive(true);
-			Time.timeScale = 0;
-			gamePaused = true;
-		}
-	}
+    public void UpdateMenu()
+    {
+        if (PauseMenu.activeSelf)
+        {
+            PauseMenu.SetActive(false);
+            Time.timeScale = 1.0f;
+            gamePaused = false;
+        }
+        else
+        {
+            PauseMenu.SetActive(true);
+            Time.timeScale = 0;
+            gamePaused = true;
+        }
+    }
 
     public void RestartLevel()
     {
         GameOverMenu.SetActive(false);
         Time.timeScale = 1.0f;
         gamePaused = false;
-		time = 60;
-		player.health = 100;
+        time = maxTime;
+        player.health = 100;
 
         LoadLevel(leveltoload);
         GenerateLevel(false);
@@ -434,7 +442,7 @@ public class LevelManager : Base
         ActiveUI(true);
         Time.timeScale = 1.0f;
         gamePaused = false;
-		time = 60;
+        time = maxTime;
 
         persHealth = player.health;
         persWater = player.water;
@@ -453,7 +461,7 @@ public class LevelManager : Base
         {
             --leveltoload;
         }
-        
+
         LoadLevel(leveltoload);
         GenerateLevel(false);
         player = GameObject.Find("Player").GetComponent<Player>();
@@ -471,12 +479,13 @@ public class LevelManager : Base
             Time.timeScale = 0;
             gamePaused = true;
 
-			if(helplessPeople > 0){
-				WriteText("You feel guilty for some reason...");
-				WriteText("...Did you forget to save anyone?");
-				guilt += helplessPeople*10;
-			}
-			helplessPeople = 0;
+            if (helplessPeople > 0)
+            {
+                WriteText("You feel guilty for some reason...");
+                WriteText("...Did you forget to save anyone?");
+                guilt += helplessPeople * 10;
+            }
+            helplessPeople = 0;
         }
     }
 
@@ -488,17 +497,17 @@ public class LevelManager : Base
             GameOverMenu.SetActive(true);
             //Time.timeScale = 0;
             gamePaused = true;
-            GameOverMenu.GetComponent<GameOverManager>().GameOver(lastPlayer, guilt, artifacts);
+            GameOverMenu.GetComponent<GameOverManager>().GameOver(lastPlayer, guilt, artifacts, flashlightLvl, time);
         }
     }
 
-	public void ExitToMainMenu()
-	{
-		//print("ExitToMainMenu");
-		Time.timeScale = 1.0f;
-		gamePaused = false;
-		Application.LoadLevel ("MainMenu");
-	}
+    public void ExitToMainMenu()
+    {
+        //print("ExitToMainMenu");
+        Time.timeScale = 1.0f;
+        gamePaused = false;
+        Application.LoadLevel("MainMenu");
+    }
 
     public void ReloadPlayerAtts()
     {
@@ -510,10 +519,11 @@ public class LevelManager : Base
         player.maxHealth = persMaxHealth;
         player.maxWater = persMaxWater;
     }
-    
+
     void LoadSections(string fileNameBase)
     {
-        for (int i = 0; i < numSectionTypes; ++i) {
+        for (int i = 0; i < numSectionTypes; ++i)
+        {
             LoadSection(fileNameBase + i, i);
         }
     }
@@ -522,8 +532,10 @@ public class LevelManager : Base
     {
         TextAsset assetFile = (TextAsset)Resources.Load(folderName + "Section" + sectionNum, typeof(TextAsset));
         StringReader input = new StringReader(assetFile.text);
-        for (int i = 0; i < sectionSize; ++i) {
-            for (int j = 0; j < sectionSize; ++j) {
+        for (int i = 0; i < sectionSize; ++i)
+        {
+            for (int j = 0; j < sectionSize; ++j)
+            {
                 int posX = j;
                 int posY = sectionSize - i - 1;
                 section[sectionNum, posX, posY] = ReadNextNumber(input);
@@ -539,13 +551,15 @@ public class LevelManager : Base
         randomSectionLayout = new List<int>[numberRandomSectionTypes];
         randomSectionLayoutFrequency = new List<int>[numberRandomSectionTypes];
         int next = ReadNextNumber(input);
-        for (int i = 1; i < numberRandomSectionTypes; ++i) {
-            
+        for (int i = 1; i < numberRandomSectionTypes; ++i)
+        {
+
             int sectionID = -next;
             randomSectionLayout[sectionID] = new List<int>();
             randomSectionLayoutFrequency[sectionID] = new List<int>();
             next = ReadNextNumber(input);
-            while (next > 0) {
+            while (next > 0)
+            {
                 randomSectionLayout[sectionID].Add(next);
                 next = ReadNextNumber(input);
                 randomSectionLayoutFrequency[sectionID].Add(next);
@@ -561,11 +575,13 @@ public class LevelManager : Base
         int numberRandomLevels = ReadNextNumber(input) + 1;
         randomLevelLayout = new List<int>[numberRandomLevels];
         int next = ReadNextNumber(input);
-        for (int i = 1; i < numberRandomLevels; ++i) {
+        for (int i = 1; i < numberRandomLevels; ++i)
+        {
             int levelID = -next;
             randomLevelLayout[levelID] = new List<int>();
             next = ReadNextNumber(input);
-            while (next > 0) {
+            while (next > 0)
+            {
                 randomLevelLayout[levelID].Add(next);
                 next = ReadNextNumber(input);
             }
@@ -581,15 +597,18 @@ public class LevelManager : Base
             loadingLevel = levelPool[Random.Range(0, levelPool.Count)];
         }
 
-        TextAsset inputFile = (TextAsset) Resources.Load(folderName + "Level" + loadingLevel, typeof(TextAsset));
+        TextAsset inputFile = (TextAsset)Resources.Load(folderName + "Level" + loadingLevel, typeof(TextAsset));
         StringReader input = new StringReader(inputFile.text);
         levelWidth = ReadNextNumber(input);
         levelHeight = ReadNextNumber(input);
         level = new int[levelWidth, levelHeight];
-        for (uint i = 0; i < levelHeight; ++i) {
-            for (uint j = 0; j < levelWidth; ++j) {
+        for (uint i = 0; i < levelHeight; ++i)
+        {
+            for (uint j = 0; j < levelWidth; ++j)
+            {
                 int nextSectionNum = ReadNextNumber(input);
-                if (nextSectionNum < 0) {
+                if (nextSectionNum < 0)
+                {
                     nextSectionNum = -nextSectionNum;
                     nextSectionNum = SelectRandomSection(nextSectionNum);
                 }
@@ -646,15 +665,20 @@ public class LevelManager : Base
             }
         }
 
-        if (tileObjects != null) {
-            for (int i = 0; i < tileObjects.GetLength(0); ++i) {
-                for (int j = 0; j < tileObjects.GetLength(1); ++j) {
-                    if (tileObjects[i, j] != null) {
+        if (tileObjects != null)
+        {
+            for (int i = 0; i < tileObjects.GetLength(0); ++i)
+            {
+                for (int j = 0; j < tileObjects.GetLength(1); ++j)
+                {
+                    if (tileObjects[i, j] != null)
+                    {
                         GameObject.DestroyImmediate(tileObjects[i, j]);
                     }
 
-                    if (tilePickups[i, j] != null) {
-						GameObject.DestroyImmediate(tilePickups[i, j]);
+                    if (tilePickups[i, j] != null)
+                    {
+                        GameObject.DestroyImmediate(tilePickups[i, j]);
                     }
 
                     if (fogObjects[i, j] != null)
@@ -666,7 +690,7 @@ public class LevelManager : Base
         }
 
         Cleaning();
-        
+
         tileObjects = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
         tilePickups = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
         tileCharacters = new Character[levelWidth * sectionSize, levelHeight * sectionSize];
@@ -677,15 +701,18 @@ public class LevelManager : Base
     public int SelectRandomSection(int sectionType)
     {
         int totalFrequency = 0;
-        for (int i = 0; i < randomSectionLayoutFrequency[sectionType].Count; ++i) {
+        for (int i = 0; i < randomSectionLayoutFrequency[sectionType].Count; ++i)
+        {
             totalFrequency += randomSectionLayoutFrequency[sectionType][i];
         }
 
         int sectionFreq = Random.Range(0, totalFrequency);
         int currentFrequency = 0;
-        for (int i = 0; i < randomSectionLayoutFrequency[sectionType].Count; ++i) {
+        for (int i = 0; i < randomSectionLayoutFrequency[sectionType].Count; ++i)
+        {
             currentFrequency += randomSectionLayoutFrequency[sectionType][i];
-            if (currentFrequency > sectionFreq) {
+            if (currentFrequency > sectionFreq)
+            {
                 return randomSectionLayout[sectionType][i];
             }
         }
@@ -696,21 +723,28 @@ public class LevelManager : Base
     int ReadNextNumber(StringReader input)
     {
         string result = "";
-        while (input.Peek() >= 0) {
+        while (input.Peek() >= 0)
+        {
             char c = (char)input.Read();
-            if (c == '\r') {
+            if (c == '\r')
+            {
                 input.Read();
                 break;
-            } else if (c == '\n' || c == ' ' || c == '\t') {
+            }
+            else if (c == '\n' || c == ' ' || c == '\t')
+            {
                 break;
             }
 
             result += c;
         }
 
-        if (result == "") {
+        if (result == "")
+        {
             return -9999;
-        } else {
+        }
+        else
+        {
             return int.Parse(result);
         }
     }
@@ -718,9 +752,11 @@ public class LevelManager : Base
     // ============================================= Level Generation =============================================//
     void GenerateLevel(bool rotateRandomly)
     {
-		artifacts = 0;
-		for (int i = 0; i < levelWidth; ++i) {
-            for (int j = 0; j < levelHeight; ++j) {
+        artifacts = 0;
+        for (int i = 0; i < levelWidth; ++i)
+        {
+            for (int j = 0; j < levelHeight; ++j)
+            {
                 GenerateSection(i * sectionSize, j * sectionSize, level[i, j], rotateRandomly);
             }
         }
@@ -752,8 +788,10 @@ public class LevelManager : Base
     {
         int[,] ret = new int[n, n];
 
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
+        for (int i = 0; i < n; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
                 ret[i, j] = matrix[n - j - 1, i];
             }
         }
@@ -764,21 +802,27 @@ public class LevelManager : Base
     void GenerateSection(int tilePositionX, int tilePositionY, int sectionNum, bool rotateRandomly)
     {
         int[,] sectionTiles = new int[sectionSize, sectionSize];
-        for (int i = 0; i < sectionSize; ++i) {
-            for (int j = 0; j < sectionSize; ++j) {
+        for (int i = 0; i < sectionSize; ++i)
+        {
+            for (int j = 0; j < sectionSize; ++j)
+            {
                 sectionTiles[i, j] = section[sectionNum, i, j];
             }
         }
 
-        if (rotateRandomly) {
+        if (rotateRandomly)
+        {
             int numRotations = Random.Range(0, 4);
-            for (int i = 0; i < numRotations; ++i) {
+            for (int i = 0; i < numRotations; ++i)
+            {
                 sectionTiles = RotateMatrix(sectionTiles, sectionSize);
             }
         }
 
-        for (int i = 0; i < sectionSize; ++i) {
-            for (int j = 0; j < sectionSize; ++j) {
+        for (int i = 0; i < sectionSize; ++i)
+        {
+            for (int j = 0; j < sectionSize; ++j)
+            {
                 int posX = tilePositionX + i;
                 int posY = tilePositionY + j;
                 SetTile(posX, posY, section[sectionNum, i, j]);
@@ -788,23 +832,29 @@ public class LevelManager : Base
 
     void SetTile(int posX, int posY, int tileID)
     {
-        if (tileObjects[posX, posY] != null) {
+        if (tileObjects[posX, posY] != null)
+        {
             GameObject.Destroy(tileObjects[posX, posY]);
         }
 
-        if (tilePickups[posX, posY] != null) {
+        if (tilePickups[posX, posY] != null)
+        {
             GameObject.Destroy(tilePickups[posX, posY]);
         }
 
         tileObjects[posX, posY] = (GameObject)GameObject.Instantiate(tileType[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z), Quaternion.identity);
         tileTypes[posX, posY] = tileID;
 
-        if (spawnObject[tileID] != null) {
+        if (spawnObject[tileID] != null)
+        {
             GameObject newObject = null;
-            if (spawnObject[tileID].name == "Player") {
-                 newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
-                 newObject.name = "Player";
-            } else {
+            if (spawnObject[tileID].name == "Player")
+            {
+                newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
+                newObject.name = "Player";
+            }
+            else
+            {
                 newObject = (GameObject)GameObject.Instantiate(spawnObject[tileID], new Vector3(startPosition.x + posX * tileSpacing, startPosition.y + posY * tileSpacing, startPosition.z - 1), Quaternion.identity);
             }
 
@@ -858,38 +908,41 @@ public class LevelManager : Base
 
     public bool addToEnemies(GameObject enemy)
     {
-       if(GetCharacter(GetTileByPosition(enemy.transform.position)) == null){
+        if (GetCharacter(GetTileByPosition(enemy.transform.position)) == null)
+        {
             enemies.Add(enemy);
             //Debug.Log("added to enemies");  
-             SetCharacter(GetTileByPosition(enemy.transform.position), enemy.GetComponent<Enemy>());
-             return true;
-       }
-       else{
-           //print("sorry, you don't get to play");
-           return false;
-       }
-        
+            SetCharacter(GetTileByPosition(enemy.transform.position), enemy.GetComponent<Enemy>());
+            return true;
+        }
+        else
+        {
+            //print("sorry, you don't get to play");
+            return false;
+        }
+
     }
 
     public void tickEnimies()
     {
-//Debug.Log("ticked");
+        //Debug.Log("ticked");
         foreach (GameObject enemy in enemies)
         {
             if (enemy != null && enemy.GetComponent<EnemyBase>() != null)
             {
                 enemy.GetComponent<EnemyBase>().tickEnemy();
             }
-            
+
         }
     }
 
-	public void ActiveUI(bool activate){
-		//UITextBox.SetActive (activate);
-		//UITextPanel.SetActive (activate);
-		//UIHealthSlider.SetActive (activate);
-		//UIWaterSlider.SetActive (activate);
-	}
+    public void ActiveUI(bool activate)
+    {
+        UITextBox.SetActive(activate);
+        UITextPanel.SetActive(activate);
+        UIHealthSlider.SetActive(activate);
+        UIWaterSlider.SetActive(activate);
+    }
 
     public void Cleaning()
     {
