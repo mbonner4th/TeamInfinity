@@ -1,0 +1,24 @@
+00 Debug - DO NOT USE
+01 Sand
+02 Water
+03 Grass
+04 Mountain
+05 PlayerStartLoc
+06 Artifact/Part
+07 Food
+08 Ammo
+09 Snake
+10 Camp/Ship
+11 Quicksand
+12 Oasis
+13 Catus
+14 NPC
+15 RocksBig
+16 RocksMed
+17 RocksSM
+18 PlantMed
+19 PlantSm
+20 Scorpion
+21 GoldBig
+22 GoldMed
+23 GoldSm

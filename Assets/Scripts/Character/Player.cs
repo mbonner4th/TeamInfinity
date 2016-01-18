@@ -18,6 +18,7 @@ public class Player : Character
 	public Text artifactDisp;
 	public GameObject projectile;
 	public Ray2D mousePos;
+	SpriteRenderer playerImg;
 
 	private bool dehydrating = false;
 
@@ -29,6 +30,7 @@ public class Player : Character
 		ammoDisp = GameObject.Find("AmmoDisplay").GetComponent<Text>();
 		moneyDisp = GameObject.Find("MoneyDisplay").GetComponent<Text>();
 		artifactDisp = GameObject.Find("ArtifactDisplay").GetComponent<Text>();
+		playerImg = GameObject.Find("PlayerImage").GetComponent<SpriteRenderer>();
         if (damage == 0)
         {
             damage = 50;
@@ -94,6 +96,8 @@ public class Player : Character
 		ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + rocks;
 		//ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + "x" + ammo;
 
+		float guiltyColor = 1.0f - level.guilt / 50.0f;
+		playerImg.color = new Color (guiltyColor, guiltyColor, guiltyColor);
 
 		// Correct health and water if they're over the max
 		if(health > maxHealth){health=maxHealth;}
@@ -139,7 +143,7 @@ public class Player : Character
 		else if (other.type == 6)
 		{
 			player.money += other.intensity;
-			WriteText("You found some gold coins! Lucky!");
+			WriteText("You found a rare gemstone! Lucky!");
 		}
 
         GameObject.Destroy(other.gameObject);
