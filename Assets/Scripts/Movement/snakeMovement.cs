@@ -41,7 +41,7 @@ public class snakeMovement : EnemyBase
         float totalX = playerObject.transform.position.x - transform.position.x;
         float totalY = playerObject.transform.position.y - transform.position.y;
         float distance = Mathf.Pow(totalX, 2) + Mathf.Pow(totalY, 2);
-        print("distance: " + Mathf.Sqrt(distance) + " can see: " + viewDistance);
+       //print("distance: " + Mathf.Sqrt(distance) + " can see: " + viewDistance);
         if (Mathf.Sqrt(distance) <= viewDistance)
         {
             //print("I see you");
@@ -162,29 +162,7 @@ public class snakeMovement : EnemyBase
             }
             else
             {
-                if ((Mathf.Abs(playerDistance.x) + Mathf.Abs(playerDistance.y)) >= 2)
-                {
-                    if (playerDistance.x > 0)
-                    {
-                        level.TryToMoveCharacter((-speed * xAxis), gameObject.GetComponent<Enemy>());
-                    }
-                    else if (playerDistance.x < 0)
-                    {
-                        level.TryToMoveCharacter((speed * xAxis), gameObject.GetComponent<Enemy>());
-                    }
-                    if (playerDistance.y > 0)
-                    {
-                        level.TryToMoveCharacter((-speed * yAxis), gameObject.GetComponent<Enemy>());
-                    }
-                    else if (playerDistance.y < 0)
-                    {
-                        level.TryToMoveCharacter((speed * yAxis), gameObject.GetComponent<Enemy>());
-                    }
-                }
-                else
-                {
-                    hurtPlayer();
-                }
+             hurtPlayer();
             }
         }
     }
@@ -194,6 +172,7 @@ public class snakeMovement : EnemyBase
 
         if (player != null)
         {
+            WriteText("A Snake bit you for " + gameObject.GetComponent<Enemy>().damage+" damage" );
             player.health -= gameObject.GetComponent<Enemy>().damage;
             sound.PlaySound(2);
         }
