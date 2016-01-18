@@ -73,6 +73,11 @@ public class LevelManager : Base
     public Character[] characterList;
 	public int helplessPeople = 0;
 
+    public Sprite playerSpriteFacingDown;
+    public Sprite playerSpriteFacingUp;
+    public Sprite playerSpriteFacingLeft;
+    public Sprite playerSpriteFacingRight;
+
     public void SetTileDepleted(Vector3 position)
     {
         Vector3 tilePos = position - startPosition;
@@ -274,6 +279,23 @@ public class LevelManager : Base
 
         Vector3 tileHit = player.transform.position + distance;
         TryToMoveCharacter(distance, player);
+
+        if (distance.y > 0)
+        {
+            playerObject.GetComponent<SpriteRenderer>().sprite = playerSpriteFacingUp;
+        }
+        else if (distance.y < 0)
+        {
+            playerObject.GetComponent<SpriteRenderer>().sprite = playerSpriteFacingDown;
+        }
+        else if (distance.x < 0)
+        {
+            playerObject.GetComponent<SpriteRenderer>().sprite = playerSpriteFacingLeft;
+        }
+        else if (distance.x > 0)
+        {
+            playerObject.GetComponent<SpriteRenderer>().sprite = playerSpriteFacingRight;
+        }
 
         if (IsTileSolid(tileHit))
         {
