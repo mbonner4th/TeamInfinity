@@ -49,7 +49,7 @@ public class Player : Character
 		// Fire a bullet in the direction of the mouse when you click!
 		if (Input.GetMouseButtonDown (0) && ammo > 0) {
 			ammo--;
-			WriteText ("Pew! " + ammo + " ROCKS remaining!");
+			WriteText ("You threw a rock! You have " + ammo + " left.");
 			Vector3 pos = Input.mousePosition;
 			pos.z = transform.position.z - Camera.main.transform.position.z;
 			pos = Camera.main.ScreenToWorldPoint(pos);
@@ -122,7 +122,7 @@ public class Player : Character
         else if (other.type == 3)
         {
             water += other.intensity;
-			WriteText("You found a bit of water!");
+			WriteText("You found some water from a cactus!");
             sound.PlaySound(1);
         }
         else if (other.type == 4)

@@ -54,6 +54,7 @@ public class LevelManager : Base
     public int persMaxWater;
     
     public System.Collections.Generic.List<GameObject> enemies;
+	public System.Collections.Generic.List<GameObject> cleanUp;
     public Character[] characterList;
 	public int helplessPeople = 0;
 
@@ -173,7 +174,7 @@ public class LevelManager : Base
             return false;
         }
         
-        return tileTypes[posX, posY] == 2;
+		return (tileTypes[posX, posY] == 2 || tileTypes[posX, posY] == 12);
     }
 
     public bool IsTileCamp(Vector3 position)
@@ -302,7 +303,7 @@ public class LevelManager : Base
         Time.timeScale = 1.0f;
         gamePaused = false;
 
-		player.health = 1;
+		player.health = 100;
 
         LoadLevel(leveltoload);
         GenerateLevel(false);
@@ -535,7 +536,7 @@ public class LevelManager : Base
             }
         }
 
-
+		Cleaning ();
         
         tileObjects = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
         tilePickups = new GameObject[levelWidth * sectionSize, levelHeight * sectionSize];
@@ -699,6 +700,10 @@ public class LevelManager : Base
     public virtual void OnPickPerson(int intensity)
     {
         guilt -= intensity;
+		if (guilt <= 0) {
+			guilt = 0;
+		}
+		helplessPeople--;
     }
 
     public bool addToEnemies(GameObject enemy)
@@ -728,6 +733,18 @@ public class LevelManager : Base
             
         }
     }
+
+	public void Cleaning()
+	{
+		foreach (GameObject stuff in cleanUp)
+		{
+			if (stuff != null)
+			{
+				GameObject.DestroyImmediate(stuff);
+			}
+			
+		}
+	}
 
 	public void ActiveUI(bool activate){
 		UITextBox.SetActive (activate);
