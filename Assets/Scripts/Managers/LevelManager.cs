@@ -420,7 +420,7 @@ public class LevelManager : Base
         GameOverMenu.SetActive(false);
         Time.timeScale = 1.0f;
         gamePaused = false;
-
+		time = 60;
 		player.health = 100;
 
         LoadLevel(leveltoload);
@@ -433,6 +433,7 @@ public class LevelManager : Base
         ActiveUI(true);
         Time.timeScale = 1.0f;
         gamePaused = false;
+		time = 60;
 
         persHealth = player.health;
         persWater = player.water;

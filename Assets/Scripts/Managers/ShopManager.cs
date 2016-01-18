@@ -8,9 +8,9 @@ public class ShopManager : MonoBehaviour {
 	private Slider waterBar;
 	private Slider healthBar;
 
-	public int healthIncr = 500;
+	public int healthIncr = 300;
 	public int maxHealthIncr = 200;
-	public int waterIncr = 500;
+	public int waterIncr = 300;
 	public int maxWaterIncr = 200;
 	public int ammoIncr = 3;
 	public int damageIncr = 15;
