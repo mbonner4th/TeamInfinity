@@ -172,8 +172,8 @@ public class snakeMovement : EnemyBase
 
         if (player != null)
         {
-            WriteText("A Snake bit you for " + gameObject.GetComponent<Enemy>().damage+" damage" );
-            player.health -= gameObject.GetComponent<Enemy>().damage;
+            WriteText("A Snake bit you for " + Mathf.FloorToInt(gameObject.GetComponent<Enemy>().damage * level.enemyDamageMod) +" damage" );
+            player.health -= Mathf.FloorToInt(gameObject.GetComponent<Enemy>().damage * level.enemyDamageMod);
             sound.PlaySound(2);
         }
         else

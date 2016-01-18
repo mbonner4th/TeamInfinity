@@ -59,9 +59,11 @@ public class EnemySpawner : Base
             children.Add(transform.GetChild(i).gameObject);
         }
 
+        transform.DetachChildren();
         for (int i = 0; i < children.Count; ++i) {
             level.cleanUp.Add(children[i]);
-            children[i].transform.parent = null;
+            children[i].GetComponent<Enemy>().enabled = true;
+            children[i].GetComponent<BoxCollider2D>().enabled = true;
         }
     }
 }
