@@ -67,6 +67,7 @@ public class LevelManager : Base
     public int persDamage;
     public int persMaxHealth;
     public int persMaxWater;
+	public int persRescue;
 
     public System.Collections.Generic.List<GameObject> enemies;
     public System.Collections.Generic.List<GameObject> cleanUp;
@@ -442,6 +443,7 @@ public class LevelManager : Base
         persDamage = player.damage;
         persMaxHealth = player.maxHealth;
         persMaxWater = player.maxWater;
+		persRescue = player.rescueCount;
 
         if (leveltoload > 0)
         {
@@ -506,6 +508,7 @@ public class LevelManager : Base
         player.damage = persDamage;
         player.maxHealth = persMaxHealth;
         player.maxWater = persMaxWater;
+		player.rescueCount = persRescue;
     }
     
     void LoadSections(string fileNameBase)
