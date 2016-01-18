@@ -661,7 +661,6 @@ public class LevelManager : Base
         return randomSectionLayout[sectionType][0];
     }
 
-    int ReadNextNumber(StreamReader input)
     int ReadNextNumber(StringReader input)
     {
         string result = "";
