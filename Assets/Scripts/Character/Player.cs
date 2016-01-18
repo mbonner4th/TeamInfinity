@@ -27,6 +27,9 @@ public class Player : Character
 		ammoDisp = GameObject.Find("AmmoDisplay").GetComponent<Text>();
 		moneyDisp = GameObject.Find("MoneyDisplay").GetComponent<Text>();
 		artifactDisp = GameObject.Find("ArtifactDisplay").GetComponent<Text>();
+
+        level.cntVisionRadius = level.baseVisionRadius;
+        level.ToggleFog(player.transform.position, level.cntVisionRadius);
 	}
 
 	public override void BaseUpdate(float dt)
