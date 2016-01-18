@@ -30,6 +30,7 @@ public class EnemySpawner : Base
 
         spawnTime = baseSpawnTime + Random.Range(-spawnVariation, spawnVariation);
         GameObject newEnemy = (GameObject) GameObject.Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
+        level.addToEnemies(newEnemy);
         newEnemy.transform.parent = transform;
     }
 
@@ -48,6 +49,19 @@ public class EnemySpawner : Base
         {
             timeSinceLastSpawn -= spawnTime;
             Spawn();
+        }
+    }
+
+    public virtual void OnDestroy()
+    {
+        List<GameObject> children = new List<GameObject>();
+        for (int i = 0; i < transform.childCount; ++i) {
+            children.Add(transform.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < children.Count; ++i) {
+            level.cleanUp.Add(children[i]);
+            children[i].transform.parent = null;
         }
     }
 }

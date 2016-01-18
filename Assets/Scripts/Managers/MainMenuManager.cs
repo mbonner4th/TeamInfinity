@@ -14,7 +14,6 @@ public class MainMenuManager : MonoBehaviour
 
     public void ExitGame()
     {
-        print("byebye");
         Application.Quit();
     }
 
@@ -25,7 +24,10 @@ public class MainMenuManager : MonoBehaviour
         PlayerPrefs.SetFloat(settings[sliderIndex], setting);
     }
 
-	// Use this for initialization
+    public void MuteVolume()
+    {
+        PlayerPrefs.SetFloat(settings[3], 0);
+    }
 	void Start () {
 	
 	}
