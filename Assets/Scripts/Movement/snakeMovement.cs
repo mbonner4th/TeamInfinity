@@ -64,7 +64,6 @@ public class snakeMovement : EnemyBase
         {
             if (Mathf.Abs(playerDistance.x) > Mathf.Abs(playerDistance.y) && Mathf.Abs(playerDistance.x) > 1)
             {
-
                 case 0:
                     //forward
                     if (playerDistance.x > 0)
