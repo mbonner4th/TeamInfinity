@@ -4,8 +4,8 @@ using System.Collections;
 
 public class PortableHealth : MonoBehaviour {
 
-	Character tracking;
-	Slider healthBar;
+	public Character tracking;
+	public Slider healthBar;
 
 	// Use this for initialization
 	void Start () {
