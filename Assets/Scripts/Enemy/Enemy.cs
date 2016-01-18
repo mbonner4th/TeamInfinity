@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Enemy : Character {
 
-    public int damage = 1;
+    
 
     public void Awake()
     {
@@ -20,6 +20,10 @@ public class Enemy : Character {
     public override void BaseStart()
     {
         base.BaseStart();
+        if (damage == 0)
+        {
+            damage = 10;
+        }
     }
 
     public override void BaseUpdate(float dt)

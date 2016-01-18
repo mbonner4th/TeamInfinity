@@ -13,9 +13,9 @@ public class snakeMovement : EnemyBase
         yAxis = new Vector3(0, 1, 0);
         speed = 1;
         print(viewDistance);
-        if (viewDistance == 0)
+        if (viewDistance == 0.0f)
         {
-            viewDistance = 100;
+            viewDistance = 100.0f;
         }
     }
 
@@ -33,6 +33,23 @@ public class snakeMovement : EnemyBase
     {
         base.tickEnemy();
         moveEnemy();
+    }
+
+    public override bool seePlayer()
+    {
+        base.seePlayer();
+        float totalX = playerObject.transform.position.x - transform.position.x;
+        float totalY = playerObject.transform.position.y - transform.position.y;
+        float distance = Mathf.Pow(totalX, 2) + Mathf.Pow(totalY, 2);
+        if (Mathf.Sqrt(distance) >= viewDistance)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
     }
 
     public override void moveEnemy()
@@ -185,8 +202,9 @@ public class snakeMovement : EnemyBase
                 }
 
             }
-            if (Mathf.Abs(playerDistance.x) == 1 && Mathf.Abs(playerDistance.y) == 1)
+            if ((Mathf.Abs(playerDistance.x) + Mathf.Abs(playerDistance.y)) <= 2)
             {
+                WriteText("A snake bit you!");
                 hurtPlayer();
             }
     }

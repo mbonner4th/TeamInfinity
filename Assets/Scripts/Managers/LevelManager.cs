@@ -82,6 +82,12 @@ public class LevelManager : Base
         if (other != null)
         {
             print("in the way");
+            int hit = characterToMove.damage;
+            if (hit >= 50)
+            {
+                hit = hit / 2;
+            }
+            other.health -= hit;
             // do damage to other
             //hit
         }

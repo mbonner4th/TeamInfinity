@@ -7,7 +7,7 @@ public class Player : Character
 	public int water;
     public int ammo;
 	public int money = 0;
-	public int damage = 50;
+	
 	public int maxHealth = 1000;
 	public int maxWater = 1000;
 
@@ -29,6 +29,10 @@ public class Player : Character
 		ammoDisp = GameObject.Find("AmmoDisplay").GetComponent<Text>();
 		moneyDisp = GameObject.Find("MoneyDisplay").GetComponent<Text>();
 		artifactDisp = GameObject.Find("ArtifactDisplay").GetComponent<Text>();
+        if (damage == 0)
+        {
+            damage = 50;
+        }
 	}
 
 	public override void BaseUpdate(float dt)
