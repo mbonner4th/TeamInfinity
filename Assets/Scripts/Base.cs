@@ -12,7 +12,11 @@ public class Base : MonoBehaviour
 
 	void Start()
     {
-        level = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        //level = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        if (GameObject.Find("LevelManager") != null)
+        {
+            level = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        }
         playerObject = GameObject.Find("Player");
         if (playerObject != null) {
             player = GameObject.Find("Player").GetComponent<Player>();
@@ -23,10 +27,14 @@ public class Base : MonoBehaviour
             sound = camera.GetComponent<SoundManager>();
         }
 
-		textBox = GameObject.Find("TextBox").GetComponent<Text>();
+//		textBox = GameObject.Find("TextBox").GetComponent<Text>();
+
+        if (GameObject.Find("TextBox") != null)
+        {
+            textBox = textBox = GameObject.Find("TextBox").GetComponent<Text>();
+        }
+
         BaseStart();
-        //print("playing sound!");
-        sound.PlaySound(1);
 	}
 
     public virtual void BaseStart()

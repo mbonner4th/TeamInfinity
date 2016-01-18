@@ -43,10 +43,14 @@ public class LevelManager : Base
 
     public KeyCode menuKey;
     public bool gamePaused = false;
-    public GameObject MainUI;
-    public GameObject PauseMenu;
+	public GameObject PauseMenu;
 	public GameObject GameOverMenu;
     public GameObject ShopMenu;
+	//public GameObject MainUI;
+	public GameObject UITextBox;
+	public GameObject UITextPanel;
+	public GameObject UIHealthSlider;
+	public GameObject UIWaterSlider;
 
     public int persHealth;
     public int persWater;
@@ -58,6 +62,7 @@ public class LevelManager : Base
     
     public System.Collections.Generic.List<GameObject> enemies;
     public Character[] characterList;
+	public int helplessPeople = 0;
 
     public void SetTileDepleted(Vector3 position)
     {
@@ -88,13 +93,26 @@ public class LevelManager : Base
         Character other = GetCharacter(GetTileByPosition(characterToMove.transform.position + distance));
         if (other != null)
         {
+            print("in the way");
+            int hit = characterToMove.damage;
+            if (hit >= 50)
+            {
+                hit = hit / 2;
+            }
+            other.health -= hit;
             // do damage to other
+            //hit
         }
         else if (!IsTileSolid(characterToMove.transform.position + distance))
         {
+            print("can move");
             SetCharacter(GetTileByPosition(characterToMove.transform.position), null);
             characterToMove.transform.Translate(distance);
             SetCharacter(GetTileByPosition(characterToMove.transform.position), characterToMove);
+        }
+        else
+        {
+            print("can't move");
         }
     }
 
@@ -281,7 +299,7 @@ public class LevelManager : Base
 
     void Awake()
     {
-        numSectionTypes = 71;
+        numSectionTypes = 210;
         sectionSize = 5;
         section = new int[numSectionTypes, sectionSize, sectionSize];
         LoadSections(Application.dataPath + "/Levels/Section");
@@ -310,10 +328,12 @@ public class LevelManager : Base
 
 	public override void BaseUpdate(float dt)
     {
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", false);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", false);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", false);
-        playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", false);
+        if (playerObject) {
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingUp", false);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingDown", false);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingLeft", false);
+            playerObject.GetComponentInChildren<Animator>().SetBool("movingRight", false);
+        }
 
 		if (PauseMenu != null && Input.GetKeyUp (menuKey) && (!GameOverMenu.activeSelf) && (!ShopMenu.activeSelf))
 		{
@@ -366,6 +386,9 @@ public class LevelManager : Base
         GameOverMenu.SetActive(false);
         Time.timeScale = 1.0f;
         gamePaused = false;
+
+		player.health = 1;
+
         LoadLevel(leveltoload);
         GenerateLevel(false);
     }
@@ -373,7 +396,7 @@ public class LevelManager : Base
     public void NextLevel()
     {
         ShopMenu.SetActive(false);
-        MainUI.SetActive(true);
+        ActiveUI(true);
         Time.timeScale = 1.0f;
         gamePaused = false;
 
@@ -407,10 +430,17 @@ public class LevelManager : Base
         {
             ShopMenu.SetActive(true);
             ShopMenu.GetComponent<ShopManager>().PrepareShop(player);
-            WriteText("\n\n\n\n");
-            MainUI.SetActive(false);
+            //WriteText("\n\n\n\n");
+            ActiveUI(false);
             Time.timeScale = 0;
             gamePaused = true;
+
+			if(helplessPeople > 0){
+				WriteText("You feel guilty for some reason...");
+				WriteText("...Did you forget to save anyone?");
+				guilt += helplessPeople*10;
+			}
+			helplessPeople = 0;
         }
     }
 
@@ -584,7 +614,7 @@ public class LevelManager : Base
                     }
 
                     if (tilePickups[i, j] != null) {
-                        GameObject.DestroyImmediate(tilePickups[i, j]);
+						GameObject.DestroyImmediate(tilePickups[i, j]);
                     }
 
                     if (fogObjects[i, j] != null)
@@ -648,7 +678,8 @@ public class LevelManager : Base
     // ============================================= Level Generation =============================================//
     void GenerateLevel(bool rotateRandomly)
     {
-        for (int i = 0; i < levelWidth; ++i) {
+		artifacts = 0;
+		for (int i = 0; i < levelWidth; ++i) {
             for (int j = 0; j < levelHeight; ++j) {
                 GenerateSection(i * sectionSize, j * sectionSize, level[i, j], rotateRandomly);
             }
@@ -767,7 +798,7 @@ public class LevelManager : Base
 
     public virtual void OnPickPart(int intensity)
     {
-        artifacts += intensity;
+        artifacts += 1;
     }
 
     public virtual void OnPickPerson(int intensity)
@@ -777,17 +808,14 @@ public class LevelManager : Base
 
     public bool addToEnemies(GameObject enemy)
     {
-        print(GetCharacter(GetTileByPosition(enemy.transform.position)));
        if(GetCharacter(GetTileByPosition(enemy.transform.position)) == null){
             enemies.Add(enemy);
-            Debug.Log("added to enemies");
-            
-           
+            //Debug.Log("added to enemies");  
              SetCharacter(GetTileByPosition(enemy.transform.position), enemy.GetComponent<Enemy>());
              return true;
        }
        else{
-           print("sorry, you don't get to play");
+           //print("sorry, you don't get to play");
            return false;
        }
         
@@ -805,5 +833,12 @@ public class LevelManager : Base
             
         }
     }
+
+	public void ActiveUI(bool activate){
+		UITextBox.SetActive (activate);
+		UITextPanel.SetActive (activate);
+		UIHealthSlider.SetActive (activate);
+		UIWaterSlider.SetActive (activate);
+	}
 
 }

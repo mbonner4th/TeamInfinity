@@ -10,6 +10,7 @@ public class EnemyBase : Base {
 
     public Vector3 prevPlayerPostion;
     public Vector3 playerDistance;
+    public float viewDistance;
 
 
 
@@ -29,6 +30,11 @@ public class EnemyBase : Base {
     public override void BaseUpdate(float dt)
     {
 
+    }
+
+    public virtual bool seePlayer()
+    {
+        return true;
     }
 
     /*
