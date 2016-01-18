@@ -11,7 +11,10 @@ public class LevelManager : Base
     public int req_artifacts;
     public int artifacts;
     public int guilt;
-    public float time = 60;
+    public float time;
+    public float maxTime = 60;
+    public float flashlightLvl;
+    public float maxFlashlightLvl;
     public int cntVisionRadius;
     public int baseVisionRadius = 3;
     //public int startingTime = 1800; // 30 seconds
@@ -390,7 +393,7 @@ public class LevelManager : Base
         GameOverMenu.SetActive(false);
         Time.timeScale = 1.0f;
         gamePaused = false;
-
+		time = 60;
 		player.health = 100;
 
         LoadLevel(leveltoload);
@@ -403,6 +406,7 @@ public class LevelManager : Base
         ActiveUI(true);
         Time.timeScale = 1.0f;
         gamePaused = false;
+		time = 60;
 
         persHealth = player.health;
         persWater = player.water;
@@ -693,6 +697,8 @@ public class LevelManager : Base
             }
         }
         GenerateFog(dayFogObjectType);
+        time = maxTime;
+        flashlightLvl = maxFlashlightLvl;
     }
 
     void GenerateFog(GameObject fogObjectType)
