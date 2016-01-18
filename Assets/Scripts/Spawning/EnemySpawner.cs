@@ -4,9 +4,11 @@ using System.Collections.Generic;
 public class EnemySpawner : Base
 {
     public GameObject enemyToSpawn;
+    public GameObject epicEnemyToSpawn;
     public float baseSpawnTime = 100.0F;
     public float spawnVariation;
     public float spawnTime;
+    public float chanceOfEpic;
     public float timeSinceLastSpawn;
     public int numSpawnedEnemies;
     public int maxSpawnedEnemies;
@@ -29,8 +31,25 @@ public class EnemySpawner : Base
         }
 
         spawnTime = baseSpawnTime + Random.Range(-spawnVariation, spawnVariation);
-        GameObject newEnemy = (GameObject) GameObject.Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
-        level.addToEnemies(newEnemy);
+        GameObject newEnemy;// = (GameObject) GameObject.Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
+        if (epicEnemyToSpawn != null)
+        {
+            float spawnChance = Random.Range(0, 100.0f);
+            if (spawnChance > (100 - chanceOfEpic))
+            {
+                newEnemy = (GameObject)GameObject.Instantiate(epicEnemyToSpawn, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                newEnemy = (GameObject)GameObject.Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
+            }
+            
+        }
+        else
+        {
+            newEnemy = (GameObject)GameObject.Instantiate(enemyToSpawn, transform.position, Quaternion.identity);
+        }
+       // level.addToEnemies(newEnemy);
         newEnemy.transform.parent = transform;
     }
 
