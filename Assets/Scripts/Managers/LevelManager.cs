@@ -14,7 +14,7 @@ public class LevelManager : Base
     public float time;
     public float maxTime = 60;
     public float flashlightLvl;
-    public float maxFlashlightLvl = 30;
+    public float maxFlashlightLvl = 10;
     public bool flashlightMessage;
     public bool nightMessage;
     public int cntVisionRadius;
@@ -359,54 +359,42 @@ public class LevelManager : Base
             UpdateMenu();
         }
         print(time);
-        if (time > 10 && !gamePaused)
-        {
-            time -= dt;
-            if (time <= 30 && cntVisionRadius > 0)
-            {
-                GenerateFog(nightFogObjectType);
-                if (nightMessage)
-                {
-                    WriteText("Night has fallen. Spoooooooky...");
-                    nightMessage = false;
-                }
-                cntVisionRadius = 0;
-                if (flashlightLvl > 0)
-                {
-                    flashlightLvl -= dt;
-                    if (flashlightMessage)
-                    {
-                        WriteText("Your flashlight has " + flashlightLvl + " seconds of battery left.");
-                        flashlightMessage = false;
-                    }
-                    if (flashlightLvl >= 30)
-                    {
-                        cntVisionRadius += 3;
-                    }
-                    else if (flashlightLvl >= 20)
-                    {
-                        cntVisionRadius += 2;
-                    }
-                    else
-                    {
-                        cntVisionRadius += 1;
-                    }
-                }
-                ToggleFog(player.transform.position, cntVisionRadius);
-            }
-            else if (time <= 40 && cntVisionRadius > Mathf.FloorToInt(baseVisionRadius / 2.0f))
-            {
-                WriteText("It's getting darker.");
-                cntVisionRadius = Mathf.FloorToInt(baseVisionRadius / 2.0f);
-                ToggleFog(player.transform.position, cntVisionRadius);
-            }
-            else if (time <= 50 && cntVisionRadius == baseVisionRadius)
-            {
-                WriteText("It's getting darker.");
-                cntVisionRadius = baseVisionRadius - 1;
-                ToggleFog(player.transform.position, cntVisionRadius);
-            }
-        }
+        if (time > 10 && !gamePaused) {
+			time -= dt;
+			if (time <= 30 && cntVisionRadius > 0) {
+				GenerateFog (nightFogObjectType);
+				if (nightMessage) {
+					WriteText ("Night has fallen. Spoooooooky...");
+					nightMessage = false;
+				}
+				cntVisionRadius = 0;
+				if (flashlightLvl > 0) {
+					flashlightLvl -= dt;
+					if (flashlightMessage) {
+						WriteText ("Your flashlight has " + flashlightLvl + " seconds of battery left.");
+						flashlightMessage = false;
+					}
+					if (flashlightLvl >= 30) {
+						cntVisionRadius += 3;
+					} else if (flashlightLvl >= 20) {
+						cntVisionRadius += 2;
+					} else {
+						cntVisionRadius += 1;
+					}
+				}
+				ToggleFog (player.transform.position, cntVisionRadius);
+			} else if (time <= 40 && cntVisionRadius > Mathf.FloorToInt (baseVisionRadius / 2.0f)) {
+				WriteText ("It's getting darker.");
+				cntVisionRadius = Mathf.FloorToInt (baseVisionRadius / 2.0f);
+				ToggleFog (player.transform.position, cntVisionRadius);
+			} else if (time <= 50 && cntVisionRadius == baseVisionRadius) {
+				WriteText ("It's getting darker.");
+				cntVisionRadius = baseVisionRadius - 1;
+				ToggleFog (player.transform.position, cntVisionRadius);
+			}
+		} else if (time <= 0) {
+			GameOver (player);
+		}
     }
 
     public void UpdateMenu()
@@ -763,7 +751,7 @@ public class LevelManager : Base
         }
         GenerateFog(dayFogObjectType);
         time = maxTime;
-        flashlightLvl = maxFlashlightLvl;
+        //flashlightLvl = maxFlashlightLvl;
         flashlightMessage = true;
         nightMessage = true;
     }

@@ -14,8 +14,10 @@ public class ShopManager : MonoBehaviour {
 	public int maxWaterIncr = 200;
 	public int ammoIncr = 3;
 	public int damageIncr = 15;
+	public int batteryIncr = 10;
+	public int visionIncr = 1;
 
-	public int[] prices = new int[6];
+	public int[] prices = new int[9];
 
 	/*public int healthPrice = 5;
 	public int waterPrice = 5;
@@ -32,6 +34,9 @@ public class ShopManager : MonoBehaviour {
 		prices[3] = 25; //maxHealthPrice
 		prices[4] = 25; //maxWaterPrice
 		prices[5] = 25; //damagePrice
+		prices[6] = 2; //batteryPrice
+		prices[7] = 10; //maxBatteryPrice
+		prices[8] = 30; //visionPrice
 	}
 
 	public void Update()
@@ -118,6 +123,34 @@ public class ShopManager : MonoBehaviour {
 			player.damage += damageIncr;
 			player.money -= prices[5];
 			prices[5] += 5;
+		}
+	}
+	
+	public void shopRestoreBattery()
+	{
+		if (player.money >= prices[6]) {
+			player.level.flashlightLvl = player.level.maxFlashlightLvl;
+			player.money -= prices[6];
+			prices[6] += 1;
+		}
+	}
+	
+	public void shopUpgradeBattery()
+	{
+		if (player.money >= prices[7]) {
+			player.level.maxFlashlightLvl += batteryIncr;
+			player.level.flashlightLvl = player.level.maxFlashlightLvl;
+			player.money -= prices[7];
+			prices[7] += 15;
+		}
+	}
+
+	public void shopUpgradeVision()
+	{
+		if (player.money >= prices[8]) {
+			player.level.baseVisionRadius += visionIncr;
+			player.money -= prices[8];
+			prices[8] += 50;
 		}
 	}
 

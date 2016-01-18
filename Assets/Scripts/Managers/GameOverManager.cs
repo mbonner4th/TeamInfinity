@@ -37,6 +37,9 @@ public class GameOverManager : MonoBehaviour {
 		if (light == 0 && time <= 30) {
 			dramaText += "You didn't have enough light.\n";
 		}
+		if (time <= 0) {
+			dramaText += "You didn't have enough time.\n";
+		}
 		StartCoroutine(DramaticText (dramaText));
 	}
 
