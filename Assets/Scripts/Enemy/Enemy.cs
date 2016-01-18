@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Enemy : Character {
 
-    public int damage = 1;
+	public GameObject drop;
 
     public void Awake()
     {
@@ -20,6 +20,10 @@ public class Enemy : Character {
     public override void BaseStart()
     {
         base.BaseStart();
+        if (damage == 0)
+        {
+            damage = 10;
+        }
     }
 
     public override void BaseUpdate(float dt)
@@ -32,5 +36,13 @@ public class Enemy : Character {
         //print("Player hit, Get him");
 		//other.health -= damage;
     }
+
+	public override void onDeath ()
+	{
+		if (drop != null) {
+			level.cleanUp.Add((GameObject)GameObject.Instantiate (drop, transform.position, Quaternion.identity));
+		}
+		base.onDeath ();
+	}
 
 }

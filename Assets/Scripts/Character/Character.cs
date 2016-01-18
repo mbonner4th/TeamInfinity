@@ -5,6 +5,7 @@ public class Character : Base
 {
     public int team;
     public int health;
+    public int damage;
 
     public override void BaseStart() 
     {

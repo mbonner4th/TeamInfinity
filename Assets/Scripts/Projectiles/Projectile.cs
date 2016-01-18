@@ -21,7 +21,7 @@ public class Projectile : Base
 			return;
 		}
 
-		if (countdown-- <= 0) {
+		if (countdown-- <= 0 || level.IsTileSolid(transform.position)) {
 			GameObject.Destroy (gameObject);
 		}
 	}

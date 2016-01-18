@@ -12,10 +12,11 @@ public class Base : MonoBehaviour
 
 	void Start()
     {
-        if (GameObject.Find("LevelManager")) {
+        level = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        if (GameObject.Find("LevelManager") != null)
+        {
             level = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         }
-        
         playerObject = GameObject.Find("Player");
         if (playerObject != null) {
             player = GameObject.Find("Player").GetComponent<Player>();

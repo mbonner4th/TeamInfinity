@@ -8,9 +8,9 @@ public class ShopManager : MonoBehaviour {
 	private Slider waterBar;
 	private Slider healthBar;
 
-	public int healthIncr = 50;
+	public int healthIncr = 250;
 	public int maxHealthIncr = 100;
-	public int waterIncr = 50;
+	public int waterIncr = 250;
 	public int maxWaterIncr = 100;
 	public int ammoIncr = 1;
 	public int damageIncr = 10;
@@ -41,6 +41,12 @@ public class ShopManager : MonoBehaviour {
 
 		healthBar.value = player.health; healthBar.maxValue = player.maxHealth;
 		waterBar.value = player.water; waterBar.maxValue = player.maxWater;
+
+		Rect rectangle = healthBar.GetComponent<RectTransform> ().rect;
+		healthBar.GetComponent<RectTransform> ().sizeDelta = new Vector2( player.maxHealth*150/1000,rectangle.height);
+		rectangle = waterBar.GetComponent<RectTransform> ().rect;
+		waterBar.GetComponent<RectTransform> ().sizeDelta = new Vector2( player.maxWater*150/1000,rectangle.height);
+
 		player.moneyDisp.text = player.moneyDisp.text.Substring(0,player.moneyDisp.text.IndexOf('\n')+1) + "$" + player.money;
 		player.artifactDisp.text = player.artifactDisp.text.Substring(0,player.artifactDisp.text.IndexOf('\n')+1) + player.level.artifacts + "/" + player.level.req_artifacts;
 		string rocks = "";
@@ -64,7 +70,7 @@ public class ShopManager : MonoBehaviour {
 		if (player.money >= prices[0]) {
 			player.health += healthIncr;
 			player.money -= prices[0];
-			prices[0] += 5;
+			prices[0] += 3;
 		}
 	}
 
@@ -72,7 +78,7 @@ public class ShopManager : MonoBehaviour {
 	{
 		if (player.money >= prices[3]) {
 			player.maxHealth += maxHealthIncr;
-			player.health += healthIncr;
+			player.health += maxHealthIncr;
 			player.money -= prices[3];
 			prices[3] += 10;
 		}
@@ -83,7 +89,7 @@ public class ShopManager : MonoBehaviour {
 		if (player.money >= prices[1]) {
 			player.water += waterIncr;
 			player.money -= prices[1];
-			prices[1] += 5;
+			prices[1] += 3;
 		}
 	}
 	
@@ -91,7 +97,7 @@ public class ShopManager : MonoBehaviour {
 	{
 		if (player.money >= prices[4]) {
 			player.maxWater += maxWaterIncr;
-			player.water += waterIncr;
+			player.water += maxWaterIncr;
 			player.money -= prices[4];
 			prices[4] += 10;
 		}
