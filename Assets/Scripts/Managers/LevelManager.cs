@@ -14,7 +14,9 @@ public class LevelManager : Base
     public float time;
     public float maxTime = 60;
     public float flashlightLvl;
-    public float maxFlashlightLvl;
+    public float maxFlashlightLvl = 30;
+    public bool flashlightMessage;
+    public bool nightMessage;
     public int cntVisionRadius;
     public int baseVisionRadius = 3;
     //public int startingTime = 1800; // 30 seconds
@@ -346,15 +348,40 @@ public class LevelManager : Base
 		{
 			UpdateMenu();
 		}
-        print(time);
-        if (time > 0)
+
+        if (time > -10)
         {
             time -= dt;
             if (time <= 30 && cntVisionRadius > 0)
             {
                 GenerateFog(nightFogObjectType);
-                WriteText("Night has fallen. Spoooooooky...");
+                if (nightMessage)
+                {
+                    WriteText("Night has fallen. Spoooooooky...");
+                    nightMessage = false;
+                }
                 cntVisionRadius = 0;
+                if (flashlightLvl > 0)
+                {
+                    flashlightLvl -= dt;
+                    if (flashlightMessage)
+                    {
+                        WriteText("Your flashlight has " + flashlightLvl + " seconds of battery left.");
+                        flashlightMessage = false;
+                    }
+                    if (flashlightLvl >= 30)
+                    {
+                        cntVisionRadius += 3;
+                    }
+                    else if (flashlightLvl >= 20)
+                    {
+                        cntVisionRadius += 2;
+                    }
+                    else
+                    {
+                        cntVisionRadius += 1;
+                    }
+                }
                 ToggleFog(player.transform.position, cntVisionRadius); 
             }
             else if (time <= 40 && cntVisionRadius > Mathf.FloorToInt(baseVisionRadius / 2.0f))
@@ -698,6 +725,8 @@ public class LevelManager : Base
         GenerateFog(dayFogObjectType);
         time = maxTime;
         flashlightLvl = maxFlashlightLvl;
+        flashlightMessage = true;
+        nightMessage = true;
     }
 
     void GenerateFog(GameObject fogObjectType)
