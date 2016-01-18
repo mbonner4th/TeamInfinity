@@ -8,12 +8,12 @@ public class ShopManager : MonoBehaviour {
 	private Slider waterBar;
 	private Slider healthBar;
 
-	public int healthIncr = 250;
-	public int maxHealthIncr = 100;
-	public int waterIncr = 250;
-	public int maxWaterIncr = 100;
-	public int ammoIncr = 1;
-	public int damageIncr = 10;
+	public int healthIncr = 500;
+	public int maxHealthIncr = 200;
+	public int waterIncr = 500;
+	public int maxWaterIncr = 200;
+	public int ammoIncr = 3;
+	public int damageIncr = 15;
 
 	public int[] prices = new int[6];
 
@@ -70,7 +70,7 @@ public class ShopManager : MonoBehaviour {
 		if (player.money >= prices[0]) {
 			player.health += healthIncr;
 			player.money -= prices[0];
-			prices[0] += 3;
+			prices[0] += 1;
 		}
 	}
 
@@ -80,7 +80,7 @@ public class ShopManager : MonoBehaviour {
 			player.maxHealth += maxHealthIncr;
 			player.health += maxHealthIncr;
 			player.money -= prices[3];
-			prices[3] += 10;
+			prices[3] += 5;
 		}
 	}
 	
@@ -89,7 +89,7 @@ public class ShopManager : MonoBehaviour {
 		if (player.money >= prices[1]) {
 			player.water += waterIncr;
 			player.money -= prices[1];
-			prices[1] += 3;
+			prices[1] += 1;
 		}
 	}
 	
@@ -99,7 +99,7 @@ public class ShopManager : MonoBehaviour {
 			player.maxWater += maxWaterIncr;
 			player.water += maxWaterIncr;
 			player.money -= prices[4];
-			prices[4] += 10;
+			prices[4] += 5;
 		}
 	}
 	
@@ -117,7 +117,7 @@ public class ShopManager : MonoBehaviour {
 		if (player.money >= prices[5]) {
 			player.damage += damageIncr;
 			player.money -= prices[5];
-			prices[5] += 10;
+			prices[5] += 5;
 		}
 	}
 
