@@ -162,7 +162,11 @@ public class snakeMovement : EnemyBase
             }
             else
             {
-             hurtPlayer();
+                if (Mathf.Abs(playerDistance.y) <= 1 && Mathf.Abs(playerDistance.x) <= 1)
+                {
+                    hurtPlayer();
+                }
+             
             }
         }
     }

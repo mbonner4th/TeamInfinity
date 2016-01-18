@@ -773,8 +773,7 @@ public class LevelManager : Base
     // ============================================= Level Generation =============================================//
     void GenerateLevel(bool rotateRandomly)
     {
-        flashlightLvl = maxFlashlightLvl;
-		artifacts = 0;
+        artifacts = 0;
         req_artifacts = 0;
 		for (int i = 0; i < levelWidth; ++i) {
             for (int j = 0; j < levelHeight; ++j) {
