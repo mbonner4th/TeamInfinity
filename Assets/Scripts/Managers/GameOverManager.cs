@@ -25,7 +25,7 @@ public class GameOverManager : MonoBehaviour {
 		if (lastPlayer.ammo == 0) {
 			dramaText += "You didn't have enough rocks.\n";
 		}
-		if (guilt >= 10) {
+		if (guilt >= 15) {
 			dramaText += "You didn't have enough love.\n";
 		}
 		if (lastPlayer.money == 0) {

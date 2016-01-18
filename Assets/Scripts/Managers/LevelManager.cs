@@ -36,10 +36,14 @@ public class LevelManager : Base
 
     public KeyCode menuKey;
     public bool gamePaused = false;
-    public GameObject MainUI;
-    public GameObject PauseMenu;
+	public GameObject PauseMenu;
 	public GameObject GameOverMenu;
     public GameObject ShopMenu;
+	//public GameObject MainUI;
+	public GameObject UITextBox;
+	public GameObject UITextPanel;
+	public GameObject UIHealthSlider;
+	public GameObject UIWaterSlider;
 
     public int persHealth;
     public int persWater;
@@ -51,6 +55,7 @@ public class LevelManager : Base
     
     public System.Collections.Generic.List<GameObject> enemies;
     public Character[] characterList;
+	public int helplessPeople = 0;
 
     public void SetTileDepleted(Vector3 position)
     {
@@ -82,6 +87,12 @@ public class LevelManager : Base
         if (other != null)
         {
             print("in the way");
+            int hit = characterToMove.damage;
+            if (hit >= 50)
+            {
+                hit = hit / 2;
+            }
+            other.health -= hit;
             // do damage to other
             //hit
         }
@@ -290,6 +301,9 @@ public class LevelManager : Base
         GameOverMenu.SetActive(false);
         Time.timeScale = 1.0f;
         gamePaused = false;
+
+		player.health = 1;
+
         LoadLevel(leveltoload);
         GenerateLevel(false);
     }
@@ -297,7 +311,7 @@ public class LevelManager : Base
     public void NextLevel()
     {
         ShopMenu.SetActive(false);
-        MainUI.SetActive(true);
+        ActiveUI(true);
         Time.timeScale = 1.0f;
         gamePaused = false;
 
@@ -332,9 +346,16 @@ public class LevelManager : Base
             ShopMenu.SetActive(true);
             ShopMenu.GetComponent<ShopManager>().PrepareShop(player);
             //WriteText("\n\n\n\n");
-            MainUI.SetActive(false);
+            ActiveUI(false);
             Time.timeScale = 0;
             gamePaused = true;
+
+			if(helplessPeople > 0){
+				WriteText("You feel guilty for some reason...");
+				WriteText("...Did you forget to save anyone?");
+				guilt += helplessPeople*10;
+			}
+			helplessPeople = 0;
         }
     }
 
@@ -508,7 +529,7 @@ public class LevelManager : Base
                     }
 
                     if (tilePickups[i, j] != null) {
-                        GameObject.DestroyImmediate(tilePickups[i, j]);
+						GameObject.DestroyImmediate(tilePickups[i, j]);
                     }
                 }
             }
@@ -707,5 +728,12 @@ public class LevelManager : Base
             
         }
     }
+
+	public void ActiveUI(bool activate){
+		UITextBox.SetActive (activate);
+		UITextPanel.SetActive (activate);
+		UIHealthSlider.SetActive (activate);
+		UIWaterSlider.SetActive (activate);
+	}
 
 }

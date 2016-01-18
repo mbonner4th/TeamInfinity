@@ -93,8 +93,7 @@ public class SimpleEnemyMovement : EnemyBase {
         //check to see if you're stuck on the environment
         else
         {
-            print("x distance = " + Mathf.Abs(playerDistance.x) + "y distance = " + Mathf.Abs(playerDistance.y));
-            print("get hurt");
+            WriteText("you got stung");
             hurtPlayer();
         }
 

@@ -7,7 +7,7 @@ public class Player : Character
 	public int water;
     public int ammo;
 	public int money = 0;
-	public int damage = 50;
+	
 	public int maxHealth = 1000;
 	public int maxWater = 1000;
 
@@ -18,6 +18,7 @@ public class Player : Character
 	public Text artifactDisp;
 	public GameObject projectile;
 	public Ray2D mousePos;
+	SpriteRenderer playerImg;
 
 	private bool dehydrating = false;
 
@@ -29,6 +30,11 @@ public class Player : Character
 		ammoDisp = GameObject.Find("AmmoDisplay").GetComponent<Text>();
 		moneyDisp = GameObject.Find("MoneyDisplay").GetComponent<Text>();
 		artifactDisp = GameObject.Find("ArtifactDisplay").GetComponent<Text>();
+		playerImg = GameObject.Find("PlayerImage").GetComponent<SpriteRenderer>();
+        if (damage == 0)
+        {
+            damage = 50;
+        }
 	}
 
 	public override void BaseUpdate(float dt)
@@ -90,6 +96,8 @@ public class Player : Character
 		ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + rocks;
 		//ammoDisp.text = ammoDisp.text.Substring(0,ammoDisp.text.IndexOf('\n')+1) + "x" + ammo;
 
+		float guiltyColor = 1.0f - level.guilt / 50.0f;
+		playerImg.color = new Color (guiltyColor, guiltyColor, guiltyColor);
 
 		// Correct health and water if they're over the max
 		if(health > maxHealth){health=maxHealth;}
