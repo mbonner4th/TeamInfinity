@@ -13,22 +13,25 @@ public class SoundManager : MonoBehaviour
     public void Start()
     {
         soundPlayer = GetComponent<AudioSource>();
-        musicPlayer = GetComponentInChildren<AudioSource>();
-        fixedMusicIndex = PlayerPrefs.GetInt("fixedMusic", -1);
+        musicPlayer = transform.GetChild(0).GetComponent<AudioSource>();
+        fixedMusicIndex = (int) PlayerPrefs.GetFloat("fixedMusic", -1);
         soundPlayer.mute = PlayerPrefs.GetInt("muteSound", 0) == 1;
         musicPlayer.mute = PlayerPrefs.GetInt("muteMusic", 0) == 1;
         soundPlayer.volume = PlayerPrefs.GetFloat("volumeSetting", 1.0f);
         musicPlayer.volume = PlayerPrefs.GetFloat("volumeSetting", 1.0f);
-
         PlayNextMusic();
     }
 
     public void PlayNextMusic()
     {
+        print("PlayNextMusic");
         if (fixedMusicIndex != -1) {
             musicPlayer.clip = music[fixedMusicIndex];
             musicPlayer.Play();
+            musicPlayer.time = 0.01f;
+            return;
         }
+
         musicPlayer.Stop();
         musicIndex++;
         musicPlayer.clip = music[musicIndex % music.Length];
@@ -37,7 +40,7 @@ public class SoundManager : MonoBehaviour
 
     public void Update()
     {
-        if (!musicPlayer.isPlaying) {
+        if (musicPlayer.time == 0.0f) {
             PlayNextMusic();
         }
     }

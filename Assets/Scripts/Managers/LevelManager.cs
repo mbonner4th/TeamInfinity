@@ -14,7 +14,7 @@ public class LevelManager : Base
     public float time;
     public float maxTime = 60;
     public float flashlightLvl;
-    public float maxFlashlightLvl = 30;
+    public float maxFlashlightLvl = 10;
     public bool flashlightMessage;
     public bool nightMessage;
     public int cntVisionRadius;
@@ -392,6 +392,10 @@ public class LevelManager : Base
                 ToggleFog(player.transform.position, cntVisionRadius);
             }
         }
+        else if (time <= 0)
+        {
+            GameOver(player);
+        }
 	}
 
     public void UpdateMenu()
@@ -724,7 +728,7 @@ public class LevelManager : Base
         }
         GenerateFog(dayFogObjectType);
         time = maxTime;
-        flashlightLvl = maxFlashlightLvl;
+        //flashlightLvl = maxFlashlightLvl;
         flashlightMessage = true;
         nightMessage = true;
     }
